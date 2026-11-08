@@ -23,7 +23,7 @@ Neal is the differentiator. The live drawing from memory, classroom interaction,
 
 ## Creative direction
 
-“Big ideas. Drawn live.” retains the geography brand while making room for a broader family of experiences. Cobalt-blue oceans with subtle drifting currents, olive land tones, warm paper, forest-green ink, terracotta accents, hand-written annotations, and botanical drawing create the feeling of an explorer’s notebook. The cobalt treatment follows the requested ocean effect and earthy palette. The globe is generated from actual Natural Earth map data. Neal’s own artwork and photos ground the design in his work. Ocean motion respects reduced-motion preferences.
+“Big ideas. Drawn live.” retains the geography brand while making room for a broader family of experiences. The requested dark-ocean identity uses a photographic cobalt water backdrop with slow layered motion, midnight-blue surfaces, gold typography, olive land tones, and earthy program illustrations. Neal’s original globe-and-lettering logo has been recreated from the supplied photograph, with the surrounding scenery removed and the requested motto above it. The small program globe uses actual Natural Earth map data. Neal’s own artwork and classroom photos ground the design in his work. Ocean motion can be paused and respects reduced-motion preferences.
 
 The sequence is: a clear promise → three show directions → live classroom proof → a playable sample → Neal’s story → practical planning answers → an inquiry. Each section adds something new.
 

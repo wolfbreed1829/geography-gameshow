@@ -12,9 +12,12 @@ fn main() {
 fn App() -> impl IntoView {
     let menu_open = RwSignal::new(false);
     let selected = RwSignal::new(0_usize);
+    let motion_paused = RwSignal::new(false);
     view! {
+        <div class="site-shell" class:motion-paused=move || motion_paused.get()>
+        <div class="ocean-backdrop" aria-hidden="true"><div class="ocean-texture"></div><div class="ocean-reflection"></div><div class="ocean-light"></div></div>
         <a class="skip-link" href="#main">"Skip to content"</a>
-        <div class="preview-bar"><span>"A NEW CHAPTER IN CURIOSITY"</span><span>"A concept preview for Neal"<span class="preview-dot">"✳"</span></span></div>
+        <div class="preview-bar"><span>"A NEW CHAPTER IN CURIOSITY"</span><span>"A concept preview for Neal"<button class="motion-toggle" aria-pressed=move || motion_paused.get().to_string() aria-label=move || if motion_paused.get() { "Resume ocean animation" } else { "Pause ocean animation" } on:click=move |_| motion_paused.update(|v| *v = !*v)>{move || if motion_paused.get() { "▶ Resume ocean" } else { "Ⅱ Pause ocean" }}</button></span></div>
         <header class="site-header wrap">
             <a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.png" alt="The Geography Gameshow" width="1536" height="1024"/></a>
             <button class="menu-toggle" aria-controls="main-nav" aria-expanded=move || menu_open.get().to_string() on:click=move |_| menu_open.update(|v| *v = !*v)>{move || if menu_open.get() { "Close −" } else { "Menu +" }}</button>
@@ -81,6 +84,7 @@ fn App() -> impl IntoView {
             <Booking/>
         </main>
         <footer class="wrap"><div class="footer-main"><a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.png" alt="The Geography Gameshow" width="1536" height="1024" loading="lazy"/></a><p>"A whole world of curiosity."</p><a class="text-link" href="#main">"Back to the top"<span>"↑"</span></a></div><div class="footer-bottom"><span>"© 2026 The Geography Gameshow · Neal Nichols Jr."</span><span>"Design preview · Biology & art concepts subject to confirmation"</span></div></footer>
+        </div>
     }
 }
 

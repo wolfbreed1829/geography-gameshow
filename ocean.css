@@ -1,0 +1,145 @@
+/* Dark ocean identity. Motion layers sit behind content and never intercept input. */
+:root {
+  color-scheme: dark;
+  --paper: #06182d;
+  --ink: #f0e8d4;
+  --muted: #b6c8d7;
+  --orange: #d99759;
+  --line: #7896b538;
+  --mint: #173f48;
+  --pink: #48362f;
+  --yellow: #e5bd68;
+}
+
+body { background: #06182d; }
+.site-shell { position: relative; isolation: isolate; min-height: 100vh; }
+.ocean-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #06182d; }
+.ocean-texture, .ocean-reflection { position: absolute; inset: -10%; background: url('public/ocean-background.png') center / cover no-repeat; transform-origin: center; }
+.ocean-texture { animation: water-swell 22s ease-in-out infinite alternate; will-change: transform; }
+.ocean-reflection { opacity: .13; mix-blend-mode: screen; animation: water-shimmer 31s ease-in-out infinite alternate; will-change: transform; }
+.ocean-light { position: absolute; inset: -15%; background: radial-gradient(ellipse at 73% 34%, #287bd430, transparent 52%); animation: water-light 18s ease-in-out infinite alternate; }
+.ocean-backdrop::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #031120bd 0%, #04172d80 43%, #06182d38 75%), linear-gradient(0deg, #03132666, transparent 50%); }
+@keyframes water-swell { from { transform: translate3d(-1.8%, -1%, 0) scale(1.025) rotate(-.8deg); } to { transform: translate3d(1.8%, 1.2%, 0) scale(1.08) rotate(.8deg); } }
+@keyframes water-shimmer { from { transform: translate3d(2%, 1.4%, 0) scale(1.06); opacity: .07; } to { transform: translate3d(-2%, -1%, 0) scale(1.015); opacity: .19; } }
+@keyframes water-light { from { transform: translate3d(-3%, -2%, 0); opacity: .4; } to { transform: translate3d(3%, 3%, 0); opacity: 1; } }
+.motion-paused .ocean-texture, .motion-paused .ocean-reflection, .motion-paused .ocean-light, .motion-paused .in-action::before { animation-play-state: paused; }
+
+::selection { background: #d5ad60; color: #06182d; }
+:focus-visible { outline-color: #e5bd68; }
+.preview-bar { background: #041426c9; border-bottom: 1px solid #88acd51c; color: #bdcfdf; }
+.preview-bar > span:first-child { color: #dec18c; }
+.motion-toggle { border: 1px solid #98b2cc45; border-radius: 3px; background: #10283d; padding: 3px 9px; color: #e4d2ae; font-size: 9px; line-height: 1.5; letter-spacing: .02em; }
+.motion-toggle:hover { background: #194469; }
+.site-header { border-color: #b6cde02e; }
+.site-header nav { color: #d7e4ec; }
+.site-header nav > a:not(.button):hover { color: #e9c371; }
+.heritage-brand img { filter: drop-shadow(0 3px 7px #0008); }
+.tiny-star, .hand-star { color: #d5b274; }
+.hero { min-height: 690px; }
+.hero h1 { color: #f1e9d7; text-shadow: 0 3px 35px #0010228a; }
+.hero h1 .underlined { color: #e9c16a; }
+.underlined svg { stroke: #c89751; }
+.hero-description { color: #c1d1df; font-size: 16px; text-shadow: 0 1px 8px #001021; }
+.eyebrow { color: #d4bf91; }
+.live-dot { background: #e8b65b; box-shadow: 0 0 10px #dcac5340; }
+.logo-motto { color: #e1e5df; text-shadow: 0 2px 16px #000a; }
+.logo-motto strong { color: #e6c279; }
+.hero-brand-logo { filter: drop-shadow(0 20px 30px #0008); }
+.hero-footnote { color: #b5c7d8; }
+.button, .button-light { background: #e0b762; border-color: #e8c57d; color: #091c2d; box-shadow: 0 4px 20px #0002; }
+.button:hover, .button-light:hover { background: #f0cf88; color: #06182d; border-color: #f0cf88; }
+.text-link { color: #e8d4a6; }
+.ticker { background: #071d33d9; border-color: #acbdce33; color: #dac590; }
+.ticker i { color: #7eab9f; }
+.ticker-outline { -webkit-text-stroke-color: #9fb9c8; }
+
+.show-card { border: 1px solid #b0c9d036; border-radius: 7px; box-shadow: 0 12px 35px #0003; overflow: hidden; }
+.geography-card { background: linear-gradient(145deg, #14394fe8, #0a223beF); }
+.biology-card { background: linear-gradient(145deg, #293f3aeF, #142c30f5); }
+.art-card { background: linear-gradient(145deg, #4a3835f0, #292b37f5); }
+.show-card:hover { border-color: #d2b6799e; box-shadow: 0 17px 40px #0005; }
+.card-top { color: #c6cfbc; }
+.round-arrow { border-color: #b7bd9b70; color: #e2c88f; }
+.card-copy h3 { color: #f2e1b9; }
+.card-copy p { color: #c1cec9; }
+.card-link { border-color: #c1c6b236; color: #e3ca91; }
+.new-label { color: #e4d7b5; border-color: #c2bd945c; }
+.card-orbit { border-color: #b6bb8a75; }
+.specimen-label { color: #bec9ac; }
+.show-tabs button { color: #bbcfdb; }
+.show-tabs button.active { color: #f1cf86; border-color: #d8b364; }
+.show-tabs > span { color: #9bb6c9; }
+.show-panel li span { color: #d1ad6d; }
+.show-panel > div > p:not(.eyebrow) { color: #c0d0db; }
+
+.in-action { background: linear-gradient(120deg, #092b57ed, #071c37f5); border-block: 1px solid #6d91b43b; color: var(--ink); }
+.in-action::before { opacity: .12; }
+.action-photo > img { border: 1px solid #b7c1b13d; box-shadow: 0 16px 40px #0004; }
+.photo-label { background: #0a2138ef; color: #e5d6b5; border: 1px solid #a8c0cb38; }
+.action-copy .eyebrow { color: #d4bf91; }
+.action-copy em { color: #ebc87e; }
+.action-copy p:not(.eyebrow), .video-caption { color: #bdcedd; }
+.quiz-box { background: #091d33eF; border-color: #829db954; box-shadow: 7px 7px 0 #05132999, 0 20px 50px #0002; }
+.quiz-top { color: #d8c493; }
+.quiz-topic { background: #132d46; }
+.quiz-topic button { color: #c4d0d9; }
+.quiz-topic button.active { background: #d0ad68; color: #071c30; }
+.quiz-progress { color: #a9c1d2; }
+.quiz-progress i { background: #375370; }
+.quiz-progress i.filled { background: #d9b26d; }
+.quiz-answers button { border-color: #6e8ea452; color: #d8e3e9; background: #10283e90; }
+.quiz-answers button > span { border-color: #a5bcce60; color: #c8d7df; }
+.quiz-answers button:hover:not(:disabled) { background: #1b3b56; border-color: #cbb276; }
+.quiz-answers button.correct { background: #244837; border-color: #8aab7f; color: #e7efd6; }
+.quiz-answers button.incorrect { background: #59392e; border-color: #c08e6a; color: #f1d8c4; }
+.quiz-feedback b { color: #e4c485; }
+.challenge-doodle > span { color: #d4aa65; }
+.challenge-doodle > i { color: #a2b58e; }
+.challenge-doodle > svg { stroke: #a4bac9; }
+.artwork-frame { background: #183047; border: 1px solid #b4aa844a; box-shadow: 0 12px 30px #0005; }
+.artwork-frame > span { color: #c5c8b6; }
+.neal-portrait { border-color: #263e4b; box-shadow: 0 12px 30px #0006; }
+.meet-note { color: #dfc287; }
+.meet-copy .meet-next { color: #e5cd99; }
+.meet-copy .serif-line { color: #e5c584; }
+.planning { background: #06192bd9; border-block: 1px solid #7595ad2e; }
+.faq details, .faq details:first-child { border-color: #7b9aac43; }
+.faq summary { color: #e4dec9; }
+.faq summary > span { color: #d4af68; }
+.booking { background: linear-gradient(120deg, #0e3251eF, #0a213bd9); border-bottom: 1px solid #7c9db438; }
+.booking h2 .serif-line { color: #e4bd70; }
+.booking-copy > p:not(.eyebrow) { color: #c1d1db; }
+.email-link { color: #e0c28a; border-color: #b89c626b; }
+.booking-doodle { color: #bd9c63; }
+.inquiry-form { background: #071a2deb; border: 1px solid #7193ab54; box-shadow: 0 18px 50px #0004; }
+.inquiry-form h3 { color: #e8ddc2; }
+.inquiry-form label { color: #c8d5dd; }
+.inquiry-form input, .inquiry-form select, .inquiry-form textarea { background: #102941; border-color: #6e91aa66; color: #e0e9ee; }
+.inquiry-form input::placeholder, .inquiry-form textarea::placeholder { color: #9bb2c5; }
+.inquiry-form input:focus, .inquiry-form select:focus, .inquiry-form textarea:focus { border-color: #e3bd70; }
+.form-note, .footer-bottom { color: #a0b6c7; }
+.footer-main p { color: #e0c896; }
+.skip-link { background: #e4be72; color: #06182d; }
+.menu-toggle { border-color: #8ba8bd70; color: #ebd4a2; background: #091e33aa; }
+
+@media (max-width: 900px) {
+  .hero-description { font-size: 14px; }
+}
+@media (max-width: 680px) {
+  .hero { min-height: 0; }
+  .site-header nav { background: #071b2f; border-color: #8ca8bf66; box-shadow: 0 16px 25px #0005; }
+  .preview-bar > span:last-child { gap: 8px; }
+  .motion-toggle { font-size: 7px; padding: 3px 5px; }
+  .ocean-texture, .ocean-reflection { background-position: 60% center; }
+  .ocean-reflection { display: none; }
+  .hero h1 { font-size: clamp(57px, 14.5vw, 87px); }
+  .show-card { border-radius: 6px; }
+}
+@media (max-width: 360px) {
+  .preview-bar > span:last-child { font-size: 6px; gap: 6px; }
+  .motion-toggle { font-size: 6px; padding: 3px 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ocean-texture, .ocean-reflection, .ocean-light, .in-action::before { animation: none !important; }
+  .motion-toggle { display: none; }
+}

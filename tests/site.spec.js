@@ -1,8 +1,16 @@
 import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
+  const startupErrors = [];
+  page.on('pageerror', error => startupErrors.push(error.message));
+  page.on('requestfailed', request => startupErrors.push(`${request.url()}: ${request.failure()?.errorText}`));
   await page.goto('./');
-  await expect(page.getByRole('heading', { name: 'Big ideas. Drawn live.' })).toBeVisible();
+  try {
+    await expect(page.getByRole('heading', { name: 'Big ideas. Drawn live.' })).toBeVisible();
+  } catch (error) {
+    console.error('Startup diagnostics:', { url: page.url(), startupErrors, body: (await page.locator('body').innerText()).slice(0, 600) });
+    throw error;
+  }
 });
 
 test('all local images and fonts load without browser errors', async ({ page }) => {
@@ -14,9 +22,12 @@ test('all local images and fonts load without browser errors', async ({ page }) 
     document.querySelectorAll('img').forEach(img => img.loading = 'eager');
     await Promise.all([...document.images].map(img => img.decode()));
     await document.fonts.ready;
-    return { images: [...document.images].every(img => img.naturalWidth > 0), fonts: [...document.fonts].every(font => font.status === 'loaded') };
+    const ocean = new Image();
+    ocean.src = new URL('public/ocean-background.png', document.baseURI).href;
+    await ocean.decode();
+    return { images: [...document.images].every(img => img.naturalWidth > 0), fonts: [...document.fonts].every(font => font.status === 'loaded'), ocean: ocean.naturalWidth > 0 };
   });
-  expect(assets).toEqual({ images: true, fonts: true });
+  expect(assets).toEqual({ images: true, fonts: true, ocean: true });
   expect(errors).toEqual([]);
 });
 
@@ -92,4 +103,22 @@ test('mobile navigation closes after selection and layouts do not overflow', asy
   await page.locator('#main-nav').getByRole('link', { name: 'Meet Neal' }).click();
   await expect(page.locator('#main-nav')).toBeHidden();
   await expect(page).toHaveURL(/#meet-neal$/);
+});
+
+test('ocean motion runs, pauses, resumes, and respects reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const ocean = page.locator('.ocean-texture');
+  await expect(ocean).toHaveCSS('animation-play-state', 'running');
+  const initial = await ocean.evaluate(el => getComputedStyle(el).transform);
+  await expect.poll(() => ocean.evaluate(el => getComputedStyle(el).transform)).not.toBe(initial);
+  await page.getByRole('button', { name: 'Pause ocean animation' }).click();
+  await expect(ocean).toHaveCSS('animation-play-state', 'paused');
+  const paused = await ocean.evaluate(el => getComputedStyle(el).transform);
+  await page.waitForTimeout(250); // Verify that elapsed time no longer advances the water.
+  expect(await ocean.evaluate(el => getComputedStyle(el).transform)).toBe(paused);
+  await page.getByRole('button', { name: 'Resume ocean animation' }).click();
+  await expect(ocean).toHaveCSS('animation-play-state', 'running');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(ocean).toHaveCSS('animation-name', 'none');
+  await expect(page.locator('.motion-toggle')).toBeHidden();
 });

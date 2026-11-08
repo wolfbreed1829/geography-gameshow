@@ -8,7 +8,7 @@
 
 ## What is here
 
-- A responsive editorial design with cobalt-blue ocean effects, earthy land tones, and custom globe, botanical, and drawing illustrations. Ocean motion respects reduced-motion preferences.
+- A responsive dark-ocean design with a custom photographic water backdrop, drifting currents, warm gold accents, earthy land tones, and custom illustrations. Ocean motion can be paused and respects reduced-motion preferences.
 - Neal’s actual classroom photos and artwork from his existing website.
 - Geography, biology, and art selectors with distinct program information.
 - Three playable, three-question challenges with scoring, feedback, and replay.
@@ -44,7 +44,7 @@ The output is `dist/`. Relative asset URLs support both a GitHub Pages project p
 | --- | --- |
 | `src/main.rs` | Page components, program selection, inquiry builder |
 | `src/quiz.rs` | Quiz questions, feedback, score, and reset behavior |
-| `style.css` | Responsive styles, type, layout, reduced-motion rules |
+| `style.css`, `ocean.css` | Responsive layout, dark ocean identity, motion, and accessibility |
 | `public/` | Images, custom SVG illustrations, fonts and licenses |
 | `.github/workflows/deploy.yml` | Reproducible Rust build and GitHub Pages deployment |
 | `docs/SITE-REVIEW.md` | Review findings and recommended next steps |
@@ -70,7 +70,7 @@ npx playwright install chromium
 npm test
 ```
 
-Set `PLAYWRIGHT_CHANNEL=msedge` to use an installed Microsoft Edge browser, or `PREVIEW_URL` to test another deployment. The seven browser checks cover image/font loading, runtime errors, program tabs and keyboard focus, all three quizzes, email validation/encoding, menu behavior, and overflow at five viewport widths.
+Set `PLAYWRIGHT_CHANNEL=msedge` to use an installed Microsoft Edge browser, or `PREVIEW_URL` to test another deployment. The eight browser checks cover image/font loading, runtime errors, program tabs and keyboard focus, all three quizzes, email validation/encoding, menu behavior, overflow at five viewport widths, and motion pause/resume/reduced-motion behavior.
 
 ## Before a full public launch
 
