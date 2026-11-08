@@ -25,10 +25,14 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Check formatting
         run: cargo fmt --all -- --check
-      - name: Build deployment tools from Rust packages
+      - name: Use cached deployment tools or build from Rust packages
         run: |
-          cargo install trunk --version 0.21.14 --locked
-          cargo install wasm-bindgen-cli --version 0.2.130 --locked
+          if [ "$(trunk --version 2>/dev/null || true)" != "trunk 0.21.14" ]; then
+            cargo install trunk --version 0.21.14 --locked --force
+          fi
+          if [ "$(wasm-bindgen --version 2>/dev/null || true)" != "wasm-bindgen 0.2.130" ]; then
+            cargo install wasm-bindgen-cli --version 0.2.130 --locked --force
+          fi
       - name: Install wasm-opt from Ubuntu
         run: |
           sudo apt-get update
