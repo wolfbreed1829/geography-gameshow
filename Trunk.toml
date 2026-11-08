@@ -9,3 +9,8 @@ addresses = ["127.0.0.1"]
 port = 8080
 open = false
 
+[[hooks]]
+stage = "post_build"
+command = "python"
+command_arguments = ["scripts/build-pages.py"]
+

@@ -55,7 +55,7 @@ body { background: #06182d; }
 
 .show-card { border: 1px solid #b0c9d036; border-radius: 7px; box-shadow: 0 12px 35px #0003; overflow: hidden; }
 .geography-card { background: linear-gradient(145deg, #14394fe8, #0a223beF); }
-.biology-card { background: linear-gradient(145deg, #293f3aeF, #142c30f5); }
+.anatomy-card { background: linear-gradient(145deg, #293f3aeF, #142c30f5); }
 .art-card { background: linear-gradient(145deg, #4a3835f0, #292b37f5); }
 .show-card:hover { border-color: #d2b6799e; box-shadow: 0 17px 40px #0005; }
 .card-top { color: #c6cfbc; }

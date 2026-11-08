@@ -31,22 +31,22 @@ const QUESTIONS: [[Question; 3]; 3] = [
     ],
     [
         Question {
-            prompt: "What do plants use as an energy source to make their food?",
-            choices: ["Sunlight", "Wind", "Sound"],
+            prompt: "Which organ pumps blood around the body?",
+            choices: ["The heart", "The lungs", "The stomach"],
             answer: 0,
-            explanation: "Plants capture light energy through photosynthesis to make sugars from water and carbon dioxide.",
+            explanation: "The heart is a muscle that pumps blood, carrying oxygen and nutrients around the body.",
         },
         Question {
-            prompt: "What is the basic unit of a living thing?",
-            choices: ["A pebble", "A cell", "A crystal"],
+            prompt: "Which bones protect the brain?",
+            choices: ["The ribs", "The skull", "The finger bones"],
             answer: 1,
-            explanation: "Cells are the basic units of life. Some organisms have just one; others have trillions.",
+            explanation: "The bones of the skull form a protective case around the brain.",
         },
         Question {
-            prompt: "What do bees often carry from flower to flower?",
-            choices: ["Seeds", "Soil", "Pollen"],
+            prompt: "Which organs take in oxygen when you breathe?",
+            choices: ["The kidneys", "The muscles", "The lungs"],
             answer: 2,
-            explanation: "Bees transfer pollen as they visit flowers, helping many flowering plants reproduce.",
+            explanation: "In the lungs, oxygen from the air moves into the blood, and carbon dioxide moves out to be breathed away.",
         },
     ],
     [
@@ -86,8 +86,8 @@ pub fn Quiz() -> impl IntoView {
     };
     view! {
         <section class="challenge wrap section-space" id="challenge" aria-labelledby="challenge-title">
-            <div class="challenge-copy"><p class="eyebrow">"YOUR TURN / A LITTLE BRAIN SPARK"</p><h2 id="challenge-title">"Curiosity looks"<br/>"good on you."</h2><p>"Step into the spirit of the show. Pick a world, take three questions, and see what you discover."</p><div class="challenge-doodle" aria-hidden="true"><span>"?"</span><i>"✳"</i><svg viewBox="0 0 180 100"><path d="M8 25C140-10 10 90 150 68m-17-17 20 18-25 10"/></svg></div><span class="quiz-caption">"A small taste of discovery. Not a school assessment."</span></div>
-            <div class="quiz-box"><div class="quiz-top"><span>"THE CURIOSITY CHALLENGE"</span><span>"✳"</span></div><div class="quiz-topic" role="group" aria-label="Challenge subject">{["Geography", "Biology", "Art"].into_iter().enumerate().map(|(i,label)| view! { <button aria-pressed=move || (topic.get() == i).to_string() class:active=move || topic.get() == i on:click=move |_| {topic.set(i); reset();}>{label}</button> }).collect_view()}</div>
+            <div class="challenge-copy"><p class="eyebrow">"YOUR TURN / A LITTLE BRAIN SPARK"</p><h1 id="challenge-title">"Curiosity looks"<br/>"good on you."</h1><p>"Step into the spirit of the show. Pick a world, take three questions, and see what you discover."</p><div class="challenge-doodle" aria-hidden="true"><span>"?"</span><i>"✳"</i><svg viewBox="0 0 180 100"><path d="M8 25C140-10 10 90 150 68m-17-17 20 18-25 10"/></svg></div><span class="quiz-caption">"A small taste of discovery. Not a school assessment."</span></div>
+            <div class="quiz-box"><div class="quiz-top"><span>"THE CURIOSITY CHALLENGE"</span><span>"✳"</span></div><div class="quiz-topic" role="group" aria-label="Challenge subject">{["Geography", "Anatomy", "Art"].into_iter().enumerate().map(|(i,label)| view! { <button aria-pressed=move || (topic.get() == i).to_string() class:active=move || topic.get() == i on:click=move |_| {topic.set(i); reset();}>{label}</button> }).collect_view()}</div>
             <Show when=move || !finished.get() fallback=move || view! {
                 <div class="quiz-result" role="status"><span class="result-star">"✳"</span><p class="eyebrow">"THAT’S THE SPIRIT!"</p><h3>{move || format!("{} out of 3.\nKeep wondering.",score.get())}</h3><p>"Every question is the start of another discovery. Try a different subject, or take another trip through this one."</p><button class="button" on:click=move |_| reset()>"Play again"<span>"↻"</span></button></div>
             }>

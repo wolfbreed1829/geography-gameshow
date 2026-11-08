@@ -1,6 +1,6 @@
 # The Geography Gameshow
 
-**Big ideas. Drawn live.** A fresh website concept for Neal Nichols Jr., bringing the original Geography Gameshow together with proposed biology and art shows.
+**Big ideas. Drawn live.** A website concept for Neal Nichols Jr., bringing the original Geography Gameshow together with proposed Anatomy and Art shows.
 
 [Open the live preview](https://wolfbreed1829.github.io/geography-gameshow/) · [Read the site review](docs/SITE-REVIEW.md)
 
@@ -10,17 +10,19 @@
 
 - A responsive dark-ocean design with a custom photographic water backdrop, drifting currents, warm gold accents, earthy land tones, and custom illustrations. Ocean motion can be paused and respects reduced-motion preferences.
 - Neal’s actual classroom photos and artwork from his existing website.
-- Geography, biology, and art selectors with distinct program information.
+- A compact homepage and a Programs hub linking to separate Geography, Anatomy, and Art pages.
+- Separate pages for Meet Neal, the show in action, the challenge, school visit information, and inquiries.
 - Three playable, three-question challenges with scoring, feedback, and replay.
-- An accessible mobile menu, keyboard-operable program tabs, FAQs, and reduced-motion support.
-- A validated inquiry form that prepares a reviewable email. It **does not send, store, or submit inquiries to a backend**. The visitor sends through their own email app.
+- An accessible mobile menu, native navigation links, expandable planning information, and reduced-motion support. The ocean pause setting follows visitors between pages for the session.
+- An international inquiry form with school name, administrator/teacher name, email, phone, school address, country/territory, program, and optional details. It validates and displays a local review only. It **does not send, save, or submit inquiries**, and has no email handoff or form backend.
+- School visit information adapted from Neal’s supplied school program document. Pricing, payment terms, deposits, and cancellation fees are excluded; the original PDF is not hosted.
 - GitHub Actions builds the Rust application and publishes it to GitHub Pages.
 
-This is a review concept. Biology and the new art show are clearly marked as concepts in development. Existing geography program information comes from the current website and needs Neal’s confirmation before a production launch. No invented testimonials, prices, availability, or endorsements are included.
+This is a review concept. Anatomy and the new Art show are clearly marked as concepts in development. Geography program information comes from the original website and the supplied school program document. No prices, invented testimonials, availability, or endorsements are included.
 
 ## Run locally
 
-Install a current stable Rust toolchain, the `wasm32-unknown-unknown` target, and [Trunk](https://trunk-rs.github.io/trunk/).
+Install a current stable Rust toolchain, the `wasm32-unknown-unknown` target, [Trunk](https://trunk-rs.github.io/trunk/), and Python 3 (used by the post-build page generator).
 
 ```sh
 rustup target add wasm32-unknown-unknown
@@ -36,15 +38,20 @@ cargo check --locked --target wasm32-unknown-unknown
 trunk build --release --locked --public-url ./
 ```
 
-The output is `dist/`. Relative asset URLs support both a GitHub Pages project path and a root-domain deployment. Fonts and visual assets are hosted locally. No third-party analytics or embedded tracking is included.
+The output is `dist/`. A Trunk post-build hook emits ten HTML entry files with page-specific metadata, sharing the same hashed Rust/WASM and stylesheets. Native `.html` navigation supports direct links, refresh, and browser history on GitHub Pages without rewrite rules. Relative asset URLs support both a project path and a root-domain deployment. Fonts and visual assets are hosted locally. No third-party analytics or embedded tracking is included.
 
 ## Structure
 
 | File | Purpose |
 | --- | --- |
-| `src/main.rs` | Page components, program selection, inquiry builder |
+| `src/main.rs` | Shared navigation, page selection, ocean motion preference |
+| `src/pages.rs` | Compact homepage, show in action, and Meet Neal |
+| `src/programs.rs` | Programs hub and separate program detail pages |
+| `src/planning.rs` | School visit information from the supplied document |
+| `src/inquiry.rs` | International inquiry fields and local preview |
 | `src/quiz.rs` | Quiz questions, feedback, score, and reset behavior |
-| `style.css`, `ocean.css` | Responsive layout, dark ocean identity, motion, and accessibility |
+| `style.css`, `ocean.css`, `pages.css` | Responsive page layouts, dark ocean identity, motion, and accessibility |
+| `scripts/build-pages.py` | Standalone HTML entries and metadata for GitHub Pages |
 | `public/` | Images, custom SVG illustrations, fonts and licenses |
 | `.github/workflows/deploy.yml` | Reproducible Rust build and GitHub Pages deployment |
 | `docs/SITE-REVIEW.md` | Review findings and recommended next steps |
@@ -70,7 +77,7 @@ npx playwright install chromium
 npm test
 ```
 
-Set `PLAYWRIGHT_CHANNEL=msedge` to use an installed Microsoft Edge browser, or `PREVIEW_URL` to test another deployment. The eight browser checks cover image/font loading, runtime errors, program tabs and keyboard focus, all three quizzes, email validation/encoding, menu behavior, overflow at five viewport widths, and motion pause/resume/reduced-motion behavior.
+Set `PLAYWRIGHT_CHANNEL=msedge` to use an installed Microsoft Edge browser, or `PREVIEW_URL` to test another deployment. Browser checks cover assets, direct page URLs and internal links, a short homepage, all three quizzes, international inquiry validation and safe local review, the school information, mobile navigation, five viewport widths, and persistent motion pause/reduced-motion behavior.
 
 ## Before a full public launch
 
