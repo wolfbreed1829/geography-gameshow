@@ -50,7 +50,7 @@ test('short homepage leads to separate program pages with working refresh and ba
 test('every page loads directly with its own title, valid links, and no published prices', async ({ page, request }) => {
   test.setTimeout(90000);
   const internalLinks = new Set();
-  for (const slug of ['index', 'programs', 'geography', 'anatomy', 'art', 'in-action', 'meet-neal', 'challenge', 'planning', 'booking']) {
+  for (const slug of ['index', 'programs', 'geography', 'anatomy', 'art', 'in-action', 'meet-neal', 'challenge', 'planning', 'booking', 'references']) {
     const response = await page.goto(`${slug}.html`);
     expect(response.status()).toBe(200);
     await expect(page.locator('main h1')).toHaveCount(1);
@@ -142,7 +142,7 @@ test('school visit information is readable on the page without the PDF', async (
 
 test('mobile navigation closes after selection and layouts do not overflow', async ({ page }) => {
   test.setTimeout(60000);
-  for (const slug of ['index', 'programs', 'anatomy', 'planning', 'booking', 'challenge', 'meet-neal', 'in-action']) {
+  for (const slug of ['index', 'programs', 'anatomy', 'planning', 'booking', 'challenge', 'meet-neal', 'in-action', 'references']) {
   await page.goto(`${slug}.html`);
   await expect(page.locator('main h1')).toBeVisible();
   for (const width of [320, 390, 768, 1024, 1440]) {
@@ -160,6 +160,31 @@ test('mobile navigation closes after selection and layouts do not overflow', asy
   await expect(page.locator('#main-nav')).toBeHidden();
   await expect(page).toHaveURL(/meet-neal.html$/);
   await expect(page.locator('main h1')).toContainText('Meet Neal');
+});
+
+test('references are text-only, deduplicated, and grouped by source type', async ({ page }) => {
+  await page.locator('#main-nav').getByRole('link', { name: 'References', exact: true }).click();
+  await expect(page).toHaveURL(/references.html$/);
+  await expect(page.locator('main h1')).toHaveText('References & press.');
+  await expect(page.locator('main img, main iframe, main blockquote')).toHaveCount(0);
+  await expect(page.locator('.reference-entry')).toHaveCount(11);
+  await expect(page.getByRole('heading', { name: 'Sea Girt Elementary School', exact: true })).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'CIS', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'South', exact: true })).toBeVisible();
+  const filters = page.getByRole('group', { name: 'Browse references' });
+  await filters.getByRole('button', { name: /Community/ }).click();
+  await expect(page.locator('.reference-entry')).toHaveCount(3);
+  await expect(page.getByRole('heading', { name: 'Wellfleet Rec', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Jefferey Clayton', exact: true })).toBeVisible();
+  const press = filters.getByRole('button', { name: /In the press/ });
+  await press.focus();
+  await page.keyboard.press('Enter');
+  await expect(press).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.reference-entry')).toHaveCount(3);
+  await expect(page.getByRole('heading', { name: 'Cook Islands News', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Digo Dristi', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Read the newspaper archive/ })).toHaveAttribute('href', 'https://www.nomenugget.net/archives/2010/9.23.10%20nn.pdf#page=7');
+  await expect(page.locator('main')).not.toContainText('School Instagram');
 });
 
 test('ocean motion runs, pauses, resumes, and respects reduced motion', async ({ page }) => {

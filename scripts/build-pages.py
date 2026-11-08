@@ -19,6 +19,7 @@ pages = {
     "meet-neal": ("Meet Neal", "Meet Neal Nichols Jr., artist, traveler, educator, and creator of The Geography Gameshow."),
     "challenge": ("The Curiosity Challenge", "Try three-question Geography, Anatomy, and Art challenges inspired by the spirit of the show."),
     "planning": ("Plan a Visit", "Plan a worldwide school visit: scheduling, room setup, student participation, and school media."),
+    "references": ("References & Press", "Explore school references, community mentions, and press coverage of Neal Nichols Jr. and The Geography Gameshow."),
     "booking": ("School Inquiries", "An international school inquiry form for Geography, Anatomy, and Art programs with Neal Nichols Jr."),
 }
 for slug, (title, description) in pages.items():

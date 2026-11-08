@@ -5,6 +5,7 @@ mod pages;
 mod planning;
 mod programs;
 mod quiz;
+mod references;
 
 #[derive(Clone, Copy, PartialEq)]
 enum Page {
@@ -17,6 +18,7 @@ enum Page {
     MeetNeal,
     Challenge,
     Planning,
+    References,
     Booking,
 }
 
@@ -34,6 +36,7 @@ impl Page {
             "meet-neal.html" => Self::MeetNeal,
             "challenge.html" => Self::Challenge,
             "planning.html" => Self::Planning,
+            "references.html" => Self::References,
             "booking.html" => Self::Booking,
             _ => Self::Home,
         }
@@ -78,6 +81,7 @@ fn App() -> impl IntoView {
                     <a href="index.html" aria-current=(page == Page::Home).then_some("page")>"Home"</a>
                     <a href="programs.html" class:active=page.is_program() aria-current=(page == Page::Programs).then_some("page")>"Programs"</a>
                     <a href="meet-neal.html" aria-current=(page == Page::MeetNeal).then_some("page")>"Meet Neal"</a>
+                    <a href="references.html" aria-current=(page == Page::References).then_some("page")>"References"</a>
                     <details class="explore-menu"><summary class:active=matches!(page, Page::InAction | Page::Challenge | Page::Planning)>"Explore"<span aria-hidden="true">"⌄"</span></summary><div class="explore-links">
                         <a href="in-action.html" aria-current=(page == Page::InAction).then_some("page")>"The show in action"<span>"↗"</span></a>
                         <a href="challenge.html" aria-current=(page == Page::Challenge).then_some("page")>"Try a challenge"<span>"↗"</span></a>
@@ -97,11 +101,12 @@ fn App() -> impl IntoView {
                     Page::MeetNeal => view! { <pages::MeetNeal/> }.into_any(),
                     Page::Challenge => view! { <quiz::Quiz/> }.into_any(),
                     Page::Planning => view! { <planning::Planning/> }.into_any(),
+                    Page::References => view! { <references::References/> }.into_any(),
                     Page::Booking => view! { <inquiry::Inquiry/> }.into_any(),
                 }}
             </main>
             <footer class="wrap compact-footer">
-                <div class="footer-main"><p>"A whole world of curiosity."</p><nav aria-label="Footer navigation"><a href="programs.html">"Programs"</a><a href="planning.html">"Plan a visit"</a><a href="booking.html">"Inquiries"</a></nav></div>
+                <div class="footer-main"><p>"A whole world of curiosity."</p><nav aria-label="Footer navigation"><a href="programs.html">"Programs"</a><a href="references.html">"References"</a><a href="planning.html">"Plan a visit"</a><a href="booking.html">"Inquiries"</a></nav></div>
                 <div class="footer-bottom"><span>"© 2026 The Geography Gameshow · Neal Nichols Jr."</span><span>"Worldwide school visits · Anatomy & Art in development"</span></div>
             </footer>
         </div>

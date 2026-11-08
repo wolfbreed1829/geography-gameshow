@@ -12,6 +12,7 @@
 - Neal’s actual classroom photos and artwork from his existing website.
 - A compact homepage and a Programs hub linking to separate Geography, Anatomy, and Art pages.
 - Separate pages for Meet Neal, the show in action, the challenge, school visit information, and inquiries.
+- A text-only References & Press page, with school, community, and press groups drawn from the supplied collection. No new photos or scans are published. Evidence is recorded in [docs/REFERENCES.md](docs/REFERENCES.md).
 - Three playable, three-question challenges with scoring, feedback, and replay.
 - An accessible mobile menu, native navigation links, expandable planning information, and reduced-motion support. The ocean pause setting follows visitors between pages for the session.
 - An international inquiry form with school name, administrator/teacher name, email, phone, school address, country/territory, program, and optional details. It validates and displays a local review only. It **does not send, save, or submit inquiries**, and has no email handoff or form backend.
@@ -38,7 +39,7 @@ cargo check --locked --target wasm32-unknown-unknown
 trunk build --release --locked --public-url ./
 ```
 
-The output is `dist/`. A Trunk post-build hook emits ten HTML entry files with page-specific metadata, sharing the same hashed Rust/WASM and stylesheets. Native `.html` navigation supports direct links, refresh, and browser history on GitHub Pages without rewrite rules. Relative asset URLs support both a project path and a root-domain deployment. Fonts and visual assets are hosted locally. No third-party analytics or embedded tracking is included.
+The output is `dist/`. A Trunk post-build hook emits eleven HTML entry files with page-specific metadata, sharing the same hashed Rust/WASM and stylesheets. Native `.html` navigation supports direct links, refresh, and browser history on GitHub Pages without rewrite rules. Relative asset URLs support both a project path and a root-domain deployment. Fonts and visual assets are hosted locally. No third-party analytics or embedded tracking is included.
 
 ## Structure
 
@@ -49,6 +50,7 @@ The output is `dist/`. A Trunk post-build hook emits ten HTML entry files with p
 | `src/programs.rs` | Programs hub and separate program detail pages |
 | `src/planning.rs` | School visit information from the supplied document |
 | `src/inquiry.rs` | International inquiry fields and local preview |
+| `src/references.rs` | Text-only school, community, and press directory |
 | `src/quiz.rs` | Quiz questions, feedback, score, and reset behavior |
 | `style.css`, `ocean.css`, `pages.css` | Responsive page layouts, dark ocean identity, motion, and accessibility |
 | `scripts/build-pages.py` | Standalone HTML entries and metadata for GitHub Pages |
