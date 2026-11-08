@@ -33,10 +33,12 @@ test('all local images and fonts load without browser errors', async ({ page }) 
 });
 
 test('short homepage leads to separate program pages with working refresh and back', async ({ page }) => {
+  await expect(page.locator('link#coastal-preload')).toHaveAttribute('as', 'image');
   await expect(page.locator('.show-card, .quiz-box, .inquiry-form')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(1050);
   await page.locator('#main-nav').getByRole('link', { name: 'Programs', exact: true }).click();
   await expect(page).toHaveURL(/programs.html$/);
+  await expect(page.locator('link#coastal-preload')).toHaveCount(0);
   await expect(page.locator('.show-card')).toHaveCount(3);
   await page.locator('.anatomy-card').click();
   await expect(page).toHaveURL(/anatomy.html$/);

@@ -4,7 +4,9 @@ export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   workers: 2,
-  expect: { timeout: 15000 },
+  // Public previews include uncached CDN transfers; local checks remain fast.
+  timeout: process.env.PREVIEW_URL ? 90000 : 30000,
+  expect: { timeout: process.env.PREVIEW_URL ? 45000 : 15000 },
   reporter: 'list',
   use: {
     baseURL: process.env.PREVIEW_URL || 'http://127.0.0.1:8080',

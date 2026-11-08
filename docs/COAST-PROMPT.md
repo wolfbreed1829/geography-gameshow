@@ -4,6 +4,7 @@ Created with the built-in image generation tool for the requested homepage pan. 
 
 - Original selected asset: `public/wellfleet-coast.png` (887 × 1774).
 - Website asset: `public/wellfleet-coast.webp`, quality 88 WebP encoding at the same dimensions (approximately 300 KB).
+- The homepage preloads the panorama immediately, in parallel with the Rust/WASM app. Interior pages omit this preload.
 - The webpage pans the entire image continuously, from the sky and waterfront through the cobalt water to the sand. The physical sign spells **WELLFLEET**, with **MASSACHUSETTS** beneath it.
 - A 22-second opening runs once per browser session. Skip and replay controls are provided; the existing ocean-motion control pauses the pan. Reduced-motion visitors see a still scene and immediate homepage content. Keyboard focus on the main content also completes the opening immediately.
 

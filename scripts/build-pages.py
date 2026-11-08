@@ -25,6 +25,9 @@ pages = {
 for slug, (title, description) in pages.items():
     title = escape(f"{title} | The Geography Gameshow")
     document = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", shell)
+    # Only the homepage uses the coastal opening. Start its image before WASM,
+    # without making visitors to other pages download an unused panorama.
+    document = re.sub(r'<link\b[^>]*\bid="coastal-preload"[^>]*>', "", document)
     document = re.sub(r'<meta name="description" content="[^"]*"\s*/?>', f'<meta name="description" content="{escape(description, quote=True)}">', document)
     document = re.sub(r'<meta property="og:title" content="[^"]*"\s*/?>', f'<meta property="og:title" content="{title}">', document)
     document = re.sub(r'<meta property="og:description" content="[^"]*"\s*/?>', f'<meta property="og:description" content="{escape(description, quote=True)}">', document)
