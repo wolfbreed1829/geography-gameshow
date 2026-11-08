@@ -9,18 +9,6 @@ fn main() {
 }
 
 #[component]
-fn GlobeMark() -> impl IntoView {
-    view! {
-        <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-            <circle cx="24" cy="24" r="19"/>
-            <ellipse cx="24" cy="24" rx="8" ry="19"/>
-            <path d="M5 24h38M9 12q15 12 30 0M9 36q15-12 30 0"/>
-            <circle class="logo-dot" cx="38" cy="10" r="5"/>
-        </svg>
-    }
-}
-
-#[component]
 fn App() -> impl IntoView {
     let menu_open = RwSignal::new(false);
     let selected = RwSignal::new(0_usize);
@@ -28,7 +16,7 @@ fn App() -> impl IntoView {
         <a class="skip-link" href="#main">"Skip to content"</a>
         <div class="preview-bar"><span>"A NEW CHAPTER IN CURIOSITY"</span><span>"A concept preview for Neal"<span class="preview-dot">"✳"</span></span></div>
         <header class="site-header wrap">
-            <a class="brand" href="#" aria-label="The Geography Gameshow home"><GlobeMark/><span><b>"THE GEOGRAPHY"</b><b>"GAMESHOW"<span class="brand-period">"®"</span></b></span></a>
+            <a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.png" alt="The Geography Gameshow" width="1536" height="1024"/></a>
             <button class="menu-toggle" aria-controls="main-nav" aria-expanded=move || menu_open.get().to_string() on:click=move |_| menu_open.update(|v| *v = !*v)>{move || if menu_open.get() { "Close −" } else { "Menu +" }}</button>
             <nav id="main-nav" class:open=move || menu_open.get() aria-label="Main navigation">
                 <a href="#shows" on:click=move |_| menu_open.set(false)>"The shows"</a>
@@ -46,14 +34,9 @@ fn App() -> impl IntoView {
                     <div class="hero-actions"><a class="button" href="#shows">"Find your next adventure"<span>"↗"</span></a><a class="text-link" href="#in-action"><span class="play-icon">"▶"</span>"See the magic"</a></div>
                     <div class="hero-footnote"><span class="hand-star">"✳"</span><span>"For curious minds."<br/><b>"And the people who inspire them."</b></span></div>
                 </div>
-                <div class="hero-art">
-                    <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-                    <span class="art-coordinate coordinate-top">"40° N · A WORLD OF WONDER"</span>
-                    <img class="hero-globe" src="public/globe.svg" alt="Illustrated globe with cobalt-blue oceans, subtle flowing currents, and earthy green continents" fetchpriority="high" width="540" height="540"/>
-                    <div class="curiosity-stamp"><span>"STAY"</span><b>"curious."</b><span>"THERE’S MORE TO EXPLORE"</span></div>
-                    <span class="hero-spark spark-one" aria-hidden="true">"✳"</span><span class="hero-spark spark-two" aria-hidden="true">"✦"</span>
-                    <a class="photo-note" href="#in-action"><span class="tape"></span><img src="public/neal-live.png" alt="Neal draws a map live for a classroom of students" width="700" height="497"/><span>"Yes, he draws it from memory."<span>"↗"</span></span></a>
-                    <span class="handwritten globe-caption">"The world is your classroom."</span>
+                <div class="hero-art brand-hero">
+                    <p class="logo-motto">"Every child deserves the opportunity to experience"<br/><strong>"the Geography Game Show"</strong></p>
+                    <img class="hero-brand-logo" src="public/geography-gameshow-logo.png" alt="The Geography Gameshow: gold lettering across a globe with cobalt-blue oceans and earthy green continents" fetchpriority="high" width="1536" height="1024"/>
                 </div>
             </section>
             <div class="ticker" aria-label="Geography, biology, and art: a world of discovery"><div><span>"GEOGRAPHY"</span><i>"✳"</i><span>"BIOLOGY"</span><i>"✳"</i><span>"ART"</span><i>"✳"</i><span class="ticker-outline">"A WORLD OF DISCOVERY"</span><i>"✳"</i></div></div>
@@ -97,7 +80,7 @@ fn App() -> impl IntoView {
             </div></div></section>
             <Booking/>
         </main>
-        <footer class="wrap"><div class="footer-main"><a class="brand" href="#"><GlobeMark/><span><b>"THE GEOGRAPHY"</b><b>"GAMESHOW"</b></span></a><p>"A whole world of curiosity."</p><a class="text-link" href="#main">"Back to the top"<span>"↑"</span></a></div><div class="footer-bottom"><span>"© 2026 The Geography Gameshow · Neal Nichols Jr."</span><span>"Design preview · Biology & art concepts subject to confirmation"</span></div></footer>
+        <footer class="wrap"><div class="footer-main"><a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.png" alt="The Geography Gameshow" width="1536" height="1024" loading="lazy"/></a><p>"A whole world of curiosity."</p><a class="text-link" href="#main">"Back to the top"<span>"↑"</span></a></div><div class="footer-bottom"><span>"© 2026 The Geography Gameshow · Neal Nichols Jr."</span><span>"Design preview · Biology & art concepts subject to confirmation"</span></div></footer>
     }
 }
 
