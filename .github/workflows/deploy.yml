@@ -25,11 +25,10 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Check formatting
         run: cargo fmt --all -- --check
-      - name: Install Trunk and wasm-bindgen
-        uses: taiki-e/install-action@v2
-        with:
-          # Match wasm-bindgen to Cargo.lock; avoid Trunk's legacy download URL.
-          tool: trunk@0.21.14,wasm-bindgen@0.2.130
+      - name: Build deployment tools from Rust packages
+        run: |
+          cargo install trunk --version 0.21.14 --locked
+          cargo install wasm-bindgen-cli --version 0.2.130 --locked
       - name: Install wasm-opt from Ubuntu
         run: |
           sudo apt-get update
