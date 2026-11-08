@@ -144,7 +144,7 @@ pub fn PhotoPage(index: usize) -> impl IntoView {
         ),
         _ => (
             "Art, up close.",
-            "A selection from Neal’s portfolio: places, textures, and the details that make us look again.",
+            "Artwork, drawing demonstrations, and a look inside Neal’s studio. Explore the details that make us look again.",
         ),
     };
     view! {

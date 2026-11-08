@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+
+const approvedPhotos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-PHOTOS.json', import.meta.url), 'utf8'));
 
 test.beforeEach(async ({ page }) => {
   const startupErrors = [];
@@ -68,8 +71,10 @@ test('every page loads directly with its own title, valid links, and no publishe
 });
 
 test('program subnavigation opens separate photo galleries with working controls and full images', async ({ page }) => {
-  test.setTimeout(90000);
-  for (const [slug, name, count] of [['geography', 'Geography', 5], ['anatomy', 'Anatomy', 1], ['art', 'Art', 7]]) {
+  test.setTimeout(process.env.PREVIEW_URL ? 300000 : 180000);
+  for (const [slug, name] of [['geography', 'Geography'], ['anatomy', 'Anatomy'], ['art', 'Art']]) {
+    const photos = approvedPhotos.filter(photo => photo.program === slug);
+    const count = photos.length;
     await page.goto(`${slug}.html`);
     const subnav = page.getByRole('navigation', { name: `${name} sections` });
     await expect(subnav.getByRole('link', { name: 'Overview' })).toHaveAttribute('aria-current', 'page');
@@ -84,7 +89,11 @@ test('program subnavigation opens separate photo galleries with working controls
     for (let i = 0; i < count; i++) {
       await image.evaluate(img => img.decode());
       sources.add(await image.getAttribute('src'));
-      expect(await image.evaluate(img => img.naturalWidth)).toBeGreaterThan(500);
+      await expect(image).toHaveAttribute('src', `public/photos/${photos[i].file}.webp`);
+      expect(await image.evaluate(img => [img.naturalWidth, img.naturalHeight])).toEqual(photos[i].size);
+      const display = await image.boundingBox();
+      expect(display.width).toBeLessThanOrEqual(photos[i].size[0]);
+      expect(display.height).toBeLessThanOrEqual(photos[i].size[1]);
       if (count > 1) {
         await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo ${i + 1} of ${count}`);
         await expect(gallery.locator('.gallery-thumbnails button').nth(i)).toHaveAttribute('aria-pressed', 'true');
@@ -103,6 +112,17 @@ test('program subnavigation opens separate photo galleries with working controls
       await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo 1 of ${count}`);
     } else {
       await expect(gallery.getByRole('button')).toHaveCount(0);
+    }
+    if (count > 8) {
+      const jump = gallery.getByRole('combobox', { name: `Browse all ${count} photos` });
+      await expect(jump.locator('option')).toHaveCount(count);
+      await jump.selectOption(String(count - 1));
+      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo ${count} of ${count}`);
+      await expect(image).toHaveAttribute('src', `public/photos/${photos[count - 1].file}.webp`);
+      await gallery.getByRole('button', { name: 'Next photo', exact: true }).click();
+      await expect(jump).toHaveValue('0');
+      await gallery.getByRole('button', { name: /^Show photo 2:/ }).click();
+      await expect(jump).toHaveValue('1');
     }
     await page.reload();
     await expect(gallery).toBeVisible();

@@ -7,7 +7,11 @@
       1290,
       708
     ],
-    "sha256": "2cb413639183c618690995a22328628a40158387828b7b1819fa7b58ba4c0949"
+    "sha256": "2cb413639183c618690995a22328628a40158387828b7b1819fa7b58ba4c0949",
+    "title": "Drawing the world",
+    "caption": "A world map takes shape, one line at a time.",
+    "alt": "Neal drawing Europe on a large hand-drawn world map",
+    "review_id": "geo71"
   },
   {
     "file": "north-america",
@@ -17,7 +21,11 @@
       672,
       745
     ],
-    "sha256": "65f418c5b42b2fe7c4360b3a9244a55fe1c90c8ab4d73c253ca7eea7958f013c"
+    "sha256": "65f418c5b42b2fe7c4360b3a9244a55fe1c90c8ab4d73c253ca7eea7958f013c",
+    "title": "From a blank page",
+    "caption": "The outline is just the beginning of the story.",
+    "alt": "Neal drawing the outline of North America on paper",
+    "review_id": "geo16"
   },
   {
     "file": "new-england",
@@ -27,7 +35,11 @@
       838,
       567
     ],
-    "sha256": "f5ea98253f8db5389be4cc78e70216d1172868ae63c978c014372b8a01b7da84"
+    "sha256": "f5ea98253f8db5389be4cc78e70216d1172868ae63c978c014372b8a01b7da84",
+    "title": "New England, in detail",
+    "caption": "Places, history, and memorable details share the same page.",
+    "alt": "Hand-drawn map of New England with landmarks, dates, and illustrations",
+    "review_id": "geo04"
   },
   {
     "file": "mexico",
@@ -37,7 +49,11 @@
       837,
       583
     ],
-    "sha256": "3bdbb24b81a9f51f2f760db096d35adca1ac44488cc9c8bfb98ad88f94e32a5e"
+    "sha256": "3bdbb24b81a9f51f2f760db096d35adca1ac44488cc9c8bfb98ad88f94e32a5e",
+    "title": "Mexico & its neighbors",
+    "caption": "A closer look at the places and stories within a map.",
+    "alt": "Colorful drawing of Mexico, Central America, and the Caribbean",
+    "review_id": "geo07"
   },
   {
     "file": "pacific-world",
@@ -47,7 +63,11 @@
       1136,
       470
     ],
-    "sha256": "0c841e2551bdd3b20334ed2a1d73e354a8ced7b55ebd52af2964a45177252bbc"
+    "sha256": "0c841e2551bdd3b20334ed2a1d73e354a8ced7b55ebd52af2964a45177252bbc",
+    "title": "A different view of the world",
+    "caption": "A Pacific-centered map invites a fresh perspective.",
+    "alt": "Neal standing beside a wide, Pacific-centered world map",
+    "review_id": "geo60"
   },
   {
     "file": "digestive-system",
@@ -57,7 +77,11 @@
       601,
       772
     ],
-    "sha256": "5cb43c3756c5d4b56a6c4003fa34119396bdcb02c21227f0bc3f0c94eb3b7863"
+    "sha256": "5cb43c3756c5d4b56a6c4003fa34119396bdcb02c21227f0bc3f0c94eb3b7863",
+    "title": "Inside the digestive system",
+    "caption": "An example of Neal’s illustrated approach to exploring the human body.",
+    "alt": "Colorful, labeled drawing of the human digestive system",
+    "review_id": "geo49"
   },
   {
     "file": "artist-in-studio",
@@ -67,7 +91,11 @@
       1170,
       927
     ],
-    "sha256": "e46880cf96904995e6accfa90623fd7c0cd7d30352723007455a03b582f83a79"
+    "sha256": "e46880cf96904995e6accfa90623fd7c0cd7d30352723007455a03b582f83a79",
+    "title": "At work in the studio",
+    "caption": "Neal with a detailed harbor drawing, ready for its close-up.",
+    "alt": "Neal holding a drawing of fishing boats beside a studio camera",
+    "review_id": "art07"
   },
   {
     "file": "windmill",
@@ -77,7 +105,11 @@
       1170,
       1541
     ],
-    "sha256": "4721474f281ecd0fc670c60e6ea2c6ba1672ac2367d654d57ae191c241a325d5"
+    "sha256": "4721474f281ecd0fc670c60e6ea2c6ba1672ac2367d654d57ae191c241a325d5",
+    "title": "Color & character",
+    "caption": "Rich color and careful detail bring a windmill to life.",
+    "alt": "Color illustration of a wooden windmill against a deep blue sky",
+    "review_id": "art03"
   },
   {
     "file": "queensland-timber",
@@ -87,7 +119,11 @@
       1170,
       784
     ],
-    "sha256": "4424e84618fa9a57d408e3eea1f461f1a33c7dd85b6c0934a6fc9630b5434d66"
+    "sha256": "4424e84618fa9a57d408e3eea1f461f1a33c7dd85b6c0934a6fc9630b5434d66",
+    "title": "Texture in every line",
+    "caption": "Weathered timber and corrugated roofs in Yungaburra, Queensland.",
+    "alt": "Pen drawing of an old timber building in Yungaburra, Queensland",
+    "review_id": "art04"
   },
   {
     "file": "stone-fortress",
@@ -97,7 +133,11 @@
       640,
       797
     ],
-    "sha256": "e9600a96f290eea5aa2440c9585191a96788e7fade94ea7c2560312ef180e90f"
+    "sha256": "e9600a96f290eea5aa2440c9585191a96788e7fade94ea7c2560312ef180e90f",
+    "title": "Light, shadow & stone",
+    "caption": "Architecture becomes a study in depth and contrast.",
+    "alt": "Detailed monochrome drawing of stone towers, walls, and a mountain",
+    "review_id": "art06"
   },
   {
     "file": "harbor-boats",
@@ -107,7 +147,11 @@
       765,
       634
     ],
-    "sha256": "7580f8415b47967dfd6c275ecf13f79c88cc57bbf8b7d10f0c352a053e61f513"
+    "sha256": "7580f8415b47967dfd6c275ecf13f79c88cc57bbf8b7d10f0c352a053e61f513",
+    "title": "Life along the harbor",
+    "caption": "Fishing boats, reflections, and the quiet detail of a working waterfront.",
+    "alt": "Monochrome drawing of two fishing boats moored alongside wooden pilings",
+    "review_id": "art17"
   },
   {
     "file": "hand-studies",
@@ -117,7 +161,11 @@
       640,
       831
     ],
-    "sha256": "6b6699fd6a81d0555ac5eea7de589af574d8a9fdff4ca105f5e88e716b796d45"
+    "sha256": "6b6699fd6a81d0555ac5eea7de589af574d8a9fdff4ca105f5e88e716b796d45",
+    "title": "Learning to look",
+    "caption": "A familiar subject reveals endless possibilities for drawing.",
+    "alt": "Three pencil studies of hands, including one holding a pencil",
+    "review_id": "art12"
   },
   {
     "file": "pagoda",
@@ -127,6 +175,668 @@
       640,
       1136
     ],
-    "sha256": "070f5d861042c01312954625a0b6f0361079be2fc01ec26cf19e08fc7ff55ee8"
+    "sha256": "070f5d861042c01312954625a0b6f0361079be2fc01ec26cf19e08fc7ff55ee8",
+    "title": "Rhythm & perspective",
+    "caption": "Repeating rooflines and trees create a layered architectural portrait.",
+    "alt": "Black-and-white drawing of a multi-story pagoda among tall trees",
+    "review_id": "art15"
+  },
+  {
+    "file": "the-eye",
+    "program": "anatomy",
+    "source": "anatomy/e83b085a-7d9f-44f3-99f7-fe817078ed9c.jpeg",
+    "size": [
+      1290,
+      1127
+    ],
+    "sha256": "e018832c99b5670d1e34260e0b5e95521c3dbc18425f4bdd6294533ce22bf74f",
+    "title": "The eye, illustrated",
+    "caption": "A colorful study of the eye and its connection to the brain.",
+    "alt": "Hand-drawn cross-section of the eye with anatomical labels and a small brain diagram",
+    "review_id": "ana01"
+  },
+  {
+    "file": "finding-a-place",
+    "program": "geography",
+    "source": "geography/01d1594b-4d39-4bae-ac3a-753d3ce8c377.jpeg",
+    "size": [
+      753,
+      374
+    ],
+    "sha256": "357dee0a81657d0ef3d1c24754310bcfc82a72e1c36892761a01c8ba63a05cda",
+    "title": "Finding a place",
+    "caption": "A student follows the map, with the drawing as the guide.",
+    "alt": "Neal beside a student seen entirely from behind pointing at a United States map",
+    "review_id": "geo01"
+  },
+  {
+    "file": "harbor-drawing-portrait",
+    "program": "art",
+    "source": "geography/1af5ea91-afe6-44b6-a3ce-b73df1a2b990.jpeg",
+    "size": [
+      751,
+      589
+    ],
+    "sha256": "2c78724029ca4fa5f4b1c359589a55d1175fcc040e1c96345fb509eaed5f92e8",
+    "title": "A harbor on paper",
+    "caption": "Neal shares a drawing filled with waterfront detail.",
+    "alt": "Neal holding a black-and-white drawing of waterfront buildings and fishing boats",
+    "review_id": "geo08"
+  },
+  {
+    "file": "painting-the-world",
+    "program": "geography",
+    "source": "geography/34d218af-70a3-46fb-92d2-5d2275cc2c26.jpeg",
+    "size": [
+      1139,
+      1756
+    ],
+    "sha256": "d420b93cf3ca5591377303e2e8ed4b05066a649e3e439fa2cd5aa3aa52e9f405",
+    "title": "Painting the world",
+    "caption": "The map grows beyond the page.",
+    "alt": "Neal holding a paintbrush and a red container beside a wall-sized blue map",
+    "review_id": "geo10"
+  },
+  {
+    "file": "classroom-map-stories",
+    "program": "geography",
+    "source": "geography/38f2eb1a-43db-4c4b-8c66-642bd420ffa6.jpeg",
+    "size": [
+      1170,
+      1017
+    ],
+    "sha256": "46b7e20e51ab8d2337bf575afe144ab73691cc0eedf8d88d789e50bac752cd3e",
+    "title": "A room full of curiosity",
+    "caption": "Maps and stories come together in a classroom demonstration.",
+    "alt": "Neal presenting in front of illustrated maps to students seen from behind",
+    "review_id": "geo11"
+  },
+  {
+    "file": "archive-us-map",
+    "program": "geography",
+    "source": "geography/3969ed98-17bb-4983-84c7-23e6032333e6.jpeg",
+    "size": [
+      521,
+      762
+    ],
+    "sha256": "7e042b40d0b9a88e6cbc2e2526f222dc0a2004476c8d3dfdd3e5e9075f2dfbc4",
+    "title": "From the show archive",
+    "caption": "An earlier program photograph with a hand-drawn map of the United States.",
+    "alt": "Archive image of Neal presenting a United States map, with the original black margin and caption",
+    "review_id": "geo12"
+  },
+  {
+    "file": "asia-globe",
+    "program": "geography",
+    "source": "geography/5b2b9a94-34f0-41a3-908e-4e3443163ce0.jpeg",
+    "size": [
+      625,
+      578
+    ],
+    "sha256": "780c5d03f64fffc9dd7b505b50ab56e7eef6eeb0b3553d6444b8982cef8a1a60",
+    "title": "A closer look at Asia",
+    "caption": "A globe drawing brings borders, places, and language onto one page.",
+    "alt": "Hand-drawn globe centered on Asia with colored borders and place labels",
+    "review_id": "geo19"
+  },
+  {
+    "file": "student-world-map",
+    "program": "geography",
+    "source": "geography/5e959570-73db-4bdb-9e12-f244b507a0bc.jpeg",
+    "size": [
+      783,
+      344
+    ],
+    "sha256": "6b148ca2315aa59517362f609a52950e101900b9735df70f50a5680315684fb5",
+    "title": "Taking part in the map",
+    "caption": "A student points out a place on the world map.",
+    "alt": "Neal beside a student facing away from the camera and pointing at a world map",
+    "review_id": "geo20"
+  },
+  {
+    "file": "classroom-us-map",
+    "program": "geography",
+    "source": "geography/5f180167-ebfb-4a22-b4a5-e15618ce9adc.jpeg",
+    "size": [
+      621,
+      819
+    ],
+    "sha256": "41de8cdc38c40325bd7edb03c0e0aa2dc9677c115a24e4476c627eab2cbc7746",
+    "title": "A shared discovery",
+    "caption": "Students follow along as the map becomes a conversation.",
+    "alt": "A classroom audience and a student at the United States map, all children seen from behind",
+    "review_id": "geo21"
+  },
+  {
+    "file": "studio-monitor",
+    "program": "art",
+    "source": "geography/6442541e-08b2-49df-998c-6997659a710e.jpeg",
+    "size": [
+      1170,
+      843
+    ],
+    "sha256": "bc8f6b7d13575b24fd992fe85cb3539eef2472c031f57a6df18f75a1ac953000",
+    "title": "From paper to screen",
+    "caption": "A waterfront drawing appears on the studio monitor.",
+    "alt": "Studio production monitor showing a fishing-boat drawing on an easel",
+    "review_id": "geo23"
+  },
+  {
+    "file": "wellfleet-show-moments",
+    "program": "geography",
+    "source": "geography/659f21d7-df24-4c3e-b662-d907a303f85c.jpeg",
+    "size": [
+      1170,
+      1658
+    ],
+    "sha256": "851cc4fdf65bdcdea75be56183fe779101367d497d4195264f312fe3abd21dc5",
+    "title": "Moments from Wellfleet",
+    "caption": "Two moments from a map presentation with a Wellfleet Recreation sign.",
+    "alt": "Two-photo collage of Neal presenting a world map, with only the backs of audience members' heads visible",
+    "review_id": "geo24"
+  },
+  {
+    "file": "drawing-europe",
+    "program": "geography",
+    "source": "geography/65d7d43c-f367-408e-8491-16569e33c888.jpeg",
+    "size": [
+      412,
+      456
+    ],
+    "sha256": "5170994c5441adc683a898156df7324961853fa415466d8f876372219e4a97f5",
+    "title": "Europe takes shape",
+    "caption": "A marker follows the contours of the map.",
+    "alt": "Neal drawing Europe on a large world map",
+    "review_id": "geo25"
+  },
+  {
+    "file": "small-discovery",
+    "program": "geography",
+    "source": "geography/72b9bc68-2218-436c-8ac4-d4e8aab9ca2c.jpeg",
+    "size": [
+      1290,
+      1725
+    ],
+    "sha256": "e0e2ef8ab311616bb13c36b71fd9b537cdb1826a0950d74dc0e849c8a3a621b3",
+    "title": "Curiosity comes in every size",
+    "caption": "A small animal joins Neal for a moment beside the map.",
+    "alt": "Neal holding a small long-tailed animal in front of a hand-drawn map",
+    "review_id": "geo28"
+  },
+  {
+    "file": "world-map-demonstration",
+    "program": "geography",
+    "source": "geography/7c7b3992-aa99-4121-9c4b-2ac4ab64ee5b.jpeg",
+    "size": [
+      736,
+      529
+    ],
+    "sha256": "e344aa2dddb3967133d25ad9c8edf4d8823adcd921be3b9c05195b5d29a53142",
+    "title": "Connections across the world",
+    "caption": "A large map becomes a canvas for discovery.",
+    "alt": "Neal drawing on a world map with only the top of a student's head at the edge",
+    "review_id": "geo31"
+  },
+  {
+    "file": "marker-close-up",
+    "program": "geography",
+    "source": "geography/847d5f2d-c7e7-4562-b196-7d2316c27829.jpeg",
+    "size": [
+      801,
+      631
+    ],
+    "sha256": "361020ce695c2e9e0c954e8a601c654f77c74666c5ff8b27cbc830e7ea5074aa",
+    "title": "One line at a time",
+    "caption": "A close view of a world map in progress.",
+    "alt": "Close-up of Neal adding a line to a colorful world map",
+    "review_id": "geo35"
+  },
+  {
+    "file": "behind-the-camera",
+    "program": "art",
+    "source": "geography/91a61467-a525-4fbb-a7d9-04cddd1a3c02 (1).jpeg",
+    "size": [
+      1170,
+      1507
+    ],
+    "sha256": "3abd26c365d30f246081c7e5a5ec348236b31aa0000fc2af989304a712d35c41",
+    "title": "Behind the camera",
+    "caption": "An architectural drawing is ready for its studio close-up.",
+    "alt": "Studio camera and monitor aimed at an architectural drawing on an easel",
+    "review_id": "geo37"
+  },
+  {
+    "file": "alaska-envelopes",
+    "program": "art",
+    "source": "geography/92338950-3d4f-4390-9635-5187f2cd4d21.jpeg",
+    "size": [
+      639,
+      842
+    ],
+    "sha256": "40497e11469596de6ef81f5346598b94696d55d21ec1f99c604bcfe9337a1ec7",
+    "title": "Art on the trail",
+    "caption": "Illustrated envelopes marked Anchorage to Nome.",
+    "alt": "A collection of illustrated Anchorage to Nome envelopes featuring a husky and an Alaska silhouette",
+    "review_id": "geo39"
+  },
+  {
+    "file": "world-map-conversation",
+    "program": "geography",
+    "source": "geography/93843534-96fd-49c3-80db-6561f3cdaec9.jpeg",
+    "size": [
+      853,
+      665
+    ],
+    "sha256": "164a89d478dee3e0f324a439d4c381ed63239c9fc12a6ae172a59f0cdb9e661d",
+    "title": "A world of conversation",
+    "caption": "Every mark on the map can begin a new story.",
+    "alt": "Neal holding markers beside a hand-drawn world map",
+    "review_id": "geo40"
+  },
+  {
+    "file": "archive-world-presentation",
+    "program": "geography",
+    "source": "geography/97723803-b2eb-4144-a494-ad8390cc2221.jpeg",
+    "size": [
+      341,
+      269
+    ],
+    "sha256": "db3b7e345299001e3c8c93781057ef4861d3812c993c87da34e023850afdf7cd",
+    "title": "Stories across continents",
+    "caption": "An archive moment from a world-map presentation.",
+    "alt": "Small archive photograph of Neal gesturing in front of a world map",
+    "review_id": "geo41"
+  },
+  {
+    "file": "us-map-in-progress",
+    "program": "geography",
+    "source": "geography/9cda8ccf-01f8-4a91-a764-54834bab7858.jpeg",
+    "size": [
+      595,
+      303
+    ],
+    "sha256": "0c6c06973a3f9857c280bed40fda5374b402c26c0017060d8a04143c0f1fb523",
+    "title": "Across the United States",
+    "caption": "A closer look at an illustrated map in progress.",
+    "alt": "Neal adding details to a large United States map",
+    "review_id": "geo43"
+  },
+  {
+    "file": "colorful-thank-you",
+    "program": "geography",
+    "source": "geography/9d858be4-ad25-4ee2-ad22-c841b4ee079f.jpeg",
+    "size": [
+      766,
+      566
+    ],
+    "sha256": "7750f87507ec5e7fe4506e9838ea6c244fa4e96121247a20f7b7a0b552638a4e",
+    "title": "A colorful thank-you",
+    "caption": "A handmade note celebrates sharing the world.",
+    "alt": "Colorful handmade thank-you card with a cartoon drawing and the words Thank you for sharing the world with us",
+    "review_id": "geo44"
+  },
+  {
+    "file": "drawing-class",
+    "program": "art",
+    "source": "geography/9df94b62-ecc9-48c7-aec5-850fbbd3519d.jpeg",
+    "size": [
+      735,
+      1001
+    ],
+    "sha256": "1fd675abc3127494ad45cc2c4c5fdb7280f83cb663023a2a6857f82ca92b78e4",
+    "title": "Drawing together",
+    "caption": "Line, shape, and texture unfold in front of the class.",
+    "alt": "Neal demonstrating drawing techniques to children seen entirely from behind",
+    "review_id": "geo45"
+  },
+  {
+    "file": "classroom-world-outline",
+    "program": "geography",
+    "source": "geography/ac748e6c-abba-4df3-bd09-1984e31c8b77.jpeg",
+    "size": [
+      1287,
+      1046
+    ],
+    "sha256": "68e1d7d146aee75c092d962491c986f48d5e2176de8ac2d282dca59fee20a55b",
+    "title": "Watching a world unfold",
+    "caption": "Students follow the map as new connections appear.",
+    "alt": "Neal drawing a world map while students watch with their backs to the camera",
+    "review_id": "geo50"
+  },
+  {
+    "file": "classroom-map-outline",
+    "program": "geography",
+    "source": "geography/aebeace5-4d97-4d45-a132-3b836abb97b2.jpeg",
+    "size": [
+      1024,
+      798
+    ],
+    "sha256": "e004ecf49f61b73146ad6bebdc3d2d75a91715d80743e81cf491dc1818e269c4",
+    "title": "The next line",
+    "caption": "An audience watches a map take shape.",
+    "alt": "Neal drawing a large map for a seated classroom, with all children facing away from the camera",
+    "review_id": "geo51"
+  },
+  {
+    "file": "studio-ready",
+    "program": "art",
+    "source": "geography/b4619d18-7581-43d7-852a-b2326488ee82.jpeg",
+    "size": [
+      1170,
+      815
+    ],
+    "sha256": "904c51e911ed3894f11f9db8d2f7cbb1b6ededda645a621f2d1b78665c7dbf0a",
+    "title": "Ready to create",
+    "caption": "A blank page waits under the studio lights.",
+    "alt": "An empty recording studio with cameras, lights, and a blank page on an easel",
+    "review_id": "geo52"
+  },
+  {
+    "file": "exploring-the-americas",
+    "program": "geography",
+    "source": "geography/b8a5462f-b796-4b3f-a4ca-11678161804d.jpeg",
+    "size": [
+      1078,
+      966
+    ],
+    "sha256": "3cd846f53e67d845a62b51dd7e972f50099833b563b9b1430419db566973bf43",
+    "title": "Exploring the Americas",
+    "caption": "Continents, clues, and a closer look.",
+    "alt": "Neal pointing to Central America on a hand-drawn world map",
+    "review_id": "geo54"
+  },
+  {
+    "file": "south-america-map",
+    "program": "geography",
+    "source": "geography/bd5abc2a-af4d-495d-9d6b-e35d2b1cac62.jpeg",
+    "size": [
+      519,
+      552
+    ],
+    "sha256": "dda5c2f03e87926a1e40c406836fcd9d272000cf2bc3365d7b79e0415eae8dd7",
+    "title": "A place on the map",
+    "caption": "A moment beside a map of the Americas.",
+    "alt": "Neal pointing to South America with a second person's hand at the edge of the picture",
+    "review_id": "geo55"
+  },
+  {
+    "file": "north-america-detail",
+    "program": "geography",
+    "source": "geography/c74fbdd7-2a2e-4c4c-86df-c2f07bcaa6c5.jpeg",
+    "size": [
+      761,
+      542
+    ],
+    "sha256": "b608b6e50ec828965c2655ccb91c89a78dd75912be5ac8b37ebb6b489f476a14",
+    "title": "Following the outline",
+    "caption": "The drawing develops one detail at a time.",
+    "alt": "Neal holding a pink marker beside a drawing of North America",
+    "review_id": "geo57"
+  },
+  {
+    "file": "history-on-the-map",
+    "program": "geography",
+    "source": "geography/c91ea58c-0c2b-4719-97b2-72714f6c8da7.jpeg",
+    "size": [
+      1059,
+      1482
+    ],
+    "sha256": "93c336191efc2d62a72572db1f96b417acaecbcb748aa43afe3ef5e6f7f07486",
+    "title": "History on the map",
+    "caption": "A sailing ship adds another story to the drawing.",
+    "alt": "Neal drawing a sailing ship beside New England, with only the tops of students' heads visible",
+    "review_id": "geo58"
+  },
+  {
+    "file": "world-map-stories",
+    "program": "geography",
+    "source": "geography/d19672aa-3d94-404e-b8fd-3d533fb528fa.jpeg",
+    "size": [
+      1192,
+      901
+    ],
+    "sha256": "d18c4e3ad0683eaab5868502641a3bc2ad38b3fe1f3ae7c37397a11d9e7e9c3d",
+    "title": "Stories around the world",
+    "caption": "A world map connects the places in the presentation.",
+    "alt": "Neal pointing across a large illustrated world map",
+    "review_id": "geo61"
+  },
+  {
+    "file": "states-and-symbols",
+    "program": "geography",
+    "source": "geography/d59e486c-201b-4afc-8974-c0de0c80ef93.jpeg",
+    "size": [
+      530,
+      436
+    ],
+    "sha256": "a45d90e45cb9a4b6b00a69a453371465bf727510f5478e0d9f46b3d12678087e",
+    "title": "States, symbols & stories",
+    "caption": "Small illustrations help tell a bigger story.",
+    "alt": "Neal pointing to a United States map filled with symbols and drawings",
+    "review_id": "geo62"
+  },
+  {
+    "file": "regional-map-classroom",
+    "program": "geography",
+    "source": "geography/e24d7725-b102-4aa3-a78c-376d0273da8d.jpeg",
+    "size": [
+      1170,
+      1071
+    ],
+    "sha256": "66ecc4a86bd069f0931cf58fdf642988488eb6d02992091d22f4675efd6a179a",
+    "title": "Looking closer",
+    "caption": "A regional map invites closer observation.",
+    "alt": "Neal drawing a regional map for three students whose heads are seen from behind",
+    "review_id": "geo64"
+  },
+  {
+    "file": "across-the-atlantic",
+    "program": "geography",
+    "source": "geography/e59b15c9-f671-4b98-bcc9-85b1381d9012.jpeg",
+    "size": [
+      1081,
+      1276
+    ],
+    "sha256": "d8682ded3368cbb8ffe1565f402b780b94b4de083475d1411a53dcdc2c917583",
+    "title": "Across the Atlantic",
+    "caption": "A gesture connects the continents on the page.",
+    "alt": "Neal seen from behind pointing between the Americas and Europe on a world map",
+    "review_id": "geo65"
+  },
+  {
+    "file": "massachusetts-outline",
+    "program": "geography",
+    "source": "geography/ecfc9ac5-036d-4c3c-8990-2ff80e568f4c.jpeg",
+    "size": [
+      935,
+      609
+    ],
+    "sha256": "059b2b3ef5e0dd5e8e75b7e5fa9b7d783abb4a879cc54a6309ccf784242abee9",
+    "title": "Starting with Massachusetts",
+    "caption": "A familiar outline begins a new map.",
+    "alt": "Neal drawing the outline of Massachusetts while students watch with the backs of their heads visible",
+    "review_id": "geo69"
+  },
+  {
+    "file": "americas-in-progress",
+    "program": "geography",
+    "source": "geography/f850c75b-fd7b-4003-8c21-cd1f2b94e623.jpeg",
+    "size": [
+      699,
+      1043
+    ],
+    "sha256": "9f8a266273852961fb57aa5b91be230bc3118ab2c89817a4dd1906d65cfcd429",
+    "title": "Adding the details",
+    "caption": "Color and symbols fill out the map.",
+    "alt": "Neal seen from behind adding green details to a drawing of the Americas",
+    "review_id": "geo73"
+  },
+  {
+    "file": "illustrated-show-portrait",
+    "program": "geography",
+    "source": "geography/f8e0e41b-b033-4004-8bf9-af864504e2d5.jpeg",
+    "size": [
+      1149,
+      830
+    ],
+    "sha256": "81ffe9328ed5f045c82e99d2c41c3d0e7d8512d0766f903fd884e951478b6712",
+    "title": "An illustrated take",
+    "caption": "A stylized view of Neal and a New England map.",
+    "alt": "Illustrated portrait of Neal standing beside a colorful hand-drawn map of New England",
+    "review_id": "geo74"
+  },
+  {
+    "file": "complete-world-map",
+    "program": "geography",
+    "source": "geography/fea3c987-3398-47a5-8fe2-7259ed88aaa1.jpeg",
+    "size": [
+      1171,
+      708
+    ],
+    "sha256": "eb9a74af64983ff1cc8ec4b7185ca24673e5e10b8d7f613e8c8ef1c8f88554be",
+    "title": "A whole world on paper",
+    "caption": "A finished drawing brings places and stories together.",
+    "alt": "A complete illustrated world map titled The Geography Game Show",
+    "review_id": "geo77"
+  },
+  {
+    "file": "grange-hall",
+    "program": "art",
+    "source": "references/art/17a34eca-1f66-427d-a4bc-4be8c3295562.jpeg",
+    "size": [
+      1268,
+      2086
+    ],
+    "sha256": "a285361f3ed30977b887cca213089ab1f7bcd180b8d738315279331ca226f427",
+    "title": "Grange Hall",
+    "caption": "A detailed building portrait, shown with its original publication layout.",
+    "alt": "Neal's drawing of Grange Hall above a rental-page excerpt crediting the artist",
+    "review_id": "art01"
+  },
+  {
+    "file": "waterside-tower",
+    "program": "art",
+    "source": "references/art/4ce8699f-715f-42f6-b294-bc35603eb260.jpeg",
+    "size": [
+      638,
+      891
+    ],
+    "sha256": "e9d0a9835f13ebedff43750e2032358d90b8626f700dddfbb4d981d0bf7e881b",
+    "title": "A tower by the water",
+    "caption": "Stone, trees, and water form a layered scene.",
+    "alt": "Monochrome drawing of a waterside church tower beneath a wooded hillside",
+    "review_id": "art05"
+  },
+  {
+    "file": "ljubljana-rooftops",
+    "program": "art",
+    "source": "references/art/6cf1900b-cdd5-4332-867d-cd4d0724200d.jpeg",
+    "size": [
+      611,
+      832
+    ],
+    "sha256": "ff962e5e0ef16b2046f6fef2374e6576b4971c8c6565707d499b1f219303a96b",
+    "title": "Above Ljubljana",
+    "caption": "Rooflines and towers fill a city portrait.",
+    "alt": "Black-and-white architectural drawing labeled Ljubljana",
+    "review_id": "art08"
+  },
+  {
+    "file": "weathered-barn",
+    "program": "art",
+    "source": "references/art/71c2228b-3722-48a2-870c-c64aef99d766.jpeg",
+    "size": [
+      1147,
+      851
+    ],
+    "sha256": "d35ccfbe2c75bf123fc81d85e3001d9325e2a19fe1a76f540760a2d13cd5dd7a",
+    "title": "The character of old timber",
+    "caption": "A weathered barn becomes a study in structure.",
+    "alt": "Monochrome drawing of an old timber barn with a broken roof",
+    "review_id": "art09"
+  },
+  {
+    "file": "alaska-husky",
+    "program": "art",
+    "source": "references/art/72490f49-6926-4c8b-88a9-113a3bf654d7.jpeg",
+    "size": [
+      640,
+      831
+    ],
+    "sha256": "c94621117d1546a06263e459bef3c2208ab10cdf329b459d4a96f6c3b066d9b4",
+    "title": "Alaska in black & white",
+    "caption": "A husky portrait sits within the outline of Alaska.",
+    "alt": "Black-and-white husky illustration inside a silhouette of Alaska",
+    "review_id": "art10"
+  },
+  {
+    "file": "fishing-boat-study",
+    "program": "art",
+    "source": "references/art/7abd2314-0d47-46c9-a13b-ba62015a6fe0.jpeg",
+    "size": [
+      563,
+      914
+    ],
+    "sha256": "4b346b44d510bcc4b6529bf3efb0de5bbdec0ee69008a568a2a57ed6d5961f9b",
+    "title": "At the dock",
+    "caption": "Rigging and pilings surround a working fishing boat.",
+    "alt": "Detailed monochrome drawing of a fishing boat beside tall wooden dock pilings",
+    "review_id": "art11"
+  },
+  {
+    "file": "beach-huts",
+    "program": "art",
+    "source": "references/art/a82fc8fd-3958-412b-a560-b8a3e753b7ac.jpeg",
+    "size": [
+      1170,
+      851
+    ],
+    "sha256": "7d371bb26479be2daa7255ff7239e72db2c790123737fb93a2d458662910c681",
+    "title": "A rhythm of beach huts",
+    "caption": "Repeating forms give a quiet scene its character.",
+    "alt": "Pencil drawing of a row of wooden beach huts",
+    "review_id": "art13"
+  },
+  {
+    "file": "rooftops-and-tower",
+    "program": "art",
+    "source": "references/art/b8ae596c-9a06-42ce-b463-c3b437a7b9e2.jpeg",
+    "size": [
+      537,
+      748
+    ],
+    "sha256": "9edfda524aaf4295a57b8ccf847c9904a5b2a7922be9b44cc21d02dad69d4144",
+    "title": "Over the rooftops",
+    "caption": "A clock tower rises above a pattern of tiled roofs.",
+    "alt": "Monochrome drawing of a domed clock tower surrounded by closely spaced rooftops",
+    "review_id": "art14"
+  },
+  {
+    "file": "rural-workshop",
+    "program": "art",
+    "source": "references/art/f35c90a4-fe30-4d91-8b19-ff402a8c4aad.jpeg",
+    "size": [
+      1136,
+      358
+    ],
+    "sha256": "cd3fa8ea7ea7d793240b35ea564785d9a457e53fa3fa7482b97cc5a90675cf4f",
+    "title": "A wider view",
+    "caption": "A panoramic drawing explores buildings and the landscape around them.",
+    "alt": "Wide monochrome drawing of rural sheds, machinery, and rolling countryside",
+    "review_id": "art16"
+  },
+  {
+    "file": "stone-village",
+    "program": "art",
+    "source": "references/art/fe457298-5701-4491-aa2a-45d79505b515.jpeg",
+    "size": [
+      849,
+      590
+    ],
+    "sha256": "40fa5eb0134f69d2dfe2e2b4818be68360fe70c90c4d9e12b8d0497a908ec8d5",
+    "title": "A village in detail",
+    "caption": "Stonework, shutters, and rooflines reward a closer look.",
+    "alt": "Monochrome drawing of stone village houses and a narrow stepped street",
+    "review_id": "art18"
   }
 ]

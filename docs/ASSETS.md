@@ -13,7 +13,7 @@ The linked YouTube overview, `YnSI6XrQm8E`, is the video identified by the curre
 
 ## User-supplied program photographs
 
-Thirteen visually reviewed photographs and artwork images from the user's
+Sixty visually reviewed photographs and artwork images from the user's
 `asset1` folders are published under `public/photos/`. Full-size images are
 lossless WebP copies, with separate small thumbnails. Exact sources, checksums,
 selection criteria, and encoding instructions are in
