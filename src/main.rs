@@ -19,7 +19,7 @@ fn App() -> impl IntoView {
         <a class="skip-link" href="#main">"Skip to content"</a>
         <div class="preview-bar"><span>"A NEW CHAPTER IN CURIOSITY"</span><span>"A concept preview for Neal"<button class="motion-toggle" aria-pressed=move || motion_paused.get().to_string() aria-label=move || if motion_paused.get() { "Resume ocean animation" } else { "Pause ocean animation" } on:click=move |_| motion_paused.update(|v| *v = !*v)>{move || if motion_paused.get() { "▶ Resume ocean" } else { "Ⅱ Pause ocean" }}</button></span></div>
         <header class="site-header wrap">
-            <a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.png" alt="The Geography Gameshow" width="1536" height="1024"/></a>
+            <a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.webp" alt="The Geography Gameshow" width="1536" height="1024"/></a>
             <button class="menu-toggle" aria-controls="main-nav" aria-expanded=move || menu_open.get().to_string() on:click=move |_| menu_open.update(|v| *v = !*v)>{move || if menu_open.get() { "Close −" } else { "Menu +" }}</button>
             <nav id="main-nav" class:open=move || menu_open.get() aria-label="Main navigation">
                 <a href="#shows" on:click=move |_| menu_open.set(false)>"The shows"</a>
@@ -39,7 +39,7 @@ fn App() -> impl IntoView {
                 </div>
                 <div class="hero-art brand-hero">
                     <p class="logo-motto">"Every child deserves the opportunity to experience"<br/><strong>"the Geography Game Show"</strong></p>
-                    <img class="hero-brand-logo" src="public/geography-gameshow-logo.png" alt="The Geography Gameshow: gold lettering across a globe with cobalt-blue oceans and earthy green continents" fetchpriority="high" width="1536" height="1024"/>
+                    <img class="hero-brand-logo" src="public/geography-gameshow-logo.webp" alt="The Geography Gameshow: gold lettering across a globe with cobalt-blue oceans and earthy green continents" fetchpriority="high" width="1536" height="1024"/>
                 </div>
             </section>
             <div class="ticker" aria-label="Geography, biology, and art: a world of discovery"><div><span>"GEOGRAPHY"</span><i>"✳"</i><span>"BIOLOGY"</span><i>"✳"</i><span>"ART"</span><i>"✳"</i><span class="ticker-outline">"A WORLD OF DISCOVERY"</span><i>"✳"</i></div></div>
@@ -65,13 +65,13 @@ fn App() -> impl IntoView {
                 <ShowDetails selected/>
             </section>
             <section class="in-action section-space" id="in-action" aria-labelledby="action-title">
-                <div class="wrap action-grid"><div class="action-photo"><img src="public/neal-live.png" alt="Neal Nichols Jr. drawing the United States on a classroom whiteboard as students watch" width="700" height="497" loading="lazy"/><div class="photo-label"><span class="live-dot"></span>"REAL MAPS. REAL MOMENTS. REAL CURIOSITY."</div></div>
+                <div class="wrap action-grid"><div class="action-photo"><img src="public/neal-live.webp" alt="Neal Nichols Jr. drawing the United States on a classroom whiteboard as students watch" width="700" height="497" loading="lazy"/><div class="photo-label"><span class="live-dot"></span>"REAL MAPS. REAL MOMENTS. REAL CURIOSITY."</div></div>
                     <div class="action-copy"><p class="eyebrow">"MORE THAN A SCHOOL ASSEMBLY"</p><h2 id="action-title">"You don’t just"<br/>"watch the show."<br/><em>"You’re part of it."</em></h2><p>"It starts with a blank page. As Neal draws, students follow clues, connect ideas, and put their knowledge to the test. Geography becomes something they experience together."</p><a class="button button-light" href="https://www.youtube.com/watch?v=YnSI6XrQm8E" target="_blank" rel="noopener noreferrer"><span class="play-icon">"▶"</span>"Watch the original show"<span>"↗"</span></a><span class="video-caption">"From the Geography Gameshow archive · Opens YouTube"</span></div>
                 </div>
             </section>
             <Quiz/>
             <section class="meet wrap section-space" id="meet-neal" aria-labelledby="meet-title">
-                <div class="meet-art"><div class="artwork-frame"><img src="public/neal-art.png" alt="Neal's detailed black-and-white drawing of Uncle Tim's Bridge in Wellfleet" loading="lazy" width="480" height="382"/><span>"Uncle Tim’s Bridge, Wellfleet · Artwork by Neal"</span></div><img class="neal-portrait" src="public/neal-portrait.png" alt="Neal outdoors in the snow with a wolf" width="316" height="436" loading="lazy"/><span class="handwritten meet-note">"Artist. Explorer. Educator."</span></div>
+                <div class="meet-art"><div class="artwork-frame"><img src="public/neal-art.webp" alt="Neal's detailed black-and-white drawing of Uncle Tim's Bridge in Wellfleet" loading="lazy" width="480" height="382"/><span>"Uncle Tim’s Bridge, Wellfleet · Artwork by Neal"</span></div><img class="neal-portrait" src="public/neal-portrait.webp" alt="Neal outdoors in the snow with a wolf" width="316" height="436" loading="lazy"/><span class="handwritten meet-note">"Artist. Explorer. Educator."</span></div>
                 <div class="meet-copy"><p class="eyebrow">"02 / THE MIND BEHIND THE MAPS"</p><h2 id="meet-title">"Meet Neal."<br/><span class="serif-line">"Forever curious."</span></h2><p>"Raised in Wellfleet on Cape Cod, Neal Nichols Jr. grew up drawing the world around him. His love of art and travel became something bigger: a way to help students see the world for themselves."</p><p>"An artist, traveler, and the creator of The Geography Gameshow, Neal combines maps, stories, and audience participation to turn a lesson into a shared adventure."</p><p class="meet-next">"Now, the next chapter is taking shape—with new possibilities in biology and art."</p><a class="text-link" href="#booking">"Start a conversation with Neal"<span>"↗"</span></a></div>
             </section>
             <section class="planning section-space" id="for-educators" aria-labelledby="planning-title"><div class="wrap planning-grid"><div><p class="eyebrow">"03 / BIG CURIOSITY. SIMPLE PLANNING."</p><h2 id="planning-title">"A good fit for"<br/>"your curious crew."</h2><p>"Every audience is different. Start with your students, your subject, and the kind of experience you have in mind."</p><a class="text-link" href="#booking">"Let’s plan something memorable"<span>"↗"</span></a></div><div class="faq">
@@ -83,7 +83,7 @@ fn App() -> impl IntoView {
             </div></div></section>
             <Booking/>
         </main>
-        <footer class="wrap"><div class="footer-main"><a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.png" alt="The Geography Gameshow" width="1536" height="1024" loading="lazy"/></a><p>"A whole world of curiosity."</p><a class="text-link" href="#main">"Back to the top"<span>"↑"</span></a></div><div class="footer-bottom"><span>"© 2026 The Geography Gameshow · Neal Nichols Jr."</span><span>"Design preview · Biology & art concepts subject to confirmation"</span></div></footer>
+        <footer class="wrap"><div class="footer-main"><a class="brand heritage-brand" href="#" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.webp" alt="The Geography Gameshow" width="1536" height="1024" loading="lazy"/></a><p>"A whole world of curiosity."</p><a class="text-link" href="#main">"Back to the top"<span>"↑"</span></a></div><div class="footer-bottom"><span>"© 2026 The Geography Gameshow · Neal Nichols Jr."</span><span>"Design preview · Biology & art concepts subject to confirmation"</span></div></footer>
         </div>
     }
 }

@@ -14,7 +14,7 @@
 body { background: #06182d; }
 .site-shell { position: relative; isolation: isolate; min-height: 100vh; }
 .ocean-backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #06182d; }
-.ocean-texture, .ocean-reflection { position: absolute; inset: -10%; background: url('public/ocean-background.png') center / cover no-repeat; transform-origin: center; }
+.ocean-texture, .ocean-reflection { position: absolute; inset: -10%; background: url('public/ocean-background.webp') center / cover no-repeat; transform-origin: center; }
 .ocean-texture { animation: water-swell 22s ease-in-out infinite alternate; will-change: transform; }
 .ocean-reflection { opacity: .13; mix-blend-mode: screen; animation: water-shimmer 31s ease-in-out infinite alternate; will-change: transform; }
 .ocean-light { position: absolute; inset: -15%; background: radial-gradient(ellipse at 73% 34%, #287bd430, transparent 52%); animation: water-light 18s ease-in-out infinite alternate; }

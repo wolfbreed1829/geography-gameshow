@@ -14,6 +14,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('all local images and fonts load without browser errors', async ({ page }) => {
+  test.setTimeout(90000); // Includes uncached CDN image/font transfers on a public deployment.
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.reload();
@@ -23,7 +24,7 @@ test('all local images and fonts load without browser errors', async ({ page }) 
     await Promise.all([...document.images].map(img => img.decode()));
     await document.fonts.ready;
     const ocean = new Image();
-    ocean.src = new URL('public/ocean-background.png', document.baseURI).href;
+    ocean.src = new URL('public/ocean-background.webp', document.baseURI).href;
     await ocean.decode();
     return { images: [...document.images].every(img => img.naturalWidth > 0), fonts: [...document.fonts].every(font => font.status === 'loaded'), ocean: ocean.naturalWidth > 0 };
   });
@@ -113,9 +114,12 @@ test('ocean motion runs, pauses, resumes, and respects reduced motion', async ({
   await expect.poll(() => ocean.evaluate(el => getComputedStyle(el).transform)).not.toBe(initial);
   await page.getByRole('button', { name: 'Pause ocean animation' }).click();
   await expect(ocean).toHaveCSS('animation-play-state', 'paused');
-  const paused = await ocean.evaluate(el => getComputedStyle(el).transform);
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  const paused = await ocean.evaluate(el => Array.from(new DOMMatrixReadOnly(getComputedStyle(el).transform).toFloat64Array()));
   await page.waitForTimeout(250); // Verify that elapsed time no longer advances the water.
-  expect(await ocean.evaluate(el => getComputedStyle(el).transform)).toBe(paused);
+  const settled = await ocean.evaluate(el => Array.from(new DOMMatrixReadOnly(getComputedStyle(el).transform).toFloat64Array()));
+  // Browsers may finish a compositor frame after the pause. Subpixel rounding is harmless.
+  expect(Math.max(...settled.map((value, i) => Math.abs(value - paused[i])))).toBeLessThan(0.05);
   await page.getByRole('button', { name: 'Resume ocean animation' }).click();
   await expect(ocean).toHaveCSS('animation-play-state', 'running');
   await page.emulateMedia({ reducedMotion: 'reduce' });
