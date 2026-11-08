@@ -8,6 +8,7 @@ mod planning;
 mod programs;
 mod quiz;
 mod references;
+mod videos;
 
 #[derive(Clone, Copy, PartialEq)]
 enum Page {
@@ -17,6 +18,7 @@ enum Page {
     Anatomy,
     Art,
     Photos(usize),
+    Videos(usize),
     InAction,
     MeetNeal,
     Challenge,
@@ -38,6 +40,9 @@ impl Page {
             "geography-photos.html" => Self::Photos(0),
             "anatomy-photos.html" => Self::Photos(1),
             "art-photos.html" => Self::Photos(2),
+            "geography-videos.html" => Self::Videos(0),
+            "anatomy-videos.html" => Self::Videos(1),
+            "art-videos.html" => Self::Videos(2),
             "in-action.html" => Self::InAction,
             "meet-neal.html" => Self::MeetNeal,
             "challenge.html" => Self::Challenge,
@@ -50,7 +55,12 @@ impl Page {
     fn is_program(self) -> bool {
         matches!(
             self,
-            Self::Programs | Self::Geography | Self::Anatomy | Self::Art | Self::Photos(_)
+            Self::Programs
+                | Self::Geography
+                | Self::Anatomy
+                | Self::Art
+                | Self::Photos(_)
+                | Self::Videos(_)
         )
     }
 }
@@ -104,6 +114,7 @@ fn App() -> impl IntoView {
                     Page::Anatomy => view! { <programs::ProgramPage index=1/> }.into_any(),
                     Page::Art => view! { <programs::ProgramPage index=2/> }.into_any(),
                     Page::Photos(index) => view! { <programs::PhotoPage index=index/> }.into_any(),
+                    Page::Videos(index) => view! { <videos::VideoPage index=index/> }.into_any(),
                     Page::InAction => view! { <pages::InAction/> }.into_any(),
                     Page::MeetNeal => view! { <pages::MeetNeal/> }.into_any(),
                     Page::Challenge => view! { <quiz::Quiz/> }.into_any(),

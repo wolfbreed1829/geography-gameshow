@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const approvedPhotos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-PHOTOS.json', import.meta.url), 'utf8'));
+const verifiedVideos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-VIDEOS.json', import.meta.url), 'utf8'));
 
 test.beforeEach(async ({ page }) => {
   const startupErrors = [];
@@ -57,7 +58,7 @@ test('short homepage leads to separate program pages with working refresh and ba
 test('every page loads directly with its own title, valid links, and no published prices', async ({ page, request }) => {
   test.setTimeout(90000);
   const internalLinks = new Set();
-  for (const slug of ['index', 'programs', 'geography', 'anatomy', 'art', 'geography-photos', 'anatomy-photos', 'art-photos', 'in-action', 'meet-neal', 'challenge', 'planning', 'booking', 'references']) {
+  for (const slug of ['index', 'programs', 'geography', 'anatomy', 'art', 'geography-photos', 'anatomy-photos', 'art-photos', 'geography-videos', 'anatomy-videos', 'art-videos', 'in-action', 'meet-neal', 'challenge', 'planning', 'booking', 'references']) {
     const response = await page.goto(`${slug}.html`);
     expect(response.status()).toBe(200);
     await expect(page.locator('main h1')).toHaveCount(1);
@@ -70,6 +71,61 @@ test('every page loads directly with its own title, valid links, and no publishe
     links.forEach(href => internalLinks.add(href.split('#')[0]));
   }
   for (const href of internalLinks) expect((await request.get(href)).status(), href).toBe(200);
+});
+
+test('program video tabs keep a single player on-site and play every verified selection', async ({ page }) => {
+  // Exercise our player selection, not YouTube's network availability or ads.
+  await page.route('https://www.youtube-nocookie.com/embed/**', route => route.fulfill({contentType:'text/html', body:'<html><body>Embedded player test</body></html>'}));
+  for (const [slug, name] of [['geography', 'Geography'], ['art', 'Art']]) {
+    const videos = verifiedVideos.filter(video => video.program === slug);
+    await page.goto(`${slug}.html`);
+    const nav = page.getByRole('navigation', {name:`${name} sections`});
+    await expect(nav.getByRole('link', {name:/Overview/})).toHaveAttribute('aria-current','page');
+    await nav.getByRole('link', {name:/Videos/}).click();
+    await expect(page).toHaveURL(new RegExp(`${slug}-videos.html$`));
+    await expect(nav.getByRole('link', {name:/Videos/})).toHaveAttribute('aria-current','page');
+    await expect(page.locator('.video-embed')).toHaveCount(0);
+    await expect(page.locator('.video-choice')).toHaveCount(videos.length);
+    await page.locator('.video-start').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.video-embed')).toHaveCount(1);
+    for (let i=0;i<videos.length;i++) {
+      await page.locator('.video-choice').nth(i).click();
+      const player=page.locator('.video-embed');
+      await expect(player).toHaveCount(1);
+      await expect(player).toHaveAttribute('src', new RegExp(`/embed/${videos[i].id}\\?`));
+      await expect(player).toHaveAttribute('title', `${videos[i].title} — YouTube video player`);
+      await expect(player).toHaveAttribute('referrerpolicy','strict-origin-when-cross-origin');
+      await expect(page.locator('.video-information h2')).toHaveText(videos[i].title);
+      await expect(page.locator('.video-choice[aria-pressed="true"]')).toHaveCount(1);
+      await expect(page).toHaveURL(new RegExp(`${slug}-videos.html$`));
+    }
+    await page.getByRole('searchbox', {name:'Search videos'}).fill('no-such-video-123');
+    await expect(page.locator('.video-choice')).toHaveCount(0);
+    await expect(page.locator('.video-embed')).toHaveCount(1);
+    await page.getByRole('button',{name:'Show all videos'}).click();
+    await expect(page.locator('.video-choice')).toHaveCount(videos.length);
+    await page.setViewportSize({width:320,height:740});
+    const bounds=await page.locator('.video-embed').boundingBox();
+    expect(bounds.width).toBeGreaterThanOrEqual(200);
+    expect(bounds.height).toBeGreaterThanOrEqual(200);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+    await page.reload();
+    await expect(page.locator('.video-start')).toBeVisible();
+    await expect(page.locator('.video-embed')).toHaveCount(0);
+    await nav.getByRole('link',{name:/Photos/}).click();
+    await expect(page).toHaveURL(new RegExp(`${slug}-photos.html$`));
+    await expect(page.locator('.gallery-frame')).toBeVisible();
+    await page.setViewportSize({width:1440,height:1000});
+  }
+  await page.goto('anatomy.html');
+  await page.getByRole('navigation',{name:'Anatomy sections'}).getByRole('link',{name:/Videos/}).click();
+  await expect(page).toHaveURL(/anatomy-videos.html$/);
+  await expect(page.locator('main')).toContainText('There are no anatomy videos to share just yet.');
+  await expect(page.locator('iframe,.video-choice')).toHaveCount(0);
+  await page.goto('in-action.html');
+  await page.getByRole('link',{name:/Watch the original show/}).click();
+  await expect(page).toHaveURL(/geography-videos.html$/);
 });
 
 test('program subnavigation opens separate photo galleries with working controls and full images', async ({ page }) => {
@@ -213,7 +269,7 @@ test('school visit information is readable on the page without the PDF', async (
 
 test('mobile navigation closes after selection and layouts do not overflow', async ({ page }) => {
   test.setTimeout(60000);
-  for (const slug of ['index', 'programs', 'anatomy', 'geography-photos', 'anatomy-photos', 'art-photos', 'planning', 'booking', 'challenge', 'meet-neal', 'in-action', 'references']) {
+  for (const slug of ['index', 'programs', 'anatomy', 'geography-photos', 'anatomy-photos', 'art-photos', 'geography-videos', 'anatomy-videos', 'art-videos', 'planning', 'booking', 'challenge', 'meet-neal', 'in-action', 'references']) {
   await page.goto(`${slug}.html`);
   await expect(page.locator('main h1')).toBeVisible();
   for (const width of [320, 390, 768, 1024, 1440]) {

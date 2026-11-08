@@ -122,7 +122,7 @@ pub fn ProgramPage(index: usize) -> impl IntoView {
     view! {
         <article class=format!("program-page program-{} wrap page-section", p.slug)>
             <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="programs.html">"Programs"</a><span aria-hidden="true">"/"</span><span aria-current="page">{p.name}</span></nav>
-            <ProgramSubnav index=index photos=false/>
+            <ProgramSubnav index=index active="overview"/>
             <div class="program-intro"><div><p class="eyebrow">{p.label}</p><h1>{p.name}</h1><h2>{p.headline}</h2><p class="program-description">{p.description}</p><div class="program-actions"><a class="button" href=format!("booking.html?program={}", p.slug)>{if index == 0 { "Ask about a show" } else { "Ask about the concept" }}<span>"↗"</span></a><a class="text-link" href="challenge.html">"Try a challenge"<span>"→"</span></a></div></div><div class="program-visual"><img src=p.image alt=p.image_alt width="540" height="540"/></div></div>
             <div class="program-features">{p.features.into_iter().enumerate().map(|(i,(heading,text))| view! {<section><span class="feature-number">{format!("0{}",i+1)}</span><h3>{heading}</h3><p>{text}</p></section>}).collect_view()}</div>
             <div class="page-signpost"><a class="text-link" href="programs.html"><span>"←"</span>"All programs"</a><a class="text-link" href=if index == 0 { "in-action.html" } else { "meet-neal.html" }>{if index == 0 { "See the original show in action" } else { "Meet the artist behind the show" }}<span>"↗"</span></a></div>
@@ -131,12 +131,13 @@ pub fn ProgramPage(index: usize) -> impl IntoView {
 }
 
 #[component]
-fn ProgramSubnav(index: usize, photos: bool) -> impl IntoView {
+pub fn ProgramSubnav(index: usize, active: &'static str) -> impl IntoView {
     let p = PROGRAMS[index];
     view! {
         <nav class="program-subnav" aria-label=format!("{} sections", p.name)>
-            <a href=format!("{}.html", p.slug) aria-current=(!photos).then_some("page")>"Overview"</a>
-            <a href=format!("{}-photos.html", p.slug) aria-current=photos.then_some("page")>"Photos"<span class="subnav-count">{crate::gallery::photo_count(index)}</span></a>
+            <a href=format!("{}.html", p.slug) aria-current=(active == "overview").then_some("page")>"Overview"</a>
+            <a href=format!("{}-photos.html", p.slug) aria-current=(active == "photos").then_some("page")>"Photos"<span class="subnav-count">{crate::gallery::photo_count(index)}</span></a>
+            <a href=format!("{}-videos.html", p.slug) aria-current=(active == "videos").then_some("page")>"Videos"<span class="subnav-count">{crate::videos::video_count(index)}</span></a>
         </nav>
     }
 }
@@ -161,7 +162,7 @@ pub fn PhotoPage(index: usize) -> impl IntoView {
     view! {
         <article class="photos-page wrap page-section">
             <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="programs.html">"Programs"</a><span aria-hidden="true">"/"</span><a href=format!("{}.html", p.slug)>{p.name}</a><span aria-hidden="true">"/"</span><span aria-current="page">"Photos"</span></nav>
-            <ProgramSubnav index=index photos=true/>
+            <ProgramSubnav index=index active="photos"/>
             <div class="photos-heading"><h1>{title}</h1><p>{description}</p></div>
             <crate::gallery::ProgramGallery index=index/>
             <div class="page-signpost"><a class="text-link" href=format!("{}.html", p.slug)><span>"←"</span>{format!("Back to {}", p.name)}</a><a class="text-link" href=format!("booking.html?program={}", p.slug)>"Start a conversation"<span>"↗"</span></a></div>
