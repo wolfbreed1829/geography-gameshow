@@ -7,7 +7,7 @@ from pathlib import Path
 from PIL import Image
 
 public = Path(__file__).resolve().parent.parent / "public"
-names = ["ocean-background", "geography-gameshow-logo", "neal-live", "neal-art", "neal-portrait"]
+names = ["ocean-background", "geography-gameshow-logo", "neal-art", "neal-portrait"]
 for name in names:
     source = public / f"{name}.png"
     destination = public / f"{name}.webp"

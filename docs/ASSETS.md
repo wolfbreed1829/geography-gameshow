@@ -6,11 +6,20 @@ Used to illustrate the redesign requested for the existing business. Copyright a
 
 | Local asset | Source |
 | --- | --- |
-| `public/neal-live.png` | http://www.geographygameshow.com/images/p101513-home-5.png |
 | `public/neal-portrait.png` | http://www.geographygameshow.com/images/NealBeowulf.png |
 | `public/neal-art.png` | http://www.geographygameshow.com/images/Draw_UncleTimsBridge.png |
 
 The linked YouTube overview, `YnSI6XrQm8E`, is the video identified by the current site’s media page. It is linked rather than rehosted.
+
+## User-supplied program photographs
+
+Thirteen visually reviewed photographs and artwork images from the user's
+`asset1` folders are published under `public/photos/`. Full-size images are
+lossless WebP copies, with separate small thumbnails. Exact sources, checksums,
+selection criteria, and encoding instructions are in
+[PROGRAM-PHOTOS.md](PROGRAM-PHOTOS.md) and [PROGRAM-PHOTOS.json](PROGRAM-PHOTOS.json).
+The old `neal-live` classroom photo was removed because a child's profile was
+visible; the In Action page now uses the reviewed `world-in-progress.webp`.
 
 ## New illustrations
 

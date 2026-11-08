@@ -1,0 +1,132 @@
+[
+  {
+    "file": "world-in-progress",
+    "program": "geography",
+    "source": "geography/f68947a9-4103-4cba-ab84-97d8d09bdc77 (1).jpeg",
+    "size": [
+      1290,
+      708
+    ],
+    "sha256": "2cb413639183c618690995a22328628a40158387828b7b1819fa7b58ba4c0949"
+  },
+  {
+    "file": "north-america",
+    "program": "geography",
+    "source": "geography/3c6b798b-f66d-4486-ab24-81bc2c35cbe4.jpeg",
+    "size": [
+      672,
+      745
+    ],
+    "sha256": "65f418c5b42b2fe7c4360b3a9244a55fe1c90c8ab4d73c253ca7eea7958f013c"
+  },
+  {
+    "file": "new-england",
+    "program": "geography",
+    "source": "geography/0f8f272b-6230-4b5a-9e6b-06b1ef4d8481.jpeg",
+    "size": [
+      838,
+      567
+    ],
+    "sha256": "f5ea98253f8db5389be4cc78e70216d1172868ae63c978c014372b8a01b7da84"
+  },
+  {
+    "file": "mexico",
+    "program": "geography",
+    "source": "geography/182e48a2-f485-4465-830f-a22cd732c34a.jpeg",
+    "size": [
+      837,
+      583
+    ],
+    "sha256": "3bdbb24b81a9f51f2f760db096d35adca1ac44488cc9c8bfb98ad88f94e32a5e"
+  },
+  {
+    "file": "pacific-world",
+    "program": "geography",
+    "source": "geography/d1843e05-196d-465a-a142-1b6230d4651e.jpeg",
+    "size": [
+      1136,
+      470
+    ],
+    "sha256": "0c841e2551bdd3b20334ed2a1d73e354a8ced7b55ebd52af2964a45177252bbc"
+  },
+  {
+    "file": "digestive-system",
+    "program": "anatomy",
+    "source": "geography/a921b526-7a8d-4af5-b5a4-7c5b279bcab5.jpeg",
+    "size": [
+      601,
+      772
+    ],
+    "sha256": "5cb43c3756c5d4b56a6c4003fa34119396bdcb02c21227f0bc3f0c94eb3b7863"
+  },
+  {
+    "file": "artist-in-studio",
+    "program": "art",
+    "source": "references/art/6bcd6f44-9d40-4e28-bb9a-637676d45da6.jpeg",
+    "size": [
+      1170,
+      927
+    ],
+    "sha256": "e46880cf96904995e6accfa90623fd7c0cd7d30352723007455a03b582f83a79"
+  },
+  {
+    "file": "windmill",
+    "program": "art",
+    "source": "references/art/3a841329-ab6c-47d6-a2b0-fc998321e252.jpeg",
+    "size": [
+      1170,
+      1541
+    ],
+    "sha256": "4721474f281ecd0fc670c60e6ea2c6ba1672ac2367d654d57ae191c241a325d5"
+  },
+  {
+    "file": "queensland-timber",
+    "program": "art",
+    "source": "references/art/3ec39433-af70-4433-b818-66336302a217.jpeg",
+    "size": [
+      1170,
+      784
+    ],
+    "sha256": "4424e84618fa9a57d408e3eea1f461f1a33c7dd85b6c0934a6fc9630b5434d66"
+  },
+  {
+    "file": "stone-fortress",
+    "program": "art",
+    "source": "references/art/5f968843-d420-442b-81ca-d3af3404ee80.jpeg",
+    "size": [
+      640,
+      797
+    ],
+    "sha256": "e9600a96f290eea5aa2440c9585191a96788e7fade94ea7c2560312ef180e90f"
+  },
+  {
+    "file": "harbor-boats",
+    "program": "art",
+    "source": "references/art/f833e45c-bde1-4587-b1ad-fd4f40eaf6da.jpeg",
+    "size": [
+      765,
+      634
+    ],
+    "sha256": "7580f8415b47967dfd6c275ecf13f79c88cc57bbf8b7d10f0c352a053e61f513"
+  },
+  {
+    "file": "hand-studies",
+    "program": "art",
+    "source": "references/art/92c0c8ff-023e-4d09-8bf2-d1244659e458.jpeg",
+    "size": [
+      640,
+      831
+    ],
+    "sha256": "6b6699fd6a81d0555ac5eea7de589af574d8a9fdff4ca105f5e88e716b796d45"
+  },
+  {
+    "file": "pagoda",
+    "program": "art",
+    "source": "references/art/cbbb29a1-015a-45df-b1b0-95a23cac36e4.jpeg",
+    "size": [
+      640,
+      1136
+    ],
+    "sha256": "070f5d861042c01312954625a0b6f0361079be2fc01ec26cf19e08fc7ff55ee8"
+  }
+]

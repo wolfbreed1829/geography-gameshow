@@ -52,7 +52,7 @@ test('short homepage leads to separate program pages with working refresh and ba
 test('every page loads directly with its own title, valid links, and no published prices', async ({ page, request }) => {
   test.setTimeout(90000);
   const internalLinks = new Set();
-  for (const slug of ['index', 'programs', 'geography', 'anatomy', 'art', 'in-action', 'meet-neal', 'challenge', 'planning', 'booking', 'references']) {
+  for (const slug of ['index', 'programs', 'geography', 'anatomy', 'art', 'geography-photos', 'anatomy-photos', 'art-photos', 'in-action', 'meet-neal', 'challenge', 'planning', 'booking', 'references']) {
     const response = await page.goto(`${slug}.html`);
     expect(response.status()).toBe(200);
     await expect(page.locator('main h1')).toHaveCount(1);
@@ -65,6 +65,53 @@ test('every page loads directly with its own title, valid links, and no publishe
     links.forEach(href => internalLinks.add(href.split('#')[0]));
   }
   for (const href of internalLinks) expect((await request.get(href)).status(), href).toBe(200);
+});
+
+test('program subnavigation opens separate photo galleries with working controls and full images', async ({ page }) => {
+  test.setTimeout(90000);
+  for (const [slug, name, count] of [['geography', 'Geography', 5], ['anatomy', 'Anatomy', 1], ['art', 'Art', 7]]) {
+    await page.goto(`${slug}.html`);
+    const subnav = page.getByRole('navigation', { name: `${name} sections` });
+    await expect(subnav.getByRole('link', { name: 'Overview' })).toHaveAttribute('aria-current', 'page');
+    await expect(page.locator('.program-gallery')).toHaveCount(0);
+    await subnav.getByRole('link', { name: /Photos/ }).click();
+    await expect(page).toHaveURL(new RegExp(`${slug}-photos.html$`));
+    await expect(subnav.getByRole('link', { name: /Photos/ })).toHaveAttribute('aria-current', 'page');
+    const gallery = page.getByRole('region', { name: `${name} photo gallery` });
+    const image = gallery.locator('.gallery-image');
+    await expect(image).toHaveCSS('object-fit', 'contain');
+    const sources = new Set();
+    for (let i = 0; i < count; i++) {
+      await image.evaluate(img => img.decode());
+      sources.add(await image.getAttribute('src'));
+      expect(await image.evaluate(img => img.naturalWidth)).toBeGreaterThan(500);
+      if (count > 1) {
+        await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo ${i + 1} of ${count}`);
+        await expect(gallery.locator('.gallery-thumbnails button').nth(i)).toHaveAttribute('aria-pressed', 'true');
+        await gallery.getByRole('button', { name: 'Next photo', exact: true }).click();
+      }
+    }
+    expect(sources.size).toBe(count);
+    if (count > 1) {
+      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo 1 of ${count}`);
+      await gallery.getByRole('button', { name: 'Previous photo', exact: true }).click();
+      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo ${count} of ${count}`);
+      const first = gallery.getByRole('button', { name: /^Show photo 1:/ });
+      await first.focus();
+      await page.keyboard.press('Enter');
+      await expect(first).toHaveAttribute('aria-pressed', 'true');
+      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo 1 of ${count}`);
+    } else {
+      await expect(gallery.getByRole('button')).toHaveCount(0);
+    }
+    await page.reload();
+    await expect(gallery).toBeVisible();
+    await subnav.getByRole('link', { name: 'Overview' }).click();
+    await expect(page.locator('main h1')).toHaveText(name);
+    await expect(page.locator('.program-gallery')).toHaveCount(0);
+  }
+  await page.goto('in-action.html');
+  await expect(page.locator('.action-photo img')).toHaveAttribute('src', 'public/photos/world-in-progress.webp');
 });
 
 for (const [topic, answers] of [['Geography', [1, 0, 2]], ['Anatomy', [0, 1, 2]], ['Art', [1, 0, 2]]]) {
@@ -144,7 +191,7 @@ test('school visit information is readable on the page without the PDF', async (
 
 test('mobile navigation closes after selection and layouts do not overflow', async ({ page }) => {
   test.setTimeout(60000);
-  for (const slug of ['index', 'programs', 'anatomy', 'planning', 'booking', 'challenge', 'meet-neal', 'in-action', 'references']) {
+  for (const slug of ['index', 'programs', 'anatomy', 'geography-photos', 'anatomy-photos', 'art-photos', 'planning', 'booking', 'challenge', 'meet-neal', 'in-action', 'references']) {
   await page.goto(`${slug}.html`);
   await expect(page.locator('main h1')).toBeVisible();
   for (const width of [320, 390, 768, 1024, 1440]) {

@@ -1,6 +1,7 @@
 use leptos::prelude::*;
 
 mod coast;
+mod gallery;
 mod inquiry;
 mod pages;
 mod planning;
@@ -15,6 +16,7 @@ enum Page {
     Geography,
     Anatomy,
     Art,
+    Photos(usize),
     InAction,
     MeetNeal,
     Challenge,
@@ -33,6 +35,9 @@ impl Page {
             "geography.html" => Self::Geography,
             "anatomy.html" => Self::Anatomy,
             "art.html" => Self::Art,
+            "geography-photos.html" => Self::Photos(0),
+            "anatomy-photos.html" => Self::Photos(1),
+            "art-photos.html" => Self::Photos(2),
             "in-action.html" => Self::InAction,
             "meet-neal.html" => Self::MeetNeal,
             "challenge.html" => Self::Challenge,
@@ -45,7 +50,7 @@ impl Page {
     fn is_program(self) -> bool {
         matches!(
             self,
-            Self::Programs | Self::Geography | Self::Anatomy | Self::Art
+            Self::Programs | Self::Geography | Self::Anatomy | Self::Art | Self::Photos(_)
         )
     }
 }
@@ -98,6 +103,7 @@ fn App() -> impl IntoView {
                     Page::Geography => view! { <programs::ProgramPage index=0/> }.into_any(),
                     Page::Anatomy => view! { <programs::ProgramPage index=1/> }.into_any(),
                     Page::Art => view! { <programs::ProgramPage index=2/> }.into_any(),
+                    Page::Photos(index) => view! { <programs::PhotoPage index=index/> }.into_any(),
                     Page::InAction => view! { <pages::InAction/> }.into_any(),
                     Page::MeetNeal => view! { <pages::MeetNeal/> }.into_any(),
                     Page::Challenge => view! { <quiz::Quiz/> }.into_any(),
