@@ -90,29 +90,48 @@ pub fn Programs() -> impl IntoView {
         <section class="programs-page wrap page-section" aria-labelledby="programs-title">
             <div class="section-heading"><div><p class="eyebrow">"CHOOSE YOUR ADVENTURE"</p><h1 id="programs-title">"Three worlds."<br/>"One curious mind."</h1></div><p>"Explore the original Geography Gameshow and the new Anatomy and Art concepts. Each has its own story to discover."</p></div>
             <div class="show-cards">
-                {PROGRAMS.into_iter().enumerate().map(|(index, p)| view! {
-                    <a class=format!("show-card discovery-card {}-card", p.slug) href=format!("{}.html", p.slug)>
-                        <div class="discovery-scene" aria-hidden="true">
-                            <div class="discovery-grid"></div>
-                            <div class="discovery-orbit orbit-a"></div><div class="discovery-orbit orbit-b"></div>
-                            <span class="discovery-number">{format!("0{}", index + 1)}</span>
-                            <span class="discovery-edition">{if index == 0 { "THE ORIGINAL LIVE SHOW" } else { "A NEW WORLD IN THE MAKING" }}</span>
-                            <img class="discovery-illustration" src=if index == 2 { "public/art-discovery.svg" } else { p.image } alt="" width="540" height="540"/>
-                            <span class="discovery-note">{match index { 0 => "A world drawn from memory", 1 => "Discover the world within", _ => "See it. Imagine it. Create it." }}</span>
-                            <span class="discovery-cross cross-one">"+"</span><span class="discovery-cross cross-two">"+"</span>
-                            <span class="discovery-coordinate">{match index { 0 => "EXPLORE / OUR PLANET", 1 => "EXPLORE / THE HUMAN BODY", _ => "EXPLORE / YOUR IMAGINATION" }}</span>
-                        </div>
-                        <div class="discovery-copy">
-                            <div class="discovery-heading"><h2>{p.name}</h2><span class="discovery-arrow" aria-hidden="true">"↗"</span></div>
-                            <p>{match index { 0 => "One blank page. The whole world. Watch a map come to life, entirely from memory.", 1 => "An extraordinary journey through bones, muscles, and the amazing world inside us.", _ => "A fresh way to look at the everyday. Follow a line and see where it takes you." }}</p>
-                            <div class="discovery-topics" aria-hidden="true">{match index { 0 => "MAPS · HISTORY · DISCOVERY", 1 => "BODY · MOVEMENT · CONNECTION", _ => "LINE · PERSPECTIVE · POSSIBILITY" }}</div>
-                            <div class="discovery-bottom"><span>{format!("Explore {}", p.name)}</span><span class="discovery-status">{if index == 0 { "LIVE EXPERIENCE" } else { "IN DEVELOPMENT" }}</span></div>
-                        </div>
-                    </a>
-                }).collect_view()}
+                {PROGRAMS.into_iter().enumerate().map(|(index, p)| view! { <DiscoveryCard index=index program=p/> }).collect_view()}
             </div>
             <div class="page-signpost"><span>"Planning a school visit?"</span><a class="text-link" href="planning.html">"Find the practical details"<span>"↗"</span></a></div>
         </section>
+    }
+}
+
+#[component]
+fn DiscoveryCard(index: usize, program: Program) -> impl IntoView {
+    let p = program;
+    let card = NodeRef::<leptos::html::A>::new();
+    let tilt = RwSignal::new((0.0_f64, 0.0_f64));
+    view! {
+        <a node_ref=card class=format!("show-card discovery-card {}-card", p.slug) href=format!("{}.html", p.slug)
+            style=move || { let (x, y) = tilt.get(); format!("--rx:{:.3}deg;--ry:{:.3}deg;--mx:{:.2}%;--my:{:.2}%;--px:{:.2}px;--py:{:.2}px", -y*4.0, x*5.0, 50.0+x*40.0, 50.0+y*40.0, x*7.0, y*5.0) }
+            on:pointermove=move |event| {
+                if event.pointer_type() == "mouse" && let Some(element) = card.get() {
+                    let bounds = element.get_bounding_client_rect();
+                    if bounds.width() > 0.0 && bounds.height() > 0.0 {
+                        tilt.set((((event.client_x() as f64 - bounds.left()) / bounds.width() * 2.0 - 1.0).clamp(-1.0, 1.0), ((event.client_y() as f64 - bounds.top()) / bounds.height() * 2.0 - 1.0).clamp(-1.0, 1.0)));
+                    }
+                }
+            }
+            on:pointerleave=move |_| tilt.set((0.0, 0.0)) on:blur=move |_| tilt.set((0.0, 0.0))>
+            <div class="discovery-scene" aria-hidden="true">
+                <div class="discovery-artwork"><img class="discovery-illustration"
+                    src=format!("public/programs/{}-3d-1000.webp", p.slug)
+                    srcset=format!("public/programs/{0}-3d-640.webp 640w, public/programs/{0}-3d-1000.webp 1000w, public/programs/{0}-3d-1672.webp 1672w", p.slug)
+                    sizes="(max-width: 680px) 135vw, (max-width: 1000px) 65vw, 620px"
+                    alt="" width="1672" height="941" decoding="async"/></div>
+                <div class="discovery-sheen"></div>
+                <div class="discovery-scene-top"><span class="discovery-number">{format!("0{}", index + 1)}</span><span class="discovery-edition">{if index == 0 { "THE ORIGINAL LIVE SHOW" } else { "A NEW WORLD IN THE MAKING" }}</span></div>
+                <span class="discovery-note">{match index { 0 => "A world drawn from memory", 1 => "Discover the world within", _ => "See it. Imagine it. Create it." }}</span>
+            </div>
+            <div class="discovery-copy">
+                <div class="discovery-heading"><h2>{p.name}</h2><span class="discovery-arrow" aria-hidden="true">"↗"</span></div>
+                <p>{match index { 0 => "One blank page. The whole world. Watch a map come to life, entirely from memory.", 1 => "An extraordinary journey through bones, muscles, and the amazing world inside us.", _ => "A fresh way to look at the everyday. Follow a line and see where it takes you." }}</p>
+                <div class="discovery-topics" aria-hidden="true">{match index { 0 => "MAPS · HISTORY · DISCOVERY", 1 => "BODY · MOVEMENT · CONNECTION", _ => "LINE · PERSPECTIVE · POSSIBILITY" }}</div>
+                <div class="discovery-bottom"><span>{format!("Explore {}", p.name)}</span><span class="discovery-status">{if index == 0 { "LIVE EXPERIENCE" } else { "IN DEVELOPMENT" }}</span></div>
+            </div>
+            <span class="discovery-glare" aria-hidden="true"></span>
+        </a>
     }
 }
 

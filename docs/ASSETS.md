@@ -29,7 +29,7 @@ The two `geography-gameshow-logo*.png` files are AI-assisted recreations of the 
 
 ## Ocean background
 
-The program hub uses the existing globe and stylized anatomy vectors within CSS-drawn orbital scenes. `public/art-discovery.svg` is a new custom vector sketchbook illustration with earth-tone paint strokes, an architectural line drawing, and a pencil. These decorative card illustrations contain no photographs or faces. Their hover transitions respect reduced-motion preferences.
+The program hub now uses three photorealistic 3D concept renders generated with the built-in image-generation tool: an Earth globe, a glass anatomy torso, and a floating sketchbook with drawing tools and paint. Native PNG masters are in `design/program-art`; responsive WebP files are in `public/programs`. Exact prompts, native dimensions, and motion behavior are recorded in [PROGRAM-ART.md](PROGRAM-ART.md). These are decorative generated scenes, not documentary photographs or examples of Neal’s own artwork. The earlier custom vectors remain available for program overviews and video cover illustrations. Card motion supports the existing pause control and reduced-motion preferences.
 
 `public/ocean-background.png` is a new background created with the built-in image generation tool, then copied into the project. The website animates layered copies with CSS transforms and opacity; the backdrop is decorative and does not receive pointer input. Motion can be paused and is disabled for reduced-motion preferences. The website loads lossless WebP copies of the background, logo, and photographs to reduce transfer size; original PNGs are retained. `scripts/encode-web-assets.py` verifies unchanged dimensions, alpha, and visible pixels.
 

@@ -55,6 +55,35 @@ test('short homepage leads to separate program pages with working refresh and ba
   await expect(page.locator('.show-card')).toHaveCount(3);
 });
 
+test('3D program cards animate, follow the mouse, and honor motion controls', async ({ page }) => {
+  await page.goto('programs.html');
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  const card=page.locator('.geography-card');
+  const artwork=card.locator('.discovery-illustration');
+  await expect(artwork).toHaveCSS('animation-name','discovery-drift');
+  await expect.poll(()=>artwork.evaluate(image=>image.complete && image.naturalWidth>0)).toBe(true);
+  const before=await artwork.evaluate(el=>getComputedStyle(el).transform);
+  await expect.poll(()=>artwork.evaluate(el=>getComputedStyle(el).transform)).not.toBe(before);
+  const box=await card.boundingBox();
+  await page.mouse.move(box.x+box.width*.8,box.y+box.height*.3);
+  await expect.poll(()=>card.evaluate(el=>{ return Math.abs(parseFloat(el.style.getPropertyValue('--ry'))); })).toBeGreaterThan(1);
+  await expect(card).not.toHaveCSS('transform','none');
+  await page.mouse.move(5,5);
+  await expect.poll(()=>card.evaluate(el=>parseFloat(el.style.getPropertyValue('--ry')))).toBe(0);
+  await card.dispatchEvent('pointermove',{pointerType:'touch',clientX:box.x+box.width*.8,clientY:box.y+30});
+  expect(await card.evaluate(el=>parseFloat(el.style.getPropertyValue('--ry')))).toBe(0);
+  await page.getByRole('button',{name:'Pause ocean animation'}).click();
+  await expect(artwork).toHaveCSS('animation-play-state','paused');
+  await expect(card.locator('.discovery-sheen')).toHaveCSS('animation-play-state','paused');
+  await expect(card).toHaveCSS('transform','none');
+  await page.getByRole('button',{name:'Resume ocean animation'}).click();
+  await expect(artwork).toHaveCSS('animation-play-state','running');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(artwork).toHaveCSS('animation-name','none');
+  await expect(card).toHaveCSS('transform','none');
+  await expect(card.locator('.discovery-sheen')).toBeHidden();
+});
+
 test('every page loads directly with its own title, valid links, and no published prices', async ({ page, request }) => {
   test.setTimeout(90000);
   const internalLinks = new Set();
