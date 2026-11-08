@@ -186,8 +186,17 @@
 .reference-context { color: #c6ac73; font-size: 8px; line-height: 1.6; font-weight: 600; letter-spacing: .1em; }
 .reference-entry h3 { margin-top: 12px; font-size: 23px; line-height: 1.25; letter-spacing: -.025em; font-weight: 500; color: #ede3ca; }
 .reference-detail { margin-top: 12px; color: #b0c4d1; font-size: 11px; line-height: 1.8; }
-.reference-source { display: inline-flex; align-items: center; gap: 10px; color: #e7c781; font-size: 11px; line-height: 1.6; margin-top: 15px; text-decoration: underline; text-underline-offset: 4px; }
-.reference-source:hover { color: #fff0c6; }
+.reference-review { margin-top: 12px; }
+.reference-review summary { display: flex; justify-content: space-between; align-items: center; gap: 14px; min-height: 44px; padding: 10px 0; color: #e7c781; font-size: 12px; font-weight: 500; cursor: pointer; list-style: none; }
+.reference-review summary::-webkit-details-marker { display: none; }
+.reference-review summary:hover { color: #fff0c6; }
+.reference-review summary:focus-visible { outline: 2px solid #e7c781; outline-offset: 4px; border-radius: 2px; }
+.review-toggle { font-size: 22px; font-weight: 300; line-height: 1; }
+.reference-review[open] .review-toggle { transform: rotate(45deg); }
+.reference-review-body { padding: 15px 0 3px; border-top: 1px solid var(--line); }
+.reference-review .review-label { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: #bfa77a; margin-bottom: 14px; }
+.reference-review blockquote, .reference-review .coverage-text { font-size: 13px; line-height: 1.85; color: #d9e3e6; margin: 0; overflow-wrap: anywhere; }
+.reference-review blockquote { border-left: 2px solid #c4a36488; padding-left: 14px; }
 .references-invitation { display: flex; justify-content: space-between; align-items: center; gap: 25px; padding-top: 30px; }
 .references-invitation h2 { font-size: 27px; margin-top: 12px; line-height: 1.2; letter-spacing: -.035em; }
 .references-invitation .eyebrow { font-size: 8px; }
@@ -219,7 +228,6 @@
   .reference-entry:last-child { border-bottom: 0; }
   .reference-entry h3 { font-size: 23px; margin-top: 9px; }
   .reference-detail { font-size: 12px; margin-top: 8px; }
-  .reference-source { font-size: 12px; }
   .references-invitation { flex-direction: column; align-items: start; gap: 22px; }
   .references-invitation h2 { font-size: 27px; }
 }
