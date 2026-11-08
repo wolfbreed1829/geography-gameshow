@@ -1,0 +1,11 @@
+/target/
+/dist/
+/.playwright-mcp/
+/node_modules/
+/.tools/
+/test-results/
+/playwright-report/
+*.log
+.DS_Store
+.env*
+

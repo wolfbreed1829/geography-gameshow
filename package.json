@@ -1,0 +1,14 @@
+{
+  "name": "geography-gameshow-tooling",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets:globe": "node scripts/generate-globe.mjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "d3-geo": "3.1.1",
+    "topojson-client": "3.1.0"
+  }
+}

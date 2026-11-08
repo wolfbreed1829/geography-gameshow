@@ -1,0 +1,18 @@
+[package]
+name = "geography-gameshow"
+version = "0.1.0"
+edition = "2024"
+description = "A world of live learning with Neal Nichols Jr."
+
+[dependencies]
+leptos = { version = "=0.8.22", features = ["csr"] }
+console_error_panic_hook = "0.1"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = ["Window", "Document", "Element"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
