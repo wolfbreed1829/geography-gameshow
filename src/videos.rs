@@ -23,6 +23,40 @@ pub fn video_count(index: usize) -> usize {
     collection(index).len()
 }
 
+fn embed_url(id: &str) -> String {
+    let origin = web_sys::window()
+        .and_then(|window| window.location().origin().ok())
+        .unwrap_or_default();
+    format!(
+        "https://www.youtube-nocookie.com/embed/{id}?autoplay=1&playsinline=1&rel=0&origin={origin}"
+    )
+}
+
+#[component]
+pub fn FeaturedVideo() -> impl IntoView {
+    let loaded = RwSignal::new(false);
+    let video = GEOGRAPHY_VIDEOS[0];
+    view! {
+        <div class="featured-performance" id="home-performance">
+            <div class="featured-player">
+                <Show when=move || loaded.get() fallback=move || view! {
+                    <button class="featured-play" type="button" aria-label="Play the Geography Gameshow introduction" on:click=move |_| loaded.set(true)>
+                        <img src="public/show-preview.webp" alt="" width="720" height="395" loading="lazy" decoding="async"/>
+                        <span class="featured-play-symbol" aria-hidden="true">"▶"</span>
+                        <span class="featured-play-copy"><span>"A BLANK PAGE. A LIVE AUDIENCE."</span><strong>"Watch the world take shape."</strong></span>
+                        <span class="featured-duration">{video.duration}</span>
+                    </button>
+                }>
+                    <iframe src=embed_url(video.id) title="Geography Gameshow introduction — YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </Show>
+            </div>
+            <div class="featured-caption"><span>"Neal Nichols Jr. · The original live show"</span><a href="geography-videos.html">"All show videos ↗"</a></div>
+        </div>
+    }
+}
+
 fn reveal_player() {
     if let Some(window) = web_sys::window()
         && window
@@ -90,18 +124,7 @@ fn ProgramVideos(index: usize) -> impl IntoView {
             .map(|(i, _)| i)
             .collect::<Vec<_>>()
     });
-    let origin = StoredValue::new(
-        web_sys::window()
-            .and_then(|window| window.location().origin().ok())
-            .unwrap_or_default(),
-    );
-    let embed = move || {
-        format!(
-            "https://www.youtube-nocookie.com/embed/{}?autoplay=1&playsinline=1&rel=0&origin={}",
-            selected().id,
-            origin.get_value()
-        )
-    };
+    let embed = move || embed_url(selected().id);
     let poster = if index == 0 {
         "public/globe.svg"
     } else {

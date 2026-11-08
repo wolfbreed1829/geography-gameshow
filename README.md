@@ -1,6 +1,6 @@
 # The Geography Gameshow
 
-**Big ideas. Drawn live.** A website concept for Neal Nichols Jr., bringing the original Geography Gameshow together with proposed Anatomy and Art shows.
+**The whole world. Drawn from memory.** A website concept for Neal Nichols Jr., bringing the original Geography Gameshow together with proposed Anatomy and Art shows.
 
 [Open the live preview](https://wolfbreed1829.github.io/geography-gameshow/) · [Read the site review](docs/SITE-REVIEW.md)
 
@@ -9,10 +9,12 @@
 ## What is here
 
 - A responsive dark-ocean design with a custom photographic water backdrop, drifting currents, warm gold accents, earthy land tones, and custom illustrations. Ocean motion can be paused and respects reduced-motion preferences.
-- A compact homepage opening pans from a Wellfleet-inspired horizon and waterfront sign through cobalt water to the beach. It plays once per session with pause, skip, and replay controls; reduced-motion visitors see a still scene and immediate content. Artwork and its generation prompt are documented in [docs/COAST-PROMPT.md](docs/COAST-PROMPT.md).
+- A compact homepage opening pans from a Wellfleet-inspired horizon and waterfront sign through cobalt water to the beach. The headline and inquiry/program links are usable from the first render while the camera keeps moving. The pan plays once per session with pause, skip, and replay controls; reduced-motion visitors see a still scene. Artwork and its generation prompt are documented in [docs/COAST-PROMPT.md](docs/COAST-PROMPT.md).
+- A compact homepage performance preview loads the original Geography Gameshow introduction only when selected. A verified Westbrook Hay Prep School excerpt and three publication names connect visitors with the full references directory. A separate 400px header logo reduces its download from 1.47 MB to about 32 KB.
 - Neal’s actual classroom photos and artwork from his existing website.
 - A compact homepage and a Programs hub linking to separate Geography, Anatomy, and Art pages.
 - Cinematic 3D artwork in the program cards, with gentle image drift, a light sweep, and mouse-responsive perspective tilt. Motion pause, touch behavior, and reduced-motion accessibility are supported. Native artwork and exact prompts are documented in [docs/PROGRAM-ART.md](docs/PROGRAM-ART.md).
+- Matching cinematic artwork on program overview pages, larger reading text, and quiet navy panels on interior pages carry the visual identity through the site.
 - Overview, Photos, and Videos navigation for every program. The video library includes eight verified Geography recordings and one extended Art lesson, with one on-site YouTube player, searchable selection, keyboard controls, and mobile layouts. Anatomy has a clear empty state. Video sources are in [docs/PROGRAM-VIDEOS.json](docs/PROGRAM-VIDEOS.json); run `python scripts/generate-video-data.py` after updating that manifest.
 - Separate pages for Meet Neal, the show in action, the challenge, school visit information, and inquiries.
 - A searchable, paginated References & Press page with 38 named sources from the supplied collection and online research. Reviews expand directly on the page; school records, news, community mentions, and event listings have labeled summaries. Repeated visits and articles are grouped by source. No new photos, scans, or outbound reference links are published. Evidence is recorded in [docs/REFERENCES.md](docs/REFERENCES.md).
@@ -42,7 +44,7 @@ cargo check --locked --target wasm32-unknown-unknown
 trunk build --release --locked --public-url ./
 ```
 
-The output is `dist/`. A Trunk post-build hook emits eleven HTML entry files with page-specific metadata, sharing the same hashed Rust/WASM and stylesheets. Native `.html` navigation supports direct links, refresh, and browser history on GitHub Pages without rewrite rules. Relative asset URLs support both a project path and a root-domain deployment. Fonts and visual assets are hosted locally. No third-party analytics or embedded tracking is included.
+The output is `dist/`. A Trunk post-build hook emits seventeen HTML entry files with page-specific metadata, sharing the same hashed Rust/WASM and stylesheets. Native `.html` navigation supports direct links, refresh, and browser history on GitHub Pages without rewrite rules. Relative asset URLs support both a project path and a root-domain deployment. Fonts and visual assets are hosted locally. No analytics service is configured. YouTube embeds connect to YouTube only after the visitor starts a video.
 
 ## Structure
 
@@ -57,6 +59,7 @@ The output is `dist/`. A Trunk post-build hook emits eleven HTML entry files wit
 | `src/references.rs` | Text-only school, community, and press directory |
 | `src/quiz.rs` | Quiz questions, feedback, score, and reset behavior |
 | `style.css`, `ocean.css`, `pages.css` | Responsive page layouts, dark ocean identity, motion, and accessibility |
+| `experience.css` | Immediate homepage message, compact performance/reference band, interior artwork and reading surfaces |
 | `scripts/build-pages.py` | Standalone HTML entries and metadata for GitHub Pages |
 | `public/` | Images, custom SVG illustrations, fonts and licenses |
 | `.github/workflows/deploy.yml` | Reproducible Rust build and GitHub Pages deployment |

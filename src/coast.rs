@@ -33,11 +33,7 @@ pub fn CoastalHome(children: Children) -> impl IntoView {
                 }/>
                 <div class="coastal-shade"></div>
             </div>
-            <div class="coastal-welcome wrap" aria-hidden="true">
-                <p class="eyebrow">"EVERY JOURNEY STARTS SOMEWHERE"</p>
-                <p class="coastal-title">"From Wellfleet,"<br/><em>"to the world."</em></p>
-            </div>
-            <div class="coastal-content" on:focusin=move |_| finish()>{children()}</div>
+            <div class="coastal-content">{children()}</div>
             <div class="coastal-controls wrap">
                 <div class="coastal-place"><span class="coastal-marker" aria-hidden="true">"◉"</span><div><strong>"Wellfleet, Massachusetts"</strong><span>"Neal’s home on Cape Cod"</span></div></div>
                 <div class="coastal-progress" aria-hidden="true"><div><span>"Horizon"</span><span>"Harbor"</span><span>"Water"</span><span>"Shore"</span></div><i><b></b></i></div>

@@ -19,8 +19,8 @@ pub const PROGRAMS: [Program; 3] = [
         label: "THE ORIGINAL LIVE EXPERIENCE",
         headline: "A world unfolds. Right before your eyes.",
         description: "Neal draws maps entirely from memory, weaving geography, history, and listening skills into a show that invites students to join in.",
-        image: "public/globe.svg",
-        image_alt: "Illustrated globe with cobalt oceans and earthy green continents",
+        image: "public/programs/geography-3d-1000.webp",
+        image_alt: "Cinematic globe with cobalt oceans, earthy continents, and illuminated orbital rings",
         features: [
             (
                 "A map for every age",
@@ -42,8 +42,8 @@ pub const PROGRAMS: [Program; 3] = [
         label: "NEW PROGRAM / IN DEVELOPMENT",
         headline: "A whole world of wonder. Inside you.",
         description: "A proposed live-drawing journey through the human body: how bones support us, muscles move us, and organs work together. Neal is developing the topics, age ranges, and format for this new show.",
-        image: "public/anatomy.svg",
-        image_alt: "Stylized front-view illustration of the human torso with ribs, lungs, and heart",
+        image: "public/programs/anatomy-3d-1000.webp",
+        image_alt: "Sculptural anatomy illustration with a translucent torso, ribs, lungs, and heart",
         features: [
             (
                 "Bones & movement",
@@ -65,8 +65,8 @@ pub const PROGRAMS: [Program; 3] = [
         label: "NEW SHOW CONCEPT / IN DEVELOPMENT",
         headline: "Every great idea starts with a mark.",
         description: "Building on Neal’s background in illustration and drawing classes, this proposed show explores how artists see. Think line, perspective, texture, and the confidence to create. The new show format is still taking shape.",
-        image: "public/art-tools.svg",
-        image_alt: "An illustrated sketchbook, geometric drawing, and pencil",
+        image: "public/programs/art-3d-1000.webp",
+        image_alt: "Cinematic artist’s workspace with a sketchbook, pencil, and sculptural ribbons of color",
         features: [
             (
                 "Learn to look",
@@ -142,7 +142,15 @@ pub fn ProgramPage(index: usize) -> impl IntoView {
         <article class=format!("program-page program-{} wrap page-section", p.slug)>
             <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="programs.html">"Programs"</a><span aria-hidden="true">"/"</span><span aria-current="page">{p.name}</span></nav>
             <ProgramSubnav index=index active="overview"/>
-            <div class="program-intro"><div><p class="eyebrow">{p.label}</p><h1>{p.name}</h1><h2>{p.headline}</h2><p class="program-description">{p.description}</p><div class="program-actions"><a class="button" href=format!("booking.html?program={}", p.slug)>{if index == 0 { "Ask about a show" } else { "Ask about the concept" }}<span>"↗"</span></a><a class="text-link" href="challenge.html">"Try a challenge"<span>"→"</span></a></div></div><div class="program-visual"><img src=p.image alt=p.image_alt width="540" height="540"/></div></div>
+            <div class="program-intro"><div><p class="eyebrow">{p.label}</p><h1>{p.name}</h1><h2>{p.headline}</h2><p class="program-description">{p.description}</p><div class="program-actions"><a class="button" href=format!("booking.html?program={}", p.slug)>{if index == 0 { "Ask about a show" } else { "Ask about the concept" }}<span>"↗"</span></a><a class="text-link" href="challenge.html">"Try a challenge"<span>"→"</span></a></div></div>
+                <figure class="program-visual program-visual-cinematic">
+                    <img src=p.image
+                        srcset=format!("public/programs/{0}-3d-640.webp 640w, public/programs/{0}-3d-1000.webp 1000w, public/programs/{0}-3d-1672.webp 1672w", p.slug)
+                        sizes="(max-width: 680px) 95vw, (max-width: 1100px) 55vw, 760px"
+                        alt=p.image_alt width="1672" height="941" decoding="async"/>
+                    <figcaption><span>{format!("0{} / {}", index + 1, p.name)}</span><span>{match index { 0 => "Our planet", 1 => "The world within", _ => "Your imagination" }}</span></figcaption>
+                </figure>
+            </div>
             <div class="program-features">{p.features.into_iter().enumerate().map(|(i,(heading,text))| view! {<section><span class="feature-number">{format!("0{}",i+1)}</span><h3>{heading}</h3><p>{text}</p></section>}).collect_view()}</div>
             <div class="page-signpost"><a class="text-link" href="programs.html"><span>"←"</span>"All programs"</a><a class="text-link" href=if index == 0 { "in-action.html" } else { "meet-neal.html" }>{if index == 0 { "See the original show in action" } else { "Meet the artist behind the show" }}<span>"↗"</span></a></div>
         </article>

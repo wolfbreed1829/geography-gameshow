@@ -91,7 +91,7 @@ fn App() -> impl IntoView {
             <a class="skip-link" href="#main">"Skip to content"</a>
             <div class="preview-bar"><span>"A WORLD OF CURIOSITY"</span><span>"A concept preview for Neal"<button class="motion-toggle" aria-pressed=move || motion_paused.get().to_string() aria-label=move || if motion_paused.get() { "Resume ocean animation" } else { "Pause ocean animation" } on:click=toggle_motion>{move || if motion_paused.get() { "▶ Resume ocean" } else { "Ⅱ Pause ocean" }}</button></span></div>
             <header class="site-header wrap">
-                <a class="brand heritage-brand" href="index.html" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo.webp" alt="The Geography Gameshow" width="1536" height="1024"/></a>
+                <a class="brand heritage-brand" href="index.html" aria-label="The Geography Gameshow home"><img src="public/geography-gameshow-logo-header.webp" alt="The Geography Gameshow" width="400" height="267"/></a>
                 <button class="menu-toggle" aria-controls="main-nav" aria-expanded=move || menu_open.get().to_string() on:click=move |_| menu_open.update(|v| *v = !*v)>{move || if menu_open.get() { "Close −" } else { "Menu +" }}</button>
                 <nav id="main-nav" class:open=move || menu_open.get() aria-label="Main navigation">
                     <a href="index.html" aria-current=(page == Page::Home).then_some("page")>"Home"</a>

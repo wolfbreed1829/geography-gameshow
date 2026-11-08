@@ -6,10 +6,10 @@ pub fn Home() -> impl IntoView {
     <crate::coast::CoastalHome>
     <section class="hero wrap" aria-labelledby="hero-title">
                     <div class="hero-copy">
-                        <p class="eyebrow"><span class="live-dot"></span>"LIVE SHOWS. LIMITLESS CURIOSITY."</p>
-                        <h1 id="hero-title">"Big ideas."<br/><span class="underlined">"Drawn live."<svg viewBox="0 0 490 24" preserveAspectRatio="none" aria-hidden="true"><path d="M5 17Q190-3 484 8M42 23Q280 5 457 17"/></svg></span></h1>
-                        <p class="hero-description">"A map becomes an adventure. A question becomes a discovery. With Neal Nichols Jr., learning comes to life—one drawing at a time."</p>
-                        <div class="hero-actions"><a class="button" href="programs.html">"Explore the programs"<span>"↗"</span></a><a class="text-link" href="in-action.html"><span class="play-icon">"▶"</span>"See the magic"</a></div>
+                        <p class="eyebrow"><span class="live-dot"></span>"LIVE GEOGRAPHY SHOWS · WORLDWIDE"</p>
+                        <h1 id="hero-title">"The whole world."<br/><span>"Drawn from memory."</span></h1>
+                        <p class="hero-description">"One blank page. A room full of possibilities. Neal Nichols Jr. brings geography to life with maps drawn from memory—and students at the heart of the show."</p>
+                        <div class="hero-actions"><a class="button" href="booking.html?program=geography">"Inquire about a show"<span>"↗"</span></a><a class="text-link" href="programs.html">"Explore the programs"<span>"→"</span></a></div>
 
                     </div>
                     <div class="hero-art brand-hero">
@@ -18,6 +18,18 @@ pub fn Home() -> impl IntoView {
                     </div>
                 </section>
     </crate::coast::CoastalHome>
+    <section class="home-evidence wrap" aria-label="Experience the show and hear from schools">
+        <div class="home-evidence-grid">
+            <crate::videos::FeaturedVideo/>
+            <div class="home-school-story">
+                <p class="eyebrow">"FROM THE CLASSROOM"</p>
+                <blockquote>"“It was a dynamic and fascinating way to learn more about the geography of the world.”"</blockquote>
+                <p class="home-quote-credit">"Westbrook Hay Prep School"<span>"School visit report · April 2022"</span></p>
+                <a class="text-link" href="references.html">"Read the school stories"<span>"↗"</span></a>
+            </div>
+        </div>
+        <div class="home-press"><span>"FEATURED IN"</span><p>"The Provincetown Independent"</p><p>"The Nome Nugget"</p><p>"Overdrive"</p><a href="references.html">"Explore the coverage ↗"</a></div>
+    </section>
         }
 }
 

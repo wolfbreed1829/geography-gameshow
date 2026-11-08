@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
   page.on('requestfailed', request => startupErrors.push(`${request.url()}: ${request.failure()?.errorText}`));
   await page.goto('./');
   try {
-    await expect(page.getByRole('heading', { name: 'Big ideas. Drawn live.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /The whole world./ })).toBeVisible();
   } catch (error) {
     console.error('Startup diagnostics:', { url: page.url(), startupErrors, body: (await page.locator('body').innerText()).slice(0, 600) });
     throw error;
@@ -22,7 +22,7 @@ test('all local images and fonts load without browser errors', async ({ page }) 
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.reload();
-  await page.getByRole('heading', { name: 'Big ideas. Drawn live.' }).waitFor();
+  await page.getByRole('heading', { name: /The whole world./ }).waitFor();
   const assets = await page.evaluate(async () => {
     document.querySelectorAll('img').forEach(img => img.loading = 'eager');
     await Promise.all([...document.images].map(img => img.decode()));
@@ -53,6 +53,32 @@ test('short homepage leads to separate program pages with working refresh and ba
   await expect(page.locator('h1')).toHaveText('Anatomy');
   await page.goBack();
   await expect(page.locator('.show-card')).toHaveCount(3);
+});
+
+test('homepage preview plays on demand and connects school proof to the full collection', async ({ page }) => {
+  let embeds = 0;
+  await page.route('https://www.youtube-nocookie.com/embed/**', route => {
+    embeds += 1;
+    return route.fulfill({contentType:'text/html', body:'<html><body>Embedded player test</body></html>'});
+  });
+  await expect(page.locator('.featured-player iframe')).toHaveCount(0);
+  expect(embeds).toBe(0);
+  await expect(page.locator('.home-school-story blockquote')).toContainText('dynamic and fascinating');
+  await expect(page.locator('.home-quote-credit')).toContainText('Westbrook Hay Prep School');
+  await page.getByRole('button', {name:'Play the Geography Gameshow introduction'}).click();
+  await expect(page.locator('.featured-player iframe')).toHaveAttribute('src', /youtube-nocookie.com\/embed\/YnSI6XrQm8E\?/);
+  await expect.poll(() => embeds).toBe(1);
+  const frame = await page.locator('.featured-player iframe').boundingBox();
+  expect(frame.width).toBeGreaterThanOrEqual(200);
+  expect(frame.height).toBeGreaterThanOrEqual(200);
+  await page.reload();
+  await expect(page.getByRole('button', {name:'Play the Geography Gameshow introduction'})).toBeVisible();
+  await expect(page.locator('.featured-player iframe')).toHaveCount(0);
+  await page.getByRole('link', {name:'Read the school stories'}).click();
+  await expect(page).toHaveURL(/references.html$/);
+  await page.getByRole('searchbox').fill('Westbrook');
+  await page.locator('.reference-review summary').click();
+  await expect(page.locator('.reference-review blockquote')).toContainText('It was a dynamic and fascinating way');
 });
 
 test('3D program cards animate, follow the mouse, and honor motion controls', async ({ page }) => {
@@ -472,6 +498,11 @@ test('coastal opening pans, pauses, skips, replays, and remembers completion', a
   const pan = page.locator('.coastal-pan');
   await expect(coast).toHaveClass(/coast-ready/);
   await expect(pan).toHaveCSS('animation-name', 'wellfleet-arrival');
+  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+  await expect(page.getByRole('link', { name: /Explore the programs/ })).toBeVisible();
+  await page.getByRole('link', { name: /Explore the programs/ }).focus();
+  await expect(coast).not.toHaveClass(/coast-done/);
+  await expect(pan).toHaveCSS('animation-play-state', 'running');
   // The camera must keep advancing through the former horizon/harbor/water holds.
   const positions = await pan.evaluate(async el => {
     const animation = el.getAnimations()[0];
@@ -523,6 +554,8 @@ test('coastal opening respects reduced motion and keeps keyboard access immediat
   await expect(page.locator('.coastal-controls')).toBeHidden();
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.getByRole('link', { name: /Explore the programs/ }).focus();
-  await expect(page.locator('.coastal-home')).toHaveClass(/coast-done/);
+  await expect(page.locator('.coastal-home')).not.toHaveClass(/coast-done/);
   await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/programs.html$/);
 });
