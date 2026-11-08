@@ -39,3 +39,33 @@ Every entry opens directly on the References page. Review excerpts are transcrib
 | Digo Dristi | `geography/3c400abb-615d-4b54-83bf-eddb3ad3cd9c.jpeg`; masthead दिगो दृष्टि साप्ताहिक. English spelling and weekly publication type checked against the [Nepal government newspaper register](https://giwmscdnone.gov.np/media/pdf_upload/patrika_ly91rem.pdf), entry 2749, code 6050. The clipping concerns Neal's school visits in Nepal. No date or article URL inferred |
 
 Standalone photographs, artwork, unidentified photo captions, unrelated advertisements, and Neal's own social posts were not used as third-party references. External checks confirmed names and located matching originals; they were not used to add unrelated endorsements.
+
+## Online research additions
+
+The user supplied [ONLINE-RESEARCH-2026-11-08.md](ONLINE-RESEARCH-2026-11-08.md) and requested these references be included too. Its 35 numbered items are represented in the website, consolidated by named source. Westbrook Hay was already present; The Nome Nugget entry now also includes the 2013 caption coverage. The remaining research adds 21 named sources, bringing the directory to **38 entries: 21 education, 11 community, and 6 press**. These are named sources, not 38 independent reviews or endorsements.
+
+| New source | Audit item numbers |
+| --- | --- |
+| The Patriot Ledger | 1; title/date only, explicitly labeled an article listing, with no purported article summary |
+| The Provincetown Independent | 3–4; both dated profiles summarized in one entry |
+| Overdrive | 6; magazine coverage summary, article text also rechecked during implementation |
+| University of Delaware | 7; includes the duplicate Delaware Geological Survey publication |
+| Peacehaven Community School | 9–10; no year inferred for the undated December 4 report |
+| Lancing Prep Hove | 11–15; all five school publications grouped together |
+| James Hargest College | 16 |
+| Orleans Elementary School | 17; report year not inferred |
+| Waynesboro Area School District | 18 |
+| Middleton PTO | 19 |
+| Lynnfield Educational Trust | 20; described as a planned grant-funded program |
+| Mrs. Thomas’s Fourth Grade | 21; original Neil spelling noted; unrelated embedded video excluded |
+| Mrs. Begin’s Happy Campers | 22; concise summary limited to the indexed account documented in the audit |
+| Mike Mahaffie | 23; personal account, grouped under Community |
+| Brewster Council on Aging | 24; event announcement |
+| Cotuit Library | 25; event announcement |
+| Osterville Village Library | 26; duplicate event listings consolidated |
+| Wellfleet Cultural District | 27–28; art program notices, not Geography Gameshow reviews |
+| Cape Cod Village | 29; auction catalog reference |
+| Cape Cod National Seashore | 30–34; all five public-program records grouped together |
+| K12 Academics | 35; performer directory listing, not editorial coverage |
+
+New entries use summaries rather than invented testimonials. All original review excerpts remain. On-site search covers names, locations, descriptions, and expanded text; category filters and six-entry pages keep the collection compact. No source PDFs or images are hosted. The audit’s excluded leads remain excluded. The two Provincetown Independent URLs returned access errors during implementation; their summaries rely on the supplied audit, which records full-text retrieval during its research.

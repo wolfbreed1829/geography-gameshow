@@ -12,7 +12,7 @@
 - Neal’s actual classroom photos and artwork from his existing website.
 - A compact homepage and a Programs hub linking to separate Geography, Anatomy, and Art pages.
 - Separate pages for Meet Neal, the show in action, the challenge, school visit information, and inquiries.
-- A text-only References & Press page, with school, community, and press groups drawn from the supplied collection. Reviews expand directly on the page; news and community mentions have labeled summaries. No new photos, scans, or outbound reference links are published. Evidence is recorded in [docs/REFERENCES.md](docs/REFERENCES.md).
+- A searchable, paginated References & Press page with 38 named sources from the supplied collection and online research. Reviews expand directly on the page; school records, news, community mentions, and event listings have labeled summaries. Repeated visits and articles are grouped by source. No new photos, scans, or outbound reference links are published. Evidence is recorded in [docs/REFERENCES.md](docs/REFERENCES.md).
 - Three playable, three-question challenges with scoring, feedback, and replay.
 - An accessible mobile menu, native navigation links, expandable planning information, and reduced-motion support. The ocean pause setting follows visitors between pages for the session.
 - An international inquiry form with school name, administrator/teacher name, email, phone, school address, country/territory, program, and optional details. It validates and displays a local review only. It **does not send, save, or submit inquiries**, and has no email handoff or form backend.

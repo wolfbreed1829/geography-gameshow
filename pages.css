@@ -169,12 +169,21 @@
 .references-heading { display: flex; align-items: end; justify-content: space-between; gap: 50px; padding-bottom: 36px; }
 .references-heading h1 { font-size: clamp(45px, 4.8vw, 68px); }
 .references-heading > p { max-width: 330px; font-size: 14px; line-height: 1.85; color: #bdceda; }
+.reference-search { max-width: 550px; margin-bottom: 20px; }
+.reference-search label { display: block; color: #c4d3dd; font-size: 11px; margin-bottom: 9px; }
+.reference-search > div { display: flex; gap: 8px; }
+.reference-search input { min-width: 0; width: 100%; min-height: 46px; padding: 11px 14px; border: 1px solid #96adc46a; border-radius: 4px; background: #081e33ed; color: #f0e4c8; font: inherit; font-size: 13px; }
+.reference-search input::placeholder { color: #a6bdcc; }
+.reference-search input:focus-visible { outline: 2px solid #e7c781; outline-offset: 2px; }
+.reference-search button, .reference-pagination button, .reference-empty button { min-height: 44px; padding: 10px 16px; border: 1px solid #96adc44a; border-radius: 4px; background: #0a233cde; color: #e7c781; font-size: 12px; }
+.reference-search button:disabled, .reference-pagination button:disabled { opacity: .45; cursor: default; }
+.reference-search button:not(:disabled):hover, .reference-pagination button:not(:disabled):hover, .reference-empty button:hover { border-color: #e7c781; }
 .reference-filters { display: flex; gap: 8px; flex-wrap: wrap; padding-bottom: 22px; }
 .reference-filters button { display: flex; gap: 18px; align-items: center; padding: 13px 19px; min-height: 48px; border: 1px solid #96adc44a; border-radius: 4px; background: #0a233cde; color: #d7e0e3; font-size: 13px; font-weight: 600; }
 .reference-filters button:hover { border-color: #e0bd75; }
 .reference-filters button.active { color: #0a2034; background: #e0b762; border-color: #e8c57d; }
 .reference-count { font-size: 10px; font-weight: 500; padding-left: 14px; border-left: 1px solid currentColor; opacity: .8; }
-.reference-directory { padding: 28px 30px 0; border: 1px solid #8da9b64a; border-radius: 7px; background: #081e33ed; box-shadow: 0 20px 50px #0002; }
+.reference-directory { padding: 28px 30px 0; border: 1px solid #8da9b64a; border-radius: 7px; background: #081e33ed; box-shadow: 0 20px 50px #0002; scroll-margin-top: 20px; }
 .reference-section-heading { display: flex; align-items: start; justify-content: space-between; gap: 30px; padding-bottom: 25px; border-bottom: 1px solid var(--line); }
 .reference-section-heading h2 { font-size: 29px; line-height: 1.2; letter-spacing: -.035em; color: #e9dab9; }
 .reference-section-heading p { color: #acbfce; font-size: 12px; line-height: 1.8; margin-top: 10px; max-width: 570px; }
@@ -182,7 +191,9 @@
 .reference-list { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); padding: 0; margin: 0; list-style: none; }
 .reference-entry { min-width: 0; padding: 27px 24px 29px 0; border-bottom: 1px solid var(--line); }
 .reference-entry:nth-child(3n+2), .reference-entry:nth-child(3n+3) { padding-left: 24px; border-left: 1px solid var(--line); }
-.reference-entry:nth-last-child(-n+3) { border-bottom: 0; }
+@media (min-width: 681px) {
+  .reference-entry:nth-child(3n+1):nth-last-child(-n+3), .reference-entry:nth-child(3n+1):nth-last-child(-n+3) ~ .reference-entry { border-bottom: 0; }
+}
 .reference-context { color: #c6ac73; font-size: 8px; line-height: 1.6; font-weight: 600; letter-spacing: .1em; }
 .reference-entry h3 { margin-top: 12px; font-size: 23px; line-height: 1.25; letter-spacing: -.025em; font-weight: 500; color: #ede3ca; }
 .reference-detail { margin-top: 12px; color: #b0c4d1; font-size: 11px; line-height: 1.8; }
@@ -197,6 +208,14 @@
 .reference-review .review-label { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: #bfa77a; margin-bottom: 14px; }
 .reference-review blockquote, .reference-review .coverage-text { font-size: 13px; line-height: 1.85; color: #d9e3e6; margin: 0; overflow-wrap: anywhere; }
 .reference-review blockquote { border-left: 2px solid #c4a36488; padding-left: 14px; }
+.reference-review .coverage-text { white-space: pre-line; }
+.reference-pagination { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 20px 0; border-top: 1px solid var(--line); }
+.reference-pagination button { display: inline-flex; align-items: center; gap: 12px; }
+.reference-pagination > span { font-size: 11px; color: #b0c4d1; }
+.reference-empty { padding: 38px 0; }
+.reference-empty h3 { font-size: 22px; color: #ede3ca; }
+.reference-empty p { margin-top: 12px; color: #bdceda; font-size: 13px; line-height: 1.8; }
+.reference-empty button { margin-top: 20px; }
 .references-invitation { display: flex; justify-content: space-between; align-items: center; gap: 25px; padding-top: 30px; }
 .references-invitation h2 { font-size: 27px; margin-top: 12px; line-height: 1.2; letter-spacing: -.035em; }
 .references-invitation .eyebrow { font-size: 8px; }
@@ -228,6 +247,9 @@
   .reference-entry:last-child { border-bottom: 0; }
   .reference-entry h3 { font-size: 23px; margin-top: 9px; }
   .reference-detail { font-size: 12px; margin-top: 8px; }
+  .reference-pagination { gap: 8px; }
+  .reference-pagination button { padding-inline: 10px; font-size: 11px; gap: 7px; }
+  .reference-pagination > span { font-size: 10px; white-space: nowrap; }
   .references-invitation { flex-direction: column; align-items: start; gap: 22px; }
   .references-invitation h2 { font-size: 27px; }
 }

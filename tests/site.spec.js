@@ -167,10 +167,9 @@ test('references are text-only, deduplicated, and grouped by source type', async
   await expect(page).toHaveURL(/references.html$/);
   await expect(page.locator('main h1')).toHaveText('References & press.');
   await expect(page.locator('main img, main iframe, main a[href^="http"]')).toHaveCount(0);
-  await expect(page.locator('.reference-entry')).toHaveCount(11);
+  await expect(page.locator('.reference-entry')).toHaveCount(6);
+  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 38');
   await expect(page.getByRole('heading', { name: 'Sea Girt Elementary School', exact: true })).toHaveCount(1);
-  await expect(page.getByRole('heading', { name: 'CIS', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'South', exact: true })).toBeVisible();
   const westbrook = page.locator('.reference-entry').filter({ has: page.getByRole('heading', { name: 'Westbrook Hay Prep School', exact: true }) });
   await expect(westbrook.locator('blockquote')).toBeHidden();
   await westbrook.locator('summary').focus();
@@ -183,9 +182,13 @@ test('references are text-only, deduplicated, and grouped by source type', async
   await expect(cushing.locator('blockquote')).toBeVisible();
   await expect(westbrook.locator('blockquote')).toBeHidden();
   await expect(page).toHaveURL(/references.html$/);
+  await page.getByRole('navigation', { name: 'Reference pages' }).getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('heading', { name: 'CIS', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'South', exact: true })).toBeVisible();
   const filters = page.getByRole('group', { name: 'Browse references' });
   await filters.getByRole('button', { name: /Community/ }).click();
-  await expect(page.locator('.reference-entry')).toHaveCount(3);
+  await expect(page.locator('.reference-entry')).toHaveCount(6);
+  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 11');
   await expect(page.getByRole('heading', { name: 'Wellfleet Rec', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Jefferey Clayton', exact: true })).toBeVisible();
   await expect(page.locator('main a[href^="http"]')).toHaveCount(0);
@@ -196,7 +199,7 @@ test('references are text-only, deduplicated, and grouped by source type', async
   await press.focus();
   await page.keyboard.press('Enter');
   await expect(press).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('.reference-entry')).toHaveCount(3);
+  await expect(page.locator('.reference-entry')).toHaveCount(6);
   await expect(page.getByRole('heading', { name: 'Cook Islands News', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Digo Dristi', exact: true })).toBeVisible();
   await expect(page.locator('main a[href^="http"], main iframe')).toHaveCount(0);
@@ -214,6 +217,52 @@ test('references are text-only, deduplicated, and grouped by source type', async
   expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
   await nome.locator('summary').click();
   await expect(nome.locator('.coverage-text')).toBeHidden();
+});
+
+test('reference search and pagination retain the collection and consolidate online research', async ({ page }) => {
+  await page.goto('references.html');
+  const pages = page.getByRole('navigation', { name: 'Reference pages' });
+  await expect(pages.getByRole('button', { name: 'Previous' })).toBeDisabled();
+  const names = [];
+  for (let index = 0; index < 7; index++) {
+    await expect(pages).toContainText(`Page ${index + 1} of 7`);
+    names.push(...await page.locator('.reference-entry h3').allTextContents());
+    if (index < 6) await pages.getByRole('button', { name: 'Next' }).click();
+  }
+  expect(names).toHaveLength(38);
+  expect(new Set(names).size).toBe(38);
+  expect(names).toEqual(expect.arrayContaining(['CIS', 'South', 'Cushing School PTO', 'The Nome Nugget', 'James Hargest College', 'The Provincetown Independent', 'Lancing Prep Hove', 'Cape Cod National Seashore', 'K12 Academics']));
+  await expect(pages.getByRole('button', { name: 'Next' })).toBeDisabled();
+
+  const search = page.getByRole('searchbox', { name: 'Find a reference' });
+  await search.fill('  lAnCiNg  ');
+  await expect(page.locator('.reference-entry')).toHaveCount(1);
+  await expect(page.getByRole('heading', { name: 'Lancing Prep Hove', exact: true })).toBeVisible();
+  await expect(pages).toBeHidden();
+  await page.locator('.reference-entry summary').click();
+  await expect(page.locator('.coverage-text')).toContainText('2016–2017');
+  await expect(page.locator('.coverage-text')).toContainText('December 20, 2024');
+
+  const filters = page.getByRole('group', { name: 'Browse references' });
+  await filters.getByRole('button', { name: /In the press/ }).click();
+  await expect(page.getByRole('heading', { name: 'No references found.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Show all references', exact: true }).click();
+  await expect(search).toHaveValue('');
+  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 38');
+
+  await search.fill('New Zealand');
+  await expect(page.locator('.reference-entry')).toHaveCount(2);
+  await expect(page.getByRole('heading', { name: 'James Hargest College', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Clear', exact: true }).click();
+  await filters.getByRole('button', { name: /Schools & education/ }).click();
+  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 21');
+  await search.fill('nonexistent-school-987654321');
+  await expect(page.locator('.reference-entry')).toHaveCount(0);
+  await expect(page.locator('.directory-caption')).toHaveText('No matching references');
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.getByRole('button', { name: 'Show all references', exact: true }).click();
+  const dimensions = await page.evaluate(() => ({ content: document.documentElement.scrollWidth, viewport: innerWidth }));
+  expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
 });
 
 test('ocean motion runs, pauses, resumes, and respects reduced motion', async ({ page }) => {
