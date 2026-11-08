@@ -287,3 +287,49 @@ test('ocean motion runs, pauses, resumes, and respects reduced motion', async ({
   await expect(ocean).toHaveCSS('animation-name', 'none');
   await expect(page.locator('.motion-toggle')).toBeHidden();
 });
+
+test('coastal opening pans, pauses, skips, replays, and remembers completion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  const coast = page.locator('.coastal-home');
+  const pan = page.locator('.coastal-pan');
+  await expect(coast).toHaveClass(/coast-ready/);
+  await expect(pan).toHaveCSS('animation-name', 'wellfleet-arrival');
+  const start = await pan.evaluate(el => getComputedStyle(el).transform);
+  await pan.evaluate(el => { el.getAnimations()[0].currentTime = 7500; });
+  await expect.poll(() => pan.evaluate(el => getComputedStyle(el).transform)).not.toBe(start);
+
+  await page.getByRole('button', { name: 'Pause ocean animation' }).click();
+  await expect(pan).toHaveCSS('animation-play-state', 'paused');
+  const pausedTime = await pan.evaluate(el => el.getAnimations()[0].currentTime);
+  await page.waitForTimeout(150);
+  const afterPause = await pan.evaluate(el => el.getAnimations()[0].currentTime);
+  expect(Math.abs(afterPause - pausedTime)).toBeLessThan(40);
+  await page.getByRole('button', { name: 'Resume ocean animation' }).click();
+  await expect(pan).toHaveCSS('animation-play-state', 'running');
+
+  await page.getByRole('button', { name: 'Skip intro' }).click();
+  await expect(coast).toHaveClass(/coast-done/);
+  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+  await expect(page.getByRole('link', { name: /Explore the programs/ })).toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem('wellfleet-arrival-seen'))).toBe('true');
+  await page.goto('programs.html');
+  await expect(page.locator('.coastal-pan')).toHaveCount(0);
+  await page.goto('index.html');
+  await expect(coast).toHaveClass(/coast-done/);
+  await page.getByRole('button', { name: 'Replay coast' }).click();
+  await expect(coast).not.toHaveClass(/coast-done/);
+  await expect(pan).toHaveCSS('animation-name', 'wellfleet-arrival');
+  await pan.evaluate(el => el.getAnimations()[0].finish());
+  await expect(coast).toHaveClass(/coast-done/);
+  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+});
+
+test('coastal opening respects reduced motion and keeps keyboard access immediate', async ({ page }) => {
+  await expect(page.locator('.coastal-pan')).toHaveCSS('animation-name', 'none');
+  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+  await expect(page.locator('.coastal-controls')).toBeHidden();
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.getByRole('link', { name: /Explore the programs/ }).focus();
+  await expect(page.locator('.coastal-home')).toHaveClass(/coast-done/);
+  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+});

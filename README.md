@@ -9,6 +9,7 @@
 ## What is here
 
 - A responsive dark-ocean design with a custom photographic water backdrop, drifting currents, warm gold accents, earthy land tones, and custom illustrations. Ocean motion can be paused and respects reduced-motion preferences.
+- A compact homepage opening pans from a Wellfleet-inspired horizon and waterfront sign through cobalt water to the beach. It plays once per session with pause, skip, and replay controls; reduced-motion visitors see a still scene and immediate content. Artwork and its generation prompt are documented in [docs/COAST-PROMPT.md](docs/COAST-PROMPT.md).
 - Neal’s actual classroom photos and artwork from his existing website.
 - A compact homepage and a Programs hub linking to separate Geography, Anatomy, and Art pages.
 - Separate pages for Meet Neal, the show in action, the challenge, school visit information, and inquiries.
@@ -47,6 +48,7 @@ The output is `dist/`. A Trunk post-build hook emits eleven HTML entry files wit
 | --- | --- |
 | `src/main.rs` | Shared navigation, page selection, ocean motion preference |
 | `src/pages.rs` | Compact homepage, show in action, and Meet Neal |
+| `src/coast.rs`, `coast.css` | Wellfleet homepage opening, camera pan, and motion controls |
 | `src/programs.rs` | Programs hub and separate program detail pages |
 | `src/planning.rs` | School visit information from the supplied document |
 | `src/inquiry.rs` | International inquiry fields and local preview |

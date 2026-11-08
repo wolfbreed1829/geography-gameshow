@@ -3,6 +3,7 @@ use leptos::prelude::*;
 #[component]
 pub fn Home() -> impl IntoView {
     view! {
+    <crate::coast::CoastalHome>
     <section class="hero wrap" aria-labelledby="hero-title">
                     <div class="hero-copy">
                         <p class="eyebrow"><span class="live-dot"></span>"LIVE SHOWS. LIMITLESS CURIOSITY."</p>
@@ -16,6 +17,7 @@ pub fn Home() -> impl IntoView {
                         <img class="hero-brand-logo" src="public/geography-gameshow-logo.webp" alt="The Geography Gameshow: gold lettering across a globe with cobalt-blue oceans and earthy green continents" fetchpriority="high" width="1536" height="1024"/>
                     </div>
                 </section>
+    </crate::coast::CoastalHome>
         }
 }
 

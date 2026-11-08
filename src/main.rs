@@ -1,5 +1,6 @@
 use leptos::prelude::*;
 
+mod coast;
 mod inquiry;
 mod pages;
 mod planning;
@@ -70,7 +71,7 @@ fn App() -> impl IntoView {
         }
     };
     view! {
-        <div class="site-shell" class:motion-paused=move || motion_paused.get()>
+        <div class="site-shell" class:motion-paused=move || motion_paused.get() class:coastal-shell=page == Page::Home>
             <div class="ocean-backdrop" aria-hidden="true"><div class="ocean-texture"></div><div class="ocean-reflection"></div><div class="ocean-light"></div></div>
             <a class="skip-link" href="#main">"Skip to content"</a>
             <div class="preview-bar"><span>"A WORLD OF CURIOSITY"</span><span>"A concept preview for Neal"<button class="motion-toggle" aria-pressed=move || motion_paused.get().to_string() aria-label=move || if motion_paused.get() { "Resume ocean animation" } else { "Pause ocean animation" } on:click=toggle_motion>{move || if motion_paused.get() { "▶ Resume ocean" } else { "Ⅱ Pause ocean" }}</button></span></div>

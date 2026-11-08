@@ -24,6 +24,10 @@ The two `geography-gameshow-logo*.png` files are AI-assisted recreations of the 
 
 Prompt: Create a premium cinematic ocean texture for the full-screen background of an educational performance website. Wide landscape composition, 16:9. Directly overhead aerial view of deep open ocean at blue hour, only water from edge to edge, absolutely no horizon, sky, land, boats, people, objects, text, or logos. Rich true cobalt-blue water blending into very dark midnight-navy depths. Elegant long flowing current patterns and gentle natural wave ridges, with subtle turquoise/cobalt reflected light catching the crests. Photorealistic, tactile, refined, atmospheric. Keep the left third and upper edge darker and calmer, with the most beautiful luminous ripples concentrated through the center-right and lower-right. Avoid bright white foam, white highlights, glitter, storm waves, excessive contrast, black crushed shadows, and generic gradient appearance. The image should feel like an immersive living ocean while being subdued enough to sit behind readable gold and ivory website typography. Fine natural water detail, flowing rhythmic movement implied in the water, luxurious and serene. No vignette frame. High resolution landscape background asset.
 
+## Wellfleet coastal opening
+
+`public/wellfleet-coast.png` is a new photographic-style coastal interpretation created with the built-in image generation tool. The website loads `public/wellfleet-coast.webp` (887 × 1774, quality 88, approximately 300 KB) for a continuous homepage camera pan from the horizon and harbor to the water and beach. The physical sign in the artwork reads WELLFLEET / MASSACHUSETTS. Full prompt, provenance, and motion behavior are in [COAST-PROMPT.md](COAST-PROMPT.md).
+
 ## Fonts
 
 DM Sans, Space Grotesk, and Caveat are downloaded from Google Fonts and served locally, with OFL licenses included alongside the font files. `scripts/download-fonts.py` refreshes the Latin subsets and licenses.
