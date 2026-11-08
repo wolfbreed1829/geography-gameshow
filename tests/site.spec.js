@@ -43,6 +43,8 @@ test('short homepage leads to separate program pages with working refresh and ba
   await expect(page).toHaveURL(/programs.html$/);
   await expect(page.locator('link#coastal-preload')).toHaveCount(0);
   await expect(page.locator('.show-card')).toHaveCount(3);
+  await expect.poll(() => page.locator('.discovery-illustration').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
+  await expect(page.locator('.discovery-status')).toHaveText(['LIVE EXPERIENCE', 'IN DEVELOPMENT', 'IN DEVELOPMENT']);
   await page.locator('.anatomy-card').click();
   await expect(page).toHaveURL(/anatomy.html$/);
   await expect(page.locator('h1')).toHaveText('Anatomy');
@@ -288,6 +290,28 @@ test('references are text-only, deduplicated, and grouped by source type', async
   await expect(nome.locator('.coverage-text')).toBeHidden();
 });
 
+test('press and school articles expand into readable panels with searchable copy', async ({ page }) => {
+  await page.goto('references.html');
+  const search = page.getByRole('searchbox', { name: 'Find a reference' });
+  for (const [publisher, count] of [['The Provincetown Independent', 2], ['The Nome Nugget', 1], ['Overdrive', 1], ['University of Delaware', 1], ['Peacehaven Community School', 2], ['Lancing Prep Hove', 3], ['James Hargest College', 1], ['Mrs. Thomas’s Fourth Grade', 1], ['Mrs. Begin’s Happy Campers', 1], ['Mike Mahaffie', 1]]) {
+    await search.fill(publisher);
+    const entry = page.locator('.reference-entry').filter({ has: page.getByRole('heading', {name: publisher, exact: true}) });
+    await entry.locator('summary').click();
+    await expect(entry.locator('.article-reading')).toHaveCount(count);
+    await expect(entry.locator('.article-reading h4').first()).toBeVisible();
+    expect((await entry.locator('.article-paragraph').allTextContents()).join(' ').split(/\s+/).length).toBeGreaterThan(45);
+    expect((await entry.boundingBox()).width).toBeGreaterThan((await page.locator('.reference-list').boundingBox()).width * .95);
+  }
+  await search.fill('Eastham studio');
+  await expect(page.locator('.reference-entry h3')).toHaveText('The Provincetown Independent');
+  await page.locator('.reference-entry summary').click();
+  await expect(page.locator('.article-reading h4')).toHaveText(['For Illustrator Neal Nichols Jr., Drawing Is Like Breathing', 'A Life That’s Everywhere and All Right Here']);
+  await expect(page.locator('main a[href^="http"], main img, main iframe')).toHaveCount(0);
+  await page.setViewportSize({width:320, height:740});
+  await expect(page.locator('.article-reading').last()).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+});
+
 test('reference search and pagination retain the collection and consolidate online research', async ({ page }) => {
   await page.goto('references.html');
   const pages = page.getByRole('navigation', { name: 'Reference pages' });
@@ -363,6 +387,21 @@ test('coastal opening pans, pauses, skips, replays, and remembers completion', a
   const pan = page.locator('.coastal-pan');
   await expect(coast).toHaveClass(/coast-ready/);
   await expect(pan).toHaveCSS('animation-name', 'wellfleet-arrival');
+  // The camera must keep advancing through the former horizon/harbor/water holds.
+  const positions = await pan.evaluate(async el => {
+    const animation = el.getAnimations()[0];
+    const duration = animation.effect.getTiming().duration;
+    const travel = el.getBoundingClientRect().height - innerHeight;
+    const samples = [];
+    for (const fraction of [.02, .12, .28, .34, .4, .62, .69, .75, .9, .98]) {
+      animation.currentTime = duration * fraction;
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      samples.push({ fraction, progress: -new DOMMatrixReadOnly(getComputedStyle(el).transform).m42 / travel });
+    }
+    animation.currentTime = 0;
+    return samples;
+  });
+  for (const {fraction, progress} of positions) expect(Math.abs(progress - fraction)).toBeLessThan(.005);
   const start = await pan.evaluate(el => getComputedStyle(el).transform);
   await pan.evaluate(el => { el.getAnimations()[0].currentTime = 7500; });
   await expect.poll(() => pan.evaluate(el => getComputedStyle(el).transform)).not.toBe(start);

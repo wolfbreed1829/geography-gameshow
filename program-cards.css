@@ -1,0 +1,40 @@
+/* Three illustrated windows into Neal's subjects. Scoped to the program hub. */
+.programs-page .show-cards { gap: 24px; }
+.programs-page .discovery-card { --accent: #88bde8; --scene: #123b67; position: relative; border-radius: 12px; border: 1px solid #7dacca50; background: #081c31; box-shadow: 0 16px 45px #0003; isolation: isolate; transition: transform .4s, border-color .4s, box-shadow .4s; }
+.programs-page .anatomy-card { --accent: #c0c9a0; --scene: #294d49; background: #102a2d; border-color: #9ba98750; }
+.programs-page .art-card { --accent: #e5b28d; --scene: #694838; background: #2a242c; border-color: #bd937a50; }
+.discovery-card:hover, .discovery-card:focus-visible { transform: translateY(-7px); border-color: var(--accent); box-shadow: 0 24px 65px #0006, 0 0 30px #437dba12; }
+.discovery-scene { position: relative; height: 290px; overflow: hidden; background: radial-gradient(ellipse at 50% 48%, var(--scene), transparent 75%); }
+.discovery-scene::after { content: ''; position: absolute; inset: auto 0 0; height: 55px; background: linear-gradient(transparent, #081c31); }
+.anatomy-card .discovery-scene::after { background: linear-gradient(transparent, #102a2d); }
+.art-card .discovery-scene::after { background: linear-gradient(transparent, #2a242c); }
+.discovery-grid { position: absolute; inset: 0; opacity: .17; background-image: linear-gradient(#97b7c740 1px, transparent 1px), linear-gradient(90deg, #97b7c740 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(ellipse, black, transparent 75%); }
+.discovery-number { position: absolute; top: 17px; left: 25px; font: 500 68px/.9 var(--heading); letter-spacing: -.08em; color: var(--accent); opacity: .12; }
+.discovery-edition { position: absolute; top: 25px; right: 22px; color: var(--accent); font-size: 7px; letter-spacing: .16em; }
+.discovery-orbit { position: absolute; width: 290px; height: 120px; top: 100px; left: calc(50% - 145px); border: 1px solid #b3c8c338; border-radius: 50%; transform: rotate(-28deg); }
+.orbit-b { width: 260px; height: 260px; left: calc(50% - 130px); top: 23px; border-style: dashed; border-color: #acc9d321; transform: rotate(20deg); }
+.orbit-a::after { content: ''; width: 6px; height: 6px; position: absolute; top: 12px; left: 43px; border-radius: 50%; background: #e9c87f; box-shadow: 0 0 12px #f0c570aa; }
+.discovery-illustration { position: absolute; width: 225px; height: 225px; top: 43px; left: calc(50% - 112.5px); object-fit: contain; filter: drop-shadow(0 16px 18px #0006); transition: transform .65s cubic-bezier(.2,.65,.2,1), filter .65s; }
+.geography-card .discovery-illustration { transform: rotate(-15deg); }
+.geography-card:hover .discovery-illustration, .geography-card:focus-visible .discovery-illustration { transform: rotate(-5deg) scale(1.06); }
+.anatomy-card .discovery-illustration { width: 246px; height: 246px; top: 32px; left: calc(50% - 123px); }
+.anatomy-card:hover .discovery-illustration, .anatomy-card:focus-visible .discovery-illustration { transform: scale(1.05); filter: drop-shadow(0 0 18px #b3c68c25); }
+.art-card .discovery-illustration { width: 285px; height: 255px; top: 28px; left: calc(50% - 142.5px); }
+.art-card:hover .discovery-illustration, .art-card:focus-visible .discovery-illustration { transform: rotate(4deg) scale(1.06); }
+.discovery-note { position: absolute; z-index: 1; bottom: 15px; left: 25px; color: #e8d3a8; font: 21px/1.2 'Caveat', cursive; transform: rotate(-3deg); }
+.discovery-coordinate { position: absolute; right: 14px; top: 87px; writing-mode: vertical-rl; color: var(--accent); opacity: .65; font-size: 6px; letter-spacing: .2em; }
+.discovery-cross { position: absolute; color: #e5c68a; font-weight: 300; font-size: 20px; }
+.cross-one { left: 25px; top: 118px; }.cross-two { right: 31px; bottom: 45px; font-size: 14px; opacity: .5; }
+.discovery-copy { padding: 18px 25px 0; display: flex; flex-direction: column; flex: 1; }
+.discovery-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.discovery-heading h2 { font-size: clamp(32px, 3vw, 43px); font-weight: 500; color: #f3e4c6; letter-spacing: -.045em; }
+.discovery-arrow { display: grid; place-items: center; border: 1px solid #d6c49e55; border-radius: 50%; width: 38px; height: 38px; flex-shrink: 0; font-size: 22px; color: #eacb86; transition: background .3s, color .3s; }
+.discovery-card:hover .discovery-arrow { background: #eacb86; color: #081c31; }
+.discovery-copy > p { color: #bdcbd0; font-size: 12px; line-height: 1.85; margin-top: 16px; margin-bottom: 18px; }
+.discovery-topics { font-size: 7px; letter-spacing: .15em; color: var(--accent); margin-top: auto; padding-bottom: 22px; }
+.discovery-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; border-top: 1px solid #c7c8b92e; padding: 18px 0; color: #edce8a; font-size: 11px; font-weight: 600; }
+.discovery-status { font-size: 6px; font-weight: 400; letter-spacing: .1em; border: 1px solid #c1c5b147; padding: 4px 5px; color: #c8c9b4; }
+@media (min-width: 1000px) { .programs-page .section-heading { align-items: end; }.programs-page .section-heading h1 { font-size: clamp(42px, 4vw, 58px); } }
+@media (min-width: 681px) and (max-width: 1000px) { .programs-page .show-cards { gap: 14px; }.discovery-scene { height: 235px; }.discovery-illustration { width: 185px; height: 185px; left: calc(50% - 92.5px); }.anatomy-card .discovery-illustration { width: 200px; height: 200px; left: calc(50% - 100px); }.art-card .discovery-illustration { width: 230px; height: 215px; left: calc(50% - 115px); }.discovery-copy { padding-inline: 17px; }.discovery-heading h2 { font-size: 29px; }.discovery-arrow { width: 29px; height: 29px; font-size: 18px; }.discovery-note { font-size: 16px; left: 17px; bottom: 6px; }.discovery-edition { right: 14px; font-size: 5px; }.discovery-coordinate { right: 8px; }.discovery-topics { font-size: 6px; letter-spacing: .06em; } }
+@media (max-width: 680px) { .programs-page .show-cards { gap: 24px; }.discovery-scene { height: 270px; }.discovery-copy { padding: 12px 24px 0; }.discovery-heading h2 { font-size: 40px; }.discovery-copy > p { font-size: 13px; }.discovery-topics { font-size: 8px; }.discovery-bottom { font-size: 12px; }.discovery-status { font-size: 7px; }.discovery-note { bottom: 9px; } }
+@media (prefers-reduced-motion: reduce) { .discovery-card, .discovery-illustration, .discovery-arrow { transition: none !important; }.discovery-card:hover, .discovery-card:focus-visible { transform: none; } }

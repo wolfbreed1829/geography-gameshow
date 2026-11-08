@@ -91,12 +91,23 @@ pub fn Programs() -> impl IntoView {
             <div class="section-heading"><div><p class="eyebrow">"CHOOSE YOUR ADVENTURE"</p><h1 id="programs-title">"Three worlds."<br/>"One curious mind."</h1></div><p>"Explore the original Geography Gameshow and the new Anatomy and Art concepts. Each has its own story to discover."</p></div>
             <div class="show-cards">
                 {PROGRAMS.into_iter().enumerate().map(|(index, p)| view! {
-                    <a class=format!("show-card {}-card", p.slug) href=format!("{}.html", p.slug)>
-                        <div class="card-top"><span>{format!("0{} / {}", index + 1, if index == 0 { "THE ORIGINAL" } else { "A NEW DIRECTION" })}</span><span class="round-arrow">"↗"</span></div>
-                        <div class=format!("card-art {}-art", p.slug)><img src=p.image alt="" width="300" height="270"/></div>
-                        <div class="card-copy"><h2>{p.name}</h2><p>{match index { 0 => "The whole world. A blank page. A map drawn entirely from memory.", 1 => "Bones, muscles, and organs. A new perspective on the amazing human body.", _ => "Look a little closer. Think a little differently. See what you can create." }}</p>
-                        { (index > 0).then(|| view! { <span class="program-status">"IN DEVELOPMENT"</span> }) }
-                        <span class="card-link">{format!("Explore {}", p.name)}<span>"→"</span></span></div>
+                    <a class=format!("show-card discovery-card {}-card", p.slug) href=format!("{}.html", p.slug)>
+                        <div class="discovery-scene" aria-hidden="true">
+                            <div class="discovery-grid"></div>
+                            <div class="discovery-orbit orbit-a"></div><div class="discovery-orbit orbit-b"></div>
+                            <span class="discovery-number">{format!("0{}", index + 1)}</span>
+                            <span class="discovery-edition">{if index == 0 { "THE ORIGINAL LIVE SHOW" } else { "A NEW WORLD IN THE MAKING" }}</span>
+                            <img class="discovery-illustration" src=if index == 2 { "public/art-discovery.svg" } else { p.image } alt="" width="540" height="540"/>
+                            <span class="discovery-note">{match index { 0 => "A world drawn from memory", 1 => "Discover the world within", _ => "See it. Imagine it. Create it." }}</span>
+                            <span class="discovery-cross cross-one">"+"</span><span class="discovery-cross cross-two">"+"</span>
+                            <span class="discovery-coordinate">{match index { 0 => "EXPLORE / OUR PLANET", 1 => "EXPLORE / THE HUMAN BODY", _ => "EXPLORE / YOUR IMAGINATION" }}</span>
+                        </div>
+                        <div class="discovery-copy">
+                            <div class="discovery-heading"><h2>{p.name}</h2><span class="discovery-arrow" aria-hidden="true">"↗"</span></div>
+                            <p>{match index { 0 => "One blank page. The whole world. Watch a map come to life, entirely from memory.", 1 => "An extraordinary journey through bones, muscles, and the amazing world inside us.", _ => "A fresh way to look at the everyday. Follow a line and see where it takes you." }}</p>
+                            <div class="discovery-topics" aria-hidden="true">{match index { 0 => "MAPS · HISTORY · DISCOVERY", 1 => "BODY · MOVEMENT · CONNECTION", _ => "LINE · PERSPECTIVE · POSSIBILITY" }}</div>
+                            <div class="discovery-bottom"><span>{format!("Explore {}", p.name)}</span><span class="discovery-status">{if index == 0 { "LIVE EXPERIENCE" } else { "IN DEVELOPMENT" }}</span></div>
+                        </div>
                     </a>
                 }).collect_view()}
             </div>

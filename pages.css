@@ -250,6 +250,14 @@
 .reference-review blockquote, .reference-review .coverage-text { font-size: 13px; line-height: 1.85; color: #d9e3e6; margin: 0; overflow-wrap: anywhere; }
 .reference-review blockquote { border-left: 2px solid #c4a36488; padding-left: 14px; }
 .reference-review .coverage-text { white-space: pre-line; }
+.reference-entry:has(.reference-review[open] .article-reading) { grid-column: 1 / -1; padding: 26px 30px; margin-block: 10px; border: 1px solid #7f9aaa55; border-radius: 8px; background: #091e32eb; }
+.article-readings { max-width: 760px; margin-inline: auto !important; white-space: normal !important; }
+.article-reading + .article-reading { margin-top: 32px; padding-top: 30px; border-top: 1px solid #d1b9863b; }
+.article-reading .article-credit { font-size: 11px; color: #b8bfae; margin-bottom: 12px; }
+.article-reading h4 { font-size: clamp(24px, 2.5vw, 32px); line-height: 1.25; letter-spacing: -.025em; font-weight: 500; color: #f1dfb8; margin-bottom: 22px; }
+.article-reading .article-paragraph { font-size: 15px; color: #d0dde2; line-height: 1.95; margin-top: 16px; }
+.article-readings .article-attribution { color: #9eb3c1; font-size: 11px; line-height: 1.8; margin-top: 30px; padding-top: 17px; border-top: 1px solid #d1b9863b; }
+@media (max-width: 680px) { .reference-entry:has(.reference-review[open] .article-reading) { padding: 22px 18px; }.article-reading .article-paragraph { font-size: 14px; line-height: 1.85; } }
 .reference-pagination { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 20px 0; border-top: 1px solid var(--line); }
 .reference-pagination button { display: inline-flex; align-items: center; gap: 12px; }
 .reference-pagination > span { font-size: 11px; color: #b0c4d1; }

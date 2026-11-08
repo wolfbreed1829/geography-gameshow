@@ -68,4 +68,10 @@ The user supplied [ONLINE-RESEARCH-2026-11-08.md](ONLINE-RESEARCH-2026-11-08.md)
 | Cape Cod National Seashore | 30–34; all five public-program records grouped together |
 | K12 Academics | 35; performer directory listing, not editorial coverage |
 
-New entries use summaries rather than invented testimonials. All original review excerpts remain. On-site search covers names, locations, descriptions, and expanded text; category filters and six-entry pages keep the collection compact. No source PDFs or images are hosted. The audit’s excluded leads remain excluded. The two Provincetown Independent URLs returned access errors during implementation; their summaries rely on the supplied audit, which records full-text retrieval during its research.
+New entries use summaries rather than invented testimonials. All original review excerpts remain. On-site search covers names, locations, descriptions, and expanded text; category filters and six-entry pages keep the collection compact. No source PDFs or images are hosted. The audit’s excluded leads remain excluded.
+
+## Expanded on-site reading
+
+The November 8 follow-up research recovered publisher-indexed article text for both Provincetown profiles and verified substantive reporting from the other sources documented in [ARTICLE-RESEARCH-2026-11-08.md](ARTICLE-RESEARCH-2026-11-08.md). Fourteen original article/report summaries now appear in `src/reference_articles.rs`, individually titled and credited, within ten existing reference entries. Opening a reading expands that entry across the reference grid. Article text is searchable. All 38 named sources and original supplied reviews remain.
+
+These are original summaries, not full publisher reprints. Short, incomplete, or unavailable sources are explicitly described as such: Cook Islands News preserves a headline; Digo Dristi lacks a complete verified English translation; the Patriot Ledger remains an article listing. Older Lancing records remain documented alongside the newly verified reports even though two PDF URLs now return 404. Source URLs and verification notes stay in repository documentation; public readers remain on the site.

@@ -1,5 +1,50 @@
 use leptos::prelude::*;
 
+struct Article {
+    publisher: &'static str,
+    title: &'static str,
+    credit: &'static str,
+    paragraphs: &'static [&'static str],
+}
+
+include!("reference_articles.rs");
+
+fn has_articles(name: &str) -> bool {
+    ARTICLES.iter().any(|article| article.publisher == name)
+}
+
+fn article_matches(name: &str, query: &str) -> bool {
+    ARTICLES
+        .iter()
+        .filter(|article| article.publisher == name)
+        .any(|article| {
+            format!(
+                "{} {} {}",
+                article.title,
+                article.credit,
+                article.paragraphs.join(" ")
+            )
+            .to_lowercase()
+            .contains(query)
+        })
+}
+
+#[component]
+fn ArticleReadings(name: &'static str) -> impl IntoView {
+    view! {
+        <div class="coverage-text article-readings">
+            {ARTICLES.iter().filter(|article| article.publisher == name).map(|article| view! {
+                <article class="article-reading">
+                    <p class="article-credit">{article.credit}</p>
+                    <h4>{article.title}</h4>
+                    {article.paragraphs.iter().map(|paragraph| view! { <p class="article-paragraph">{*paragraph}</p> }).collect_view()}
+                </article>
+            }).collect_view()}
+            <p class="article-attribution">"Original summaries of the reporting, presented here for easy reading. Publication titles and credits identify the sources."</p>
+        </div>
+    }
+}
+
 // Names and review excerpts are transcribed from the supplied reference collection.
 // See docs/REFERENCES.md for evidence, deduplication, and unresolved identities.
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -122,7 +167,7 @@ const REFERENCES: [Reference; 38] = [
         context: "REPORTED SCHOOL VISIT",
         detail: "Named in a news clipping",
         text: ReferenceText::Coverage(
-            "A clipping titled ‘Geography game show comes to Naumann’ reports Neal’s visit to the school. The caption describes third graders learning the 50 U.S. states and ways to remember them as Neal draws a map from memory.",
+            "A supplied news clipping, ‘Geography game show comes to Naumann,’ records Neal’s two-day visit to Naumann Elementary. It describes third graders learning the 50 United States and ways to remember them while Neal draws a map from memory. The accompanying caption captures the question-and-answer part of the show, with a student receiving a prize for a correct response. The clipping provides a brief classroom account; its publisher and publication date are not visible.",
         ),
     },
     Reference {
@@ -194,7 +239,7 @@ const REFERENCES: [Reference; 38] = [
         context: "COOK ISLANDS · PRESS COVERAGE",
         detail: "Visitor turns learning into lots of laughs",
         text: ReferenceText::Coverage(
-            "A Cook Islands News clipping features Neal’s classroom presentation under the headline ‘Visitor turns learning into lots of laughs.’",
+            "The supplied Cook Islands News clipping carries the headline ‘Visitor turns learning into lots of laughs’ above a classroom map demonstration. The archive preserves the headline and image, but no article body or publication date. It documents press coverage of Neal’s visit to the Cook Islands.",
         ),
     },
     Reference {
@@ -203,7 +248,7 @@ const REFERENCES: [Reference; 38] = [
         context: "NEPAL · WEEKLY NEWSPAPER",
         detail: "Coverage of Neal’s school visits in Nepal",
         text: ReferenceText::Coverage(
-            "The Nepali weekly Digo Dristi covered Neal’s school visits in Nepal and his use of drawing to teach geography.",
+            "A clipping from the Nepali weekly Digo Dristi reports on Neal’s educational visits in Nepal, using drawing and geography with students affected by an earthquake. The supplied archive includes the Nepali-language report and a classroom photograph. A complete, verified English translation is not currently available.",
         ),
     },
     Reference {
@@ -448,6 +493,7 @@ pub fn References() -> impl IntoView {
             .filter(|r| {
                 in_group(r, category.get())
                     && (query.is_empty()
+                        || article_matches(r.name, &query)
                         || format!("{} {} {} {}", r.name, r.context, r.detail, r.text.body())
                             .to_lowercase()
                             .contains(&query))
@@ -487,6 +533,8 @@ pub fn References() -> impl IntoView {
                                     <p class="review-label">{r.text.label()}</p>
                                     {if matches!(r.text, ReferenceText::Review(_)) {
                                         view! { <blockquote>{r.text.body()}</blockquote> }.into_any()
+                                    } else if has_articles(r.name) {
+                                        view! { <ArticleReadings name=r.name/> }.into_any()
                                     } else {
                                         view! { <p class="coverage-text">{r.text.body()}</p> }.into_any()
                                     }}
