@@ -16,7 +16,6 @@ include!("gallery_photos.rs");
 pub fn ProgramGallery(index: usize) -> impl IntoView {
     let (photos, name, label) = match index {
         0 => (GEOGRAPHY, "Geography", "FROM THE SHOW"),
-        1 => (ANATOMY, "Anatomy", "FROM THE DRAWING BOARD"),
         _ => (ART, "Art", "ARTWORK & DRAWING MOMENTS"),
     };
     let current = RwSignal::new(0usize);
@@ -26,7 +25,7 @@ pub fn ProgramGallery(index: usize) -> impl IntoView {
 
     view! {
         <section class="program-gallery" aria-label=format!("{name} photo gallery") aria-roledescription=role_description>
-            <p class="gallery-label">{label}</p>
+            <span class="sr-only">{label}</span>
             <figure>
                 <div class="gallery-frame">
                     <img class="gallery-image"
@@ -52,7 +51,7 @@ pub fn ProgramGallery(index: usize) -> impl IntoView {
                     })}
                 </figcaption>
             </figure>
-            {(count > 8).then(|| view! {
+            {(count > 1).then(|| view! {
                 <label class="gallery-jump" for="gallery-photo-select">
                     <span>{format!("Browse all {count} photos")}</span>
                     <select id="gallery-photo-select" prop:value=move || current.get().to_string()
@@ -67,17 +66,6 @@ pub fn ProgramGallery(index: usize) -> impl IntoView {
                     </select>
                 </label>
             })}
-            {(count > 1).then(|| view! {
-                <div class="gallery-thumbnails" role="group" aria-label="Choose a photo">
-                    {photos.iter().enumerate().map(|(i, p)| view! {
-                        <button type="button" aria-label=format!("Show photo {}: {}", i + 1, p.title)
-                            aria-pressed=move || (current.get() == i).to_string()
-                            on:click=move |_| current.set(i)>
-                            <img src=format!("public/photos/{}-thumb.webp", p.file) alt="" width="128" height="96" loading="lazy" decoding="async"/>
-                        </button>
-                    }).collect_view()}
-                </div>
-            })}
         </section>
     }
 }
@@ -85,7 +73,6 @@ pub fn ProgramGallery(index: usize) -> impl IntoView {
 pub fn photo_count(index: usize) -> usize {
     match index {
         0 => GEOGRAPHY.len(),
-        1 => ANATOMY.len(),
         _ => ART.len(),
     }
 }

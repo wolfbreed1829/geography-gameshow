@@ -1,561 +1,330 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-const approvedPhotos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-PHOTOS.json', import.meta.url), 'utf8'));
-const verifiedVideos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-VIDEOS.json', import.meta.url), 'utf8'));
+const routes = ['index', 'programs', 'geography', 'art', 'geography-photos', 'art-photos', 'geography-videos', 'art-videos', 'in-action', 'meet-neal', 'challenge', 'planning', 'references', 'booking'];
+const sizes = [[1440, 1000], [1280, 800], [390, 844], [320, 568], [844, 390]];
+const photos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-PHOTOS.json', import.meta.url), 'utf8'));
+const videos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-VIDEOS.json', import.meta.url), 'utf8'));
 
-test.beforeEach(async ({ page }) => {
-  const startupErrors = [];
-  page.on('pageerror', error => startupErrors.push(error.message));
-  page.on('requestfailed', request => startupErrors.push(`${request.url()}: ${request.failure()?.errorText}`));
-  await page.goto('./');
-  try {
-    await expect(page.getByRole('heading', { name: /The whole world./ })).toBeVisible();
-  } catch (error) {
-    console.error('Startup diagnostics:', { url: page.url(), startupErrors, body: (await page.locator('body').innerText()).slice(0, 600) });
-    throw error;
+async function settle(page) {
+  await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+}
+async function fits(page) {
+  await settle(page);
+  const bounds = await page.evaluate(() => ({
+    width: innerWidth, height: innerHeight,
+    scrollWidth: document.documentElement.scrollWidth, scrollHeight: document.documentElement.scrollHeight,
+    readers: [...document.querySelectorAll('.reader-body')].filter(e => e.clientHeight > 0).map(e => ({ available: e.clientHeight, text: e.querySelector('.reader-text').getBoundingClientRect().height })),
+  }));
+  expect(bounds.scrollWidth, `${page.url()}: horizontal overflow`).toBeLessThanOrEqual(bounds.width);
+  expect(bounds.scrollHeight, `${page.url()}: vertical overflow`).toBeLessThanOrEqual(bounds.height);
+  for (const reader of bounds.readers) expect(reader.text, 'Reading text must fit without clipping').toBeLessThanOrEqual(reader.available + 1);
+}
+async function section(page, label) {
+  await page.locator('.screen-deck').waitFor();
+  const picker = page.getByRole('combobox', { name: 'Page section', exact: true });
+  if (await picker.isVisible()) await picker.selectOption({ label });
+  else await page.getByRole('group', { name: 'Page sections', exact: true }).getByRole('button', { name: label, exact: true }).click();
+  await settle(page);
+}
+async function readAll(page) {
+  const reader = page.locator('.screen-reader:visible');
+  await expect(reader.locator('.reader-text:not(.reader-probe)')).not.toBeEmpty();
+  const next = reader.getByRole('button', { name: 'Next', exact: true });
+  let text = '';
+  for (let i = 0; i < 200; i++) {
+    await fits(page);
+    text += await reader.locator('.reader-text:not(.reader-probe)').textContent();
+    if (await next.isDisabled()) return text;
+    await next.click();
   }
-});
+  throw new Error('Reading pagination did not terminate');
+}
 
-test('all local images and fonts load without browser errors', async ({ page }) => {
-  test.setTimeout(90000); // Includes uncached CDN image/font transfers on a public deployment.
-  const errors = [];
-  page.on('pageerror', error => errors.push(error.message));
-  await page.reload();
-  await page.getByRole('heading', { name: /The whole world./ }).waitFor();
-  const assets = await page.evaluate(async () => {
-    document.querySelectorAll('img').forEach(img => img.loading = 'eager');
-    await Promise.all([...document.images].map(img => img.decode()));
-    await document.fonts.ready;
-    const ocean = new Image();
-    ocean.src = new URL('public/ocean-background.webp', document.baseURI).href;
-    await ocean.decode();
-    return { images: [...document.images].every(img => img.naturalWidth > 0), fonts: [...document.fonts].every(font => font.status === 'loaded'), ocean: ocean.naturalWidth > 0 };
-  });
-  expect(assets).toEqual({ images: true, fonts: true, ocean: true });
-  expect(errors).toEqual([]);
-});
-
-test('short homepage leads to separate program pages with working refresh and back', async ({ page }) => {
-  await expect(page.locator('link#coastal-preload')).toHaveAttribute('as', 'image');
-  await expect(page.locator('.show-card, .quiz-box, .inquiry-form')).toHaveCount(0);
-  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThanOrEqual(1050);
-  await page.locator('#main-nav').getByRole('link', { name: 'Programs', exact: true }).click();
-  await expect(page).toHaveURL(/programs.html$/);
-  await expect(page.locator('link#coastal-preload')).toHaveCount(0);
-  await expect(page.locator('.show-card')).toHaveCount(3);
-  await expect.poll(() => page.locator('.discovery-illustration').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
-  await expect(page.locator('.discovery-status')).toHaveText(['LIVE EXPERIENCE', 'IN DEVELOPMENT', 'IN DEVELOPMENT']);
-  await page.locator('.anatomy-card').click();
-  await expect(page).toHaveURL(/anatomy.html$/);
-  await expect(page.locator('h1')).toHaveText('Anatomy');
-  await page.reload();
-  await expect(page.locator('h1')).toHaveText('Anatomy');
-  await page.goBack();
-  await expect(page.locator('.show-card')).toHaveCount(3);
-});
-
-test('homepage preview plays on demand and connects school proof to the full collection', async ({ page }) => {
-  let embeds = 0;
-  await page.route('https://www.youtube-nocookie.com/embed/**', route => {
-    embeds += 1;
-    return route.fulfill({contentType:'text/html', body:'<html><body>Embedded player test</body></html>'});
-  });
-  await expect(page.locator('.featured-player iframe')).toHaveCount(0);
-  expect(embeds).toBe(0);
-  await expect(page.locator('.home-school-story blockquote')).toContainText('dynamic and fascinating');
-  await expect(page.locator('.home-quote-credit')).toContainText('Westbrook Hay Prep School');
-  await page.getByRole('button', {name:'Play the Geography Gameshow introduction'}).click();
-  await expect(page.locator('.featured-player iframe')).toHaveAttribute('src', /youtube-nocookie.com\/embed\/YnSI6XrQm8E\?/);
-  await expect.poll(() => embeds).toBe(1);
-  const frame = await page.locator('.featured-player iframe').boundingBox();
-  expect(frame.width).toBeGreaterThanOrEqual(200);
-  expect(frame.height).toBeGreaterThanOrEqual(200);
-  await page.reload();
-  await expect(page.getByRole('button', {name:'Play the Geography Gameshow introduction'})).toBeVisible();
-  await expect(page.locator('.featured-player iframe')).toHaveCount(0);
-  await page.getByRole('link', {name:'Read the school stories'}).click();
-  await expect(page).toHaveURL(/references.html$/);
-  await page.getByRole('searchbox').fill('Westbrook');
-  await page.locator('.reference-review summary').click();
-  await expect(page.locator('.reference-review blockquote')).toContainText('It was a dynamic and fascinating way');
-});
-
-test('3D program cards animate, follow the mouse, and honor motion controls', async ({ page }) => {
-  await page.goto('programs.html');
-  await page.emulateMedia({reducedMotion:'no-preference'});
-  const card=page.locator('.geography-card');
-  const artwork=card.locator('.discovery-illustration');
-  await expect(artwork).toHaveCSS('animation-name','discovery-drift');
-  await expect.poll(()=>artwork.evaluate(image=>image.complete && image.naturalWidth>0)).toBe(true);
-  const before=await artwork.evaluate(el=>getComputedStyle(el).transform);
-  await expect.poll(()=>artwork.evaluate(el=>getComputedStyle(el).transform)).not.toBe(before);
-  const box=await card.boundingBox();
-  await page.mouse.move(box.x+box.width*.8,box.y+box.height*.3);
-  await expect.poll(()=>card.evaluate(el=>{ return Math.abs(parseFloat(el.style.getPropertyValue('--ry'))); })).toBeGreaterThan(1);
-  await expect(card).not.toHaveCSS('transform','none');
-  await page.mouse.move(5,5);
-  await expect.poll(()=>card.evaluate(el=>parseFloat(el.style.getPropertyValue('--ry')))).toBe(0);
-  await card.dispatchEvent('pointermove',{pointerType:'touch',clientX:box.x+box.width*.8,clientY:box.y+30});
-  expect(await card.evaluate(el=>parseFloat(el.style.getPropertyValue('--ry')))).toBe(0);
-  await page.getByRole('button',{name:'Pause ocean animation'}).click();
-  await expect(artwork).toHaveCSS('animation-play-state','paused');
-  await expect(card.locator('.discovery-sheen')).toHaveCSS('animation-play-state','paused');
-  await expect(card).toHaveCSS('transform','none');
-  await page.getByRole('button',{name:'Resume ocean animation'}).click();
-  await expect(artwork).toHaveCSS('animation-play-state','running');
-  await page.emulateMedia({reducedMotion:'reduce'});
-  await expect(artwork).toHaveCSS('animation-name','none');
-  await expect(card).toHaveCSS('transform','none');
-  await expect(card.locator('.discovery-sheen')).toBeHidden();
-});
-
-test('every page loads directly with its own title, valid links, and no published prices', async ({ page, request }) => {
-  test.setTimeout(90000);
-  const internalLinks = new Set();
-  for (const slug of ['index', 'programs', 'geography', 'anatomy', 'art', 'geography-photos', 'anatomy-photos', 'art-photos', 'geography-videos', 'anatomy-videos', 'art-videos', 'in-action', 'meet-neal', 'challenge', 'planning', 'booking', 'references']) {
-    const response = await page.goto(`${slug}.html`);
+for (const route of routes) {
+  test(`${route}: one screen, usable sections, and visible booking`, async ({ page }) => {
+    test.setTimeout(90000);
+    const errors = [];
+    page.on('pageerror', e => errors.push(e.message));
+    const response = await page.goto(`${route}.html`);
     expect(response.status()).toBe(200);
     await expect(page.locator('main h1')).toHaveCount(1);
     await expect(page.locator('main h1')).toBeVisible();
-    if (slug !== 'index') expect(await page.title()).toContain('| The Geography Gameshow');
-    const content = await page.locator('body').innerText();
-    expect(content).not.toMatch(/biology|pricing|\$\s*\d|deposit|cancellation fee/i);
-    expect(content).not.toContain('\uFFFD');
-    const links = await page.locator('a[href]').evaluateAll(els => els.map(el => el.href).filter(href => href.startsWith(location.origin)));
-    links.forEach(href => internalLinks.add(href.split('#')[0]));
-  }
-  for (const href of internalLinks) expect((await request.get(href)).status(), href).toBe(200);
-});
-
-test('program video tabs keep a single player on-site and play every verified selection', async ({ page }) => {
-  // Exercise our player selection, not YouTube's network availability or ads.
-  await page.route('https://www.youtube-nocookie.com/embed/**', route => route.fulfill({contentType:'text/html', body:'<html><body>Embedded player test</body></html>'}));
-  for (const [slug, name] of [['geography', 'Geography'], ['art', 'Art']]) {
-    const videos = verifiedVideos.filter(video => video.program === slug);
-    await page.goto(`${slug}.html`);
-    const nav = page.getByRole('navigation', {name:`${name} sections`});
-    await expect(nav.getByRole('link', {name:/Overview/})).toHaveAttribute('aria-current','page');
-    await nav.getByRole('link', {name:/Videos/}).click();
-    await expect(page).toHaveURL(new RegExp(`${slug}-videos.html$`));
-    await expect(nav.getByRole('link', {name:/Videos/})).toHaveAttribute('aria-current','page');
-    await expect(page.locator('.video-embed')).toHaveCount(0);
-    await expect(page.locator('.video-choice')).toHaveCount(videos.length);
-    await page.locator('.video-start').focus();
-    await page.keyboard.press('Enter');
-    await expect(page.locator('.video-embed')).toHaveCount(1);
-    for (let i=0;i<videos.length;i++) {
-      await page.locator('.video-choice').nth(i).click();
-      const player=page.locator('.video-embed');
-      await expect(player).toHaveCount(1);
-      await expect(player).toHaveAttribute('src', new RegExp(`/embed/${videos[i].id}\\?`));
-      await expect(player).toHaveAttribute('title', `${videos[i].title} — YouTube video player`);
-      await expect(player).toHaveAttribute('referrerpolicy','strict-origin-when-cross-origin');
-      await expect(page.locator('.video-information h2')).toHaveText(videos[i].title);
-      await expect(page.locator('.video-choice[aria-pressed="true"]')).toHaveCount(1);
-      await expect(page).toHaveURL(new RegExp(`${slug}-videos.html$`));
-    }
-    await page.getByRole('searchbox', {name:'Search videos'}).fill('no-such-video-123');
-    await expect(page.locator('.video-choice')).toHaveCount(0);
-    await expect(page.locator('.video-embed')).toHaveCount(1);
-    await page.getByRole('button',{name:'Show all videos'}).click();
-    await expect(page.locator('.video-choice')).toHaveCount(videos.length);
-    await page.setViewportSize({width:320,height:740});
-    const bounds=await page.locator('.video-embed').boundingBox();
-    expect(bounds.width).toBeGreaterThanOrEqual(200);
-    expect(bounds.height).toBeGreaterThanOrEqual(200);
-    expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
-    await page.reload();
-    await expect(page.locator('.video-start')).toBeVisible();
-    await expect(page.locator('.video-embed')).toHaveCount(0);
-    await nav.getByRole('link',{name:/Photos/}).click();
-    await expect(page).toHaveURL(new RegExp(`${slug}-photos.html$`));
-    await expect(page.locator('.gallery-frame')).toBeVisible();
-    await page.setViewportSize({width:1440,height:1000});
-  }
-  await page.goto('anatomy.html');
-  await page.getByRole('navigation',{name:'Anatomy sections'}).getByRole('link',{name:/Videos/}).click();
-  await expect(page).toHaveURL(/anatomy-videos.html$/);
-  await expect(page.locator('main')).toContainText('There are no anatomy videos to share just yet.');
-  await expect(page.locator('iframe,.video-choice')).toHaveCount(0);
-  await page.goto('in-action.html');
-  await page.getByRole('link',{name:/Watch the original show/}).click();
-  await expect(page).toHaveURL(/geography-videos.html$/);
-});
-
-test('program subnavigation opens separate photo galleries with working controls and full images', async ({ page }) => {
-  test.setTimeout(process.env.PREVIEW_URL ? 300000 : 180000);
-  for (const [slug, name] of [['geography', 'Geography'], ['anatomy', 'Anatomy'], ['art', 'Art']]) {
-    const photos = approvedPhotos.filter(photo => photo.program === slug);
-    const count = photos.length;
-    await page.goto(`${slug}.html`);
-    const subnav = page.getByRole('navigation', { name: `${name} sections` });
-    await expect(subnav.getByRole('link', { name: 'Overview' })).toHaveAttribute('aria-current', 'page');
-    await expect(page.locator('.program-gallery')).toHaveCount(0);
-    await subnav.getByRole('link', { name: /Photos/ }).click();
-    await expect(page).toHaveURL(new RegExp(`${slug}-photos.html$`));
-    await expect(subnav.getByRole('link', { name: /Photos/ })).toHaveAttribute('aria-current', 'page');
-    const gallery = page.getByRole('region', { name: `${name} photo gallery` });
-    const image = gallery.locator('.gallery-image');
-    await expect(image).toHaveCSS('object-fit', 'contain');
-    const sources = new Set();
-    for (let i = 0; i < count; i++) {
-      await image.evaluate(img => img.decode());
-      sources.add(await image.getAttribute('src'));
-      await expect(image).toHaveAttribute('src', `public/photos/${photos[i].file}.webp`);
-      expect(await image.evaluate(img => [img.naturalWidth, img.naturalHeight])).toEqual(photos[i].size);
-      const display = await image.boundingBox();
-      expect(display.width).toBeLessThanOrEqual(photos[i].size[0]);
-      expect(display.height).toBeLessThanOrEqual(photos[i].size[1]);
-      if (count > 1) {
-        await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo ${i + 1} of ${count}`);
-        await expect(gallery.locator('.gallery-thumbnails button').nth(i)).toHaveAttribute('aria-pressed', 'true');
-        await gallery.getByRole('button', { name: 'Next photo', exact: true }).click();
+    await expect(page.locator('body')).not.toContainText(/Anatomy/i);
+    await expect(page.locator('a[href*="anatomy"]')).toHaveCount(0);
+    for (const [width, height] of sizes) {
+      await page.setViewportSize({ width, height });
+      await fits(page);
+      const booking = width <= 900 ? page.locator('.mobile-book') : page.locator('#main-nav').getByRole('link', { name: 'Request a Show', exact: true });
+      await expect(booking).toBeInViewport();
+      if (route !== 'index') {
+        const labels = await page.locator('.screen-deck > .screen-tabs > button').allTextContents();
+        for (const label of labels) {
+          await section(page, label);
+          await fits(page);
+          const panel = page.locator('.screen-panel:visible');
+          await expect(panel).toHaveCount(1);
+        }
+        if (labels.length) await section(page, labels[0]);
       }
     }
-    expect(sources.size).toBe(count);
-    if (count > 1) {
-      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo 1 of ${count}`);
-      await gallery.getByRole('button', { name: 'Previous photo', exact: true }).click();
-      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo ${count} of ${count}`);
-      const first = gallery.getByRole('button', { name: /^Show photo 1:/ });
-      await first.focus();
-      await page.keyboard.press('Enter');
-      await expect(first).toHaveAttribute('aria-pressed', 'true');
-      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo 1 of ${count}`);
-    } else {
-      await expect(gallery.getByRole('button')).toHaveCount(0);
-    }
-    if (count > 8) {
-      const jump = gallery.getByRole('combobox', { name: `Browse all ${count} photos` });
-      await expect(jump.locator('option')).toHaveCount(count);
-      await jump.selectOption(String(count - 1));
-      await expect(gallery.locator('.gallery-count')).toHaveAttribute('aria-label', `Photo ${count} of ${count}`);
-      await expect(image).toHaveAttribute('src', `public/photos/${photos[count - 1].file}.webp`);
-      await gallery.getByRole('button', { name: 'Next photo', exact: true }).click();
-      await expect(jump).toHaveValue('0');
-      await gallery.getByRole('button', { name: /^Show photo 2:/ }).click();
-      await expect(jump).toHaveValue('1');
-    }
-    await page.reload();
-    await expect(gallery).toBeVisible();
-    await subnav.getByRole('link', { name: 'Overview' }).click();
-    await expect(page.locator('main h1')).toHaveText(name);
-    await expect(page.locator('.program-gallery')).toHaveCount(0);
-  }
-  await page.goto('in-action.html');
-  await expect(page.locator('.action-photo img')).toHaveAttribute('src', 'public/photos/world-in-progress.webp');
-});
-
-for (const [topic, answers] of [['Geography', [1, 0, 2]], ['Anatomy', [0, 1, 2]], ['Art', [1, 0, 2]]]) {
-  test(`${topic} challenge scores correctly, prevents duplicate answers, and resets`, async ({ page }) => {
-    await page.goto('challenge.html');
-    const quiz = page.locator('.quiz-box');
-    await quiz.getByRole('button', { name: topic, exact: true }).click();
-    for (let i = 0; i < 3; i++) {
-      await quiz.locator('.quiz-answers button').nth(answers[i]).click();
-      await expect(quiz.locator('.quiz-feedback')).toContainText('You’ve got it!');
-      await expect(quiz.locator('.quiz-answers button:disabled')).toHaveCount(3);
-      await quiz.getByRole('button', { name: i === 2 ? 'See my result' : 'Next question' }).click();
-    }
-    await expect(quiz.locator('.quiz-result')).toContainText('3 out of 3');
-    await quiz.getByRole('button', { name: 'Play again' }).click();
-    await expect(quiz.locator('.quiz-progress')).toContainText('QUESTION 01 / 03');
-    await expect(quiz.locator('.quiz-answers button:disabled')).toHaveCount(0);
-    await quiz.locator('.quiz-answers button').nth((answers[0] + 1) % 3).click();
-    await expect(quiz.locator('.quiz-feedback')).toContainText('A new thing to know');
-    await expect(quiz.locator('.quiz-answers .correct')).toHaveCount(1);
-    await quiz.getByRole('button', { name: topic === 'Art' ? 'Anatomy' : 'Art', exact: true }).click();
-    await expect(quiz.locator('.quiz-progress')).toContainText('QUESTION 01 / 03');
-    await expect(quiz.locator('.quiz-answers button:disabled')).toHaveCount(0);
+    expect(errors).toEqual([]);
   });
 }
 
-test('international inquiry validates, reviews locally, and clears stale previews', async ({ page }) => {
-  await page.goto('booking.html?program=anatomy');
-  await expect(page.getByLabel('Program of interest')).toHaveValue('Anatomy — concept inquiry');
-  const review = page.getByRole('button', { name: 'Review inquiry' });
-  await review.click();
-  await expect(page.locator('.draft-preview')).toHaveCount(0);
-  await page.getByLabel('School name', { exact: true }).fill('東京国際学校 & Arts');
-  await page.getByLabel('Administrator or teacher name', { exact: true }).fill('佐藤 Yuki & Sam');
-  await page.getByLabel('Email address', { exact: true }).fill('yuki+school@example.jp');
-  await page.getByLabel('Phone number').fill('+81 (0)3 1234-5678 ext. 12');
-  await page.getByLabel('School address', { exact: false }).fill('東京都新宿区 1-2-3\nTokyo 160-0022');
-  await page.getByLabel('Country or territory').fill('日本 / Japan');
-  await page.getByLabel('Additional details').fill('Ages 8–10, 60 students. <script>alert(1)</script>');
-  const sent = [];
-  page.on('request', request => { if (request.method() !== 'GET') sent.push(request.url()); });
-  await review.click();
-  const draft = page.locator('.draft-preview');
-  await expect(draft).toContainText('東京国際学校 & Arts');
-  await expect(draft).toContainText('+81 (0)3 1234-5678 ext. 12');
-  await expect(draft).toContainText('東京都新宿区');
-  await expect(draft).toContainText('日本 / Japan');
-  await expect(draft).toContainText('<script>alert(1)</script>');
-  await expect(draft.locator('script')).toHaveCount(0);
-  await expect(draft).toContainText('not been sent or saved');
-  await expect(page.locator('form a[href^="mailto:"]')).toHaveCount(0);
-  await expect(page).toHaveURL(/booking.html\?program=anatomy$/);
-  expect(sent).toEqual([]);
-  expect(await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length }))).toEqual({ local: 0, session: 0 });
-  await page.getByLabel('Administrator or teacher name', { exact: true }).fill('Amira Hassan');
-  await expect(draft).toHaveCount(0);
-  await page.getByLabel('Country or territory').fill('الإمارات العربية المتحدة');
-  await page.getByLabel('School address').fill('شارع المدرسة، دبي');
-  await page.getByLabel('Phone number').fill('+971 50 123 4567');
-  await page.getByLabel('Additional details').fill('');
-  await review.click();
-  await expect(draft).toContainText('الإمارات العربية المتحدة');
-  await expect(draft).toContainText('Not provided');
-});
-
-test('school visit information is readable on the page without the PDF', async ({ page }) => {
-  await page.goto('planning.html');
-  await expect(page.locator('.faq')).toContainText('15 minutes');
-  await page.locator('summary').filter({ hasText: 'Room setup & materials' }).click();
-  await expect(page.getByText('White rolled paper and wall space for large drawings.', { exact: true })).toBeVisible();
-  await page.locator('summary').filter({ hasText: 'International school visits' }).click();
-  await expect(page.getByText(/Neal travels to schools around the world/)).toBeVisible();
-  await expect(page.locator('a[href$=".pdf"]')).toHaveCount(0);
-  await page.getByRole('link', { name: 'Start an inquiry' }).click();
-  await expect(page.getByLabel('School name', { exact: true })).toBeVisible();
-});
-
-test('mobile navigation closes after selection and layouts do not overflow', async ({ page }) => {
-  test.setTimeout(60000);
-  for (const slug of ['index', 'programs', 'anatomy', 'geography-photos', 'anatomy-photos', 'art-photos', 'geography-videos', 'anatomy-videos', 'art-videos', 'planning', 'booking', 'challenge', 'meet-neal', 'in-action', 'references']) {
-  await page.goto(`${slug}.html`);
-  await expect(page.locator('main h1')).toBeVisible();
-  for (const width of [320, 390, 768, 1024, 1440]) {
-    await page.setViewportSize({ width, height: 900 });
-    const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, content: document.documentElement.scrollWidth }));
-    expect(dimensions.content, `${slug}: horizontal overflow at ${width}px`).toBeLessThanOrEqual(dimensions.viewport);
-  }
-  }
-  await page.setViewportSize({ width: 390, height: 844 });
-  const menu = page.getByRole('button', { name: 'Menu +' });
-  await menu.click();
-  await expect(page.locator('#main-nav')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Close −' })).toHaveAttribute('aria-expanded', 'true');
-  await page.locator('#main-nav').getByRole('link', { name: 'Meet Neal' }).click();
-  await expect(page.locator('#main-nav')).toBeHidden();
-  await expect(page).toHaveURL(/meet-neal.html$/);
-  await expect(page.locator('main h1')).toContainText('Meet Neal');
-});
-
-test('references are text-only, deduplicated, and grouped by source type', async ({ page }) => {
-  await page.locator('#main-nav').getByRole('link', { name: 'References', exact: true }).click();
-  await expect(page).toHaveURL(/references.html$/);
-  await expect(page.locator('main h1')).toHaveText('References & press.');
-  await expect(page.locator('main img, main iframe, main a[href^="http"]')).toHaveCount(0);
-  await expect(page.locator('.reference-entry')).toHaveCount(6);
-  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 38');
-  await expect(page.getByRole('heading', { name: 'Sea Girt Elementary School', exact: true })).toHaveCount(1);
-  const westbrook = page.locator('.reference-entry').filter({ has: page.getByRole('heading', { name: 'Westbrook Hay Prep School', exact: true }) });
-  await expect(westbrook.locator('blockquote')).toBeHidden();
-  await westbrook.locator('summary').focus();
-  await page.keyboard.press('Enter');
-  await expect(westbrook.locator('blockquote')).toBeVisible();
-  await expect(westbrook.locator('blockquote')).toContainText('It was a dynamic and fascinating way to learn');
-  const cushing = page.locator('.reference-entry').filter({ has: page.getByRole('heading', { name: 'Cushing School PTO', exact: true }) });
-  await cushing.locator('summary').click();
-  await expect(cushing.locator('blockquote')).toContainText('The students were engaged the ENTIRE time.');
-  await expect(cushing.locator('blockquote')).toBeVisible();
-  await expect(westbrook.locator('blockquote')).toBeHidden();
-  await expect(page).toHaveURL(/references.html$/);
-  await page.getByRole('navigation', { name: 'Reference pages' }).getByRole('button', { name: 'Next' }).click();
-  await expect(page.getByRole('heading', { name: 'CIS', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'South', exact: true })).toBeVisible();
-  const filters = page.getByRole('group', { name: 'Browse references' });
-  await filters.getByRole('button', { name: /Community/ }).click();
-  await expect(page.locator('.reference-entry')).toHaveCount(6);
-  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 11');
-  await expect(page.getByRole('heading', { name: 'Wellfleet Rec', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Jefferey Clayton', exact: true })).toBeVisible();
-  await expect(page.locator('main a[href^="http"]')).toHaveCount(0);
-  const capeCod = page.locator('.reference-entry').filter({ hasText: 'Friends of Cape Cod National Seashore' });
-  await capeCod.locator('summary').click();
-  await expect(capeCod.locator('blockquote')).toContainText('fun, entertaining and educational');
-  const press = filters.getByRole('button', { name: /In the press/ });
-  await press.focus();
-  await page.keyboard.press('Enter');
-  await expect(press).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('.reference-entry')).toHaveCount(6);
-  await expect(page.getByRole('heading', { name: 'Cook Islands News', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Digo Dristi', exact: true })).toBeVisible();
-  await expect(page.locator('main a[href^="http"], main iframe')).toHaveCount(0);
-  const nome = page.locator('.reference-entry').filter({ has: page.getByRole('heading', { name: 'The Nome Nugget', exact: true }) });
-  await expect(nome.locator('.coverage-text')).toBeHidden();
-  await nome.locator('summary').click();
-  await expect(nome.locator('.coverage-text')).toBeVisible();
-  await expect(nome.locator('.coverage-text')).toContainText('September 23, 2010');
-  await expect(nome.locator('.review-label')).toHaveText('Coverage summary');
-  await expect(page).toHaveURL(/references.html$/);
-  await expect(page.locator('main')).not.toContainText('School Instagram');
-  await page.setViewportSize({ width: 320, height: 740 });
-  await expect(nome.locator('.coverage-text')).toBeVisible();
-  const dimensions = await page.evaluate(() => ({ content: document.documentElement.scrollWidth, viewport: innerWidth }));
-  expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
-  await nome.locator('summary').click();
-  await expect(nome.locator('.coverage-text')).toBeHidden();
-});
-
-test('press and school articles expand into readable panels with searchable copy', async ({ page }) => {
-  await page.goto('references.html');
-  const search = page.getByRole('searchbox', { name: 'Find a reference' });
-  for (const [publisher, count] of [['The Provincetown Independent', 2], ['The Nome Nugget', 1], ['Overdrive', 1], ['University of Delaware', 1], ['Peacehaven Community School', 2], ['Lancing Prep Hove', 3], ['James Hargest College', 1], ['Mrs. Thomas’s Fourth Grade', 1], ['Mrs. Begin’s Happy Campers', 1], ['Mike Mahaffie', 1]]) {
-    await search.fill(publisher);
-    const entry = page.locator('.reference-entry').filter({ has: page.getByRole('heading', {name: publisher, exact: true}) });
-    await entry.locator('summary').click();
-    await expect(entry.locator('.article-reading')).toHaveCount(count);
-    await expect(entry.locator('.article-reading h4').first()).toBeVisible();
-    expect((await entry.locator('.article-paragraph').allTextContents()).join(' ').split(/\s+/).length).toBeGreaterThan(45);
-    expect((await entry.boundingBox()).width).toBeGreaterThan((await page.locator('.reference-list').boundingBox()).width * .95);
-  }
-  await search.fill('Eastham studio');
-  await expect(page.locator('.reference-entry h3')).toHaveText('The Provincetown Independent');
-  await page.locator('.reference-entry summary').click();
-  await expect(page.locator('.article-reading h4')).toHaveText(['For Illustrator Neal Nichols Jr., Drawing Is Like Breathing', 'A Life That’s Everywhere and All Right Here']);
-  await expect(page.locator('main a[href^="http"], main img, main iframe')).toHaveCount(0);
-  await page.setViewportSize({width:320, height:740});
-  await expect(page.locator('.article-reading').last()).toBeVisible();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
-});
-
-test('reference search and pagination retain the collection and consolidate online research', async ({ page }) => {
-  await page.goto('references.html');
-  const pages = page.getByRole('navigation', { name: 'Reference pages' });
-  await expect(pages.getByRole('button', { name: 'Previous' })).toBeDisabled();
-  const names = [];
-  for (let index = 0; index < 7; index++) {
-    await expect(pages).toContainText(`Page ${index + 1} of 7`);
-    names.push(...await page.locator('.reference-entry h3').allTextContents());
-    if (index < 6) await pages.getByRole('button', { name: 'Next' }).click();
-  }
-  expect(names).toHaveLength(38);
-  expect(new Set(names).size).toBe(38);
-  expect(names).toEqual(expect.arrayContaining(['CIS', 'South', 'Cushing School PTO', 'The Nome Nugget', 'James Hargest College', 'The Provincetown Independent', 'Lancing Prep Hove', 'Cape Cod National Seashore', 'K12 Academics']));
-  await expect(pages.getByRole('button', { name: 'Next' })).toBeDisabled();
-
-  const search = page.getByRole('searchbox', { name: 'Find a reference' });
-  await search.fill('  lAnCiNg  ');
-  await expect(page.locator('.reference-entry')).toHaveCount(1);
-  await expect(page.getByRole('heading', { name: 'Lancing Prep Hove', exact: true })).toBeVisible();
-  await expect(pages).toBeHidden();
-  await page.locator('.reference-entry summary').click();
-  await expect(page.locator('.coverage-text')).toContainText('2016–2017');
-  await expect(page.locator('.coverage-text')).toContainText('December 20, 2024');
-
-  const filters = page.getByRole('group', { name: 'Browse references' });
-  await filters.getByRole('button', { name: /In the press/ }).click();
-  await expect(page.getByRole('heading', { name: 'No references found.' })).toBeVisible();
-  await page.getByRole('button', { name: 'Show all references', exact: true }).click();
-  await expect(search).toHaveValue('');
-  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 38');
-
-  await search.fill('New Zealand');
-  await expect(page.locator('.reference-entry')).toHaveCount(2);
-  await expect(page.getByRole('heading', { name: 'James Hargest College', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Clear', exact: true }).click();
-  await filters.getByRole('button', { name: /Schools & education/ }).click();
-  await expect(page.locator('.directory-caption')).toHaveText('Showing 1–6 of 21');
-  await search.fill('nonexistent-school-987654321');
-  await expect(page.locator('.reference-entry')).toHaveCount(0);
-  await expect(page.locator('.directory-caption')).toHaveText('No matching references');
-  await page.setViewportSize({ width: 320, height: 740 });
-  await page.getByRole('button', { name: 'Show all references', exact: true }).click();
-  const dimensions = await page.evaluate(() => ({ content: document.documentElement.scrollWidth, viewport: innerWidth }));
-  expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
-});
-
-test('ocean motion runs, pauses, resumes, and respects reduced motion', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  const ocean = page.locator('.ocean-texture');
-  await expect(ocean).toHaveCSS('animation-play-state', 'running');
-  const initial = await ocean.evaluate(el => getComputedStyle(el).transform);
-  await expect.poll(() => ocean.evaluate(el => getComputedStyle(el).transform)).not.toBe(initial);
-  await page.getByRole('button', { name: 'Pause ocean animation' }).click();
-  await expect(ocean).toHaveCSS('animation-play-state', 'paused');
-  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-  const paused = await ocean.evaluate(el => Array.from(new DOMMatrixReadOnly(getComputedStyle(el).transform).toFloat64Array()));
-  await page.waitForTimeout(250); // Verify that elapsed time no longer advances the water.
-  const settled = await ocean.evaluate(el => Array.from(new DOMMatrixReadOnly(getComputedStyle(el).transform).toFloat64Array()));
-  // Browsers may finish a compositor frame after the pause. Subpixel rounding is harmless.
-  expect(Math.max(...settled.map((value, i) => Math.abs(value - paused[i])))).toBeLessThan(0.05);
-  await page.goto('programs.html');
-  await expect(ocean).toHaveCSS('animation-play-state', 'paused');
-  await page.getByRole('button', { name: 'Resume ocean animation' }).click();
-  await expect(ocean).toHaveCSS('animation-play-state', 'running');
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await expect(ocean).toHaveCSS('animation-name', 'none');
-  await expect(page.locator('.motion-toggle')).toBeHidden();
-});
-
-test('coastal opening pans, pauses, skips, replays, and remembers completion', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  const coast = page.locator('.coastal-home');
-  const pan = page.locator('.coastal-pan');
-  await expect(coast).toHaveClass(/coast-ready/);
-  await expect(pan).toHaveCSS('animation-name', 'wellfleet-arrival');
-  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
-  await expect(page.getByRole('link', { name: /Explore the programs/ })).toBeVisible();
-  await page.getByRole('link', { name: /Explore the programs/ }).focus();
-  await expect(coast).not.toHaveClass(/coast-done/);
-  await expect(pan).toHaveCSS('animation-play-state', 'running');
-  // The camera must keep advancing through the former horizon/harbor/water holds.
-  const positions = await pan.evaluate(async el => {
-    const animation = el.getAnimations()[0];
-    const duration = animation.effect.getTiming().duration;
-    const travel = el.getBoundingClientRect().height - innerHeight;
-    const samples = [];
-    for (const fraction of [.02, .12, .28, .34, .4, .62, .69, .75, .9, .98]) {
-      animation.currentTime = duration * fraction;
-      await new Promise(resolve => requestAnimationFrame(resolve));
-      samples.push({ fraction, progress: -new DOMMatrixReadOnly(getComputedStyle(el).transform).m42 / travel });
-    }
-    animation.currentTime = 0;
-    return samples;
-  });
-  for (const {fraction, progress} of positions) expect(Math.abs(progress - fraction)).toBeLessThan(.005);
-  const start = await pan.evaluate(el => getComputedStyle(el).transform);
-  await pan.evaluate(el => { el.getAnimations()[0].currentTime = 7500; });
-  await expect.poll(() => pan.evaluate(el => getComputedStyle(el).transform)).not.toBe(start);
-
-  await page.getByRole('button', { name: 'Pause ocean animation' }).click();
-  await expect(pan).toHaveCSS('animation-play-state', 'paused');
-  const pausedTime = await pan.evaluate(el => el.getAnimations()[0].currentTime);
-  await page.waitForTimeout(150);
-  const afterPause = await pan.evaluate(el => el.getAnimations()[0].currentTime);
-  expect(Math.abs(afterPause - pausedTime)).toBeLessThan(40);
-  await page.getByRole('button', { name: 'Resume ocean animation' }).click();
-  await expect(pan).toHaveCSS('animation-play-state', 'running');
-
-  await page.getByRole('button', { name: 'Skip intro' }).click();
-  await expect(coast).toHaveClass(/coast-done/);
-  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
-  await expect(page.getByRole('link', { name: /Explore the programs/ })).toBeVisible();
-  expect(await page.evaluate(() => sessionStorage.getItem('wellfleet-arrival-seen'))).toBe('true');
-  await page.goto('programs.html');
-  await expect(page.locator('.coastal-pan')).toHaveCount(0);
+test('home retains its large logo and has no extra content below it', async ({ page }) => {
   await page.goto('index.html');
-  await expect(coast).toHaveClass(/coast-done/);
-  await page.getByRole('button', { name: 'Replay coast' }).click();
-  await expect(coast).not.toHaveClass(/coast-done/);
-  await expect(pan).toHaveCSS('animation-name', 'wellfleet-arrival');
-  await pan.evaluate(el => el.getAnimations()[0].finish());
-  await expect(coast).toHaveClass(/coast-done/);
-  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+  await expect(page.locator('.landing-logo')).toBeVisible();
+  await expect(page.locator('.landing-hero h1')).toHaveText('World maps illustrated from memory');
+  await expect(page.locator('.site-copyright')).toHaveText('(c) 1992 Neal Nichols Jr. geographygameshow.com');
+  await expect(page.locator('.landing-hero > p')).toHaveText('Educational performances for all ages');
+  await expect(page.locator('.home-evidence')).toHaveCount(0);
+  await expect(page.locator('.landing-actions').getByRole('link', { name: 'Request a Show' })).toBeInViewport();
+  await page.locator('.landing-actions').getByRole('link', { name: 'View Programs' }).click();
+  await expect(page).toHaveURL(/programs.html$/);
+  await expect(page.locator('.program-choice:visible img')).toHaveAttribute('src', 'public/programs/geography-sketchbook.webp');
+  await expect(page.locator('.program-choice:visible img')).toHaveCSS('object-fit', 'contain');
+  await page.locator('.program-choice:visible').click();
+  await expect(page).toHaveURL(/geography.html$/);
+  await section(page, 'Artwork');
+  await expect(page.locator('.art-display:visible img')).toHaveAttribute('src', 'public/photos/complete-world-map.webp');
+  await expect(page.locator('.art-display.original-drawing:visible')).toBeVisible();
 });
 
-test('coastal opening respects reduced motion and keeps keyboard access immediate', async ({ page }) => {
-  await expect(page.locator('.coastal-pan')).toHaveCSS('animation-name', 'none');
-  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
-  await expect(page.locator('.coastal-controls')).toBeHidden();
+test('color washes react to the pointer, press, pause, and reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.getByRole('link', { name: /Explore the programs/ }).focus();
-  await expect(page.locator('.coastal-home')).not.toHaveClass(/coast-done/);
-  await expect(page.locator('.coastal-content')).toHaveCSS('opacity', '1');
+  await page.goto('index.html');
+  const request = page.locator('.landing-actions .button');
+  await expect(request).toHaveText('Request a Show');
+  await expect(request).toHaveCSS('animation-name', 'color-cascade');
+  await expect(page.locator('.landing-hero h1')).toHaveCSS('animation-name', 'lettering-reflection');
+  const position = await request.evaluate(e => getComputedStyle(e).backgroundPosition);
+  await expect.poll(() => request.evaluate(e => getComputedStyle(e).backgroundPosition)).not.toBe(position);
+  const washTransform = await request.evaluate(e => getComputedStyle(e, '::before').transform);
+  await expect.poll(() => request.evaluate(e => getComputedStyle(e, '::before').transform)).not.toBe(washTransform);
+  await request.hover({ position: { x: 20, y: 15 } });
+  expect(await request.evaluate(e => e.style.getPropertyValue('--pointer-x'))).not.toBe('');
+  await expect.poll(() => request.evaluate(e => Number(getComputedStyle(e, '::after').opacity))).toBe(1);
+  const raised = await request.evaluate(e => getComputedStyle(e).transform);
+  await page.mouse.down();
+  await expect.poll(() => request.evaluate(e => getComputedStyle(e).transform)).not.toBe(raised);
+  await page.mouse.move(10, 10);
+  await page.mouse.up();
+  await page.getByRole('button', { name: 'Pause animations', exact: true }).click();
+  await expect(request).toHaveCSS('animation-play-state', 'paused');
+  expect(await request.evaluate(e => getComputedStyle(e, '::before').animationPlayState)).toBe('paused');
+  await expect(page.locator('.landing-hero h1')).toHaveCSS('animation-play-state', 'paused');
+  await page.getByRole('button', { name: 'Resume animations', exact: true }).click();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(request).toHaveCSS('animation-name', 'none');
+  expect(await request.evaluate(e => getComputedStyle(e, '::before').animationName)).toBe('none');
+  await expect(page.locator('.landing-hero h1')).toHaveCSS('animation-name', 'none');
+  await request.focus();
+  await expect(request).toBeFocused();
+});
+
+test('supplied curriculum retains all eight grades, titles, and running times', async ({ page }) => {
+  await page.goto('geography.html');
+  await section(page, 'Curriculum');
+  const expected = [
+    ['K', 'Drawing and Art', '45–60 minutes'], ['1', 'New England and the Pilgrims', '60 minutes'],
+    ['2', 'World Map Introduction', '75 minutes'], ['3', 'Massachusetts History', '75 minutes'],
+    ['4', 'USA History', '90 minutes'], ['5', 'The Original Colonies', '90 minutes'],
+    ['6', 'Ancient / Middle East', '90 minutes'], ['7', 'World Map Challenge', '90 minutes'],
+  ];
+  await page.setViewportSize({ width: 320, height: 568 });
+  for (const [i, [grade, title, time]] of expected.entries()) {
+    await page.getByRole('combobox', { name: 'Choose a grade' }).selectOption(String(i));
+    await expect(page.locator('.curriculum-card')).toContainText(`Grade ${grade}`);
+    await expect(page.locator('.curriculum-card')).toContainText(title);
+    await expect(page.locator('.curriculum-card')).toContainText(time);
+    await fits(page);
+  }
+  await section(page, 'Program outline');
+  const outline = await readAll(page);
+  for (const phrase of ['fundraising shows', 'Montessori schools', 'multi-age audiences', 'Alaska History', '31 States of Mexico', 'Britain 1066', 'World Tectonic Plates and Disaster']) expect(outline).toContain(phrase);
+});
+
+test('scheduling preserves arrival, intervals, and both supplied schedule examples', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('planning.html');
+  await section(page, 'Scheduling & show length');
+  const scheduling = await readAll(page);
+  expect(scheduling).toContain('15 minutes');
+  expect(scheduling).toContain('45–60 minutes before');
+  expect(scheduling).not.toContain('30–45');
+  await section(page, 'One-day schedule');
+  const one = await readAll(page);
+  expect(one).toContain('Grade 2 · World Map Introduction · 75 minutes');
+  expect(one).toContain('Grade 4 · USA History · 90 minutes');
+  await section(page, 'Two-day schedule');
+  const two = await readAll(page);
+  expect(two).toContain('Day 1');
+  expect(two).toContain('Day 2');
+  expect(two).toContain('Grade 5 · The Original Colonies · 90 minutes');
+});
+
+for (const slug of ['geography', 'art']) {
+  test(`${slug}: every original photo remains selectable and visible`, async ({ page }) => {
+    test.setTimeout(90000);
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.goto(`${slug}-photos.html`);
+    const collection = photos.filter(p => p.program === slug);
+    const picker = page.locator('#gallery-photo-select');
+    await expect(picker.locator('option')).toHaveCount(collection.length);
+    for (let i = 0; i < collection.length; i++) {
+      await picker.selectOption(String(i));
+      await expect(page.locator('.gallery-image')).toHaveAttribute('src', `public/photos/${collection[i].file}.webp`);
+      await page.locator('.gallery-image').evaluate(image => image.decode());
+      await fits(page);
+      const box = await page.locator('.gallery-image').boundingBox();
+      expect(box.height).toBeGreaterThan(30);
+      expect(box.y + box.height).toBeLessThan(568);
+    }
+    await page.getByRole('button', { name: 'Next photo', exact: true }).click();
+    await expect(picker).toHaveValue('0');
+  });
+  test(`${slug}: verified videos still play on demand with one player`, async ({ page }) => {
+    await page.route('https://www.youtube-nocookie.com/embed/**', route => route.fulfill({ contentType: 'text/html', body: '<html><body>Player</body></html>' }));
+    await page.goto(`${slug}-videos.html`);
+    await expect(page.locator('iframe')).toHaveCount(0);
+    const collection = videos.filter(v => v.program === slug);
+    const picker = page.getByRole('combobox', { name: 'Choose a video', exact: true });
+    await expect(picker.locator('option')).toHaveCount(collection.length);
+    for (let i = 0; i < collection.length; i++) {
+      await picker.selectOption(String(i));
+      await page.locator('.video-start').click();
+      await expect(page.locator('iframe')).toHaveCount(1);
+      await expect(page.locator('iframe')).toHaveAttribute('src', new RegExp(collection[i].id));
+    }
+    await section(page, 'Find a video');
+    await page.getByRole('searchbox').fill('no-such-video');
+    await expect(page.getByRole('status')).toHaveText('0 videos');
+    await page.getByRole('button', { name: 'Show all videos' }).click();
+    await expect(page.getByRole('combobox', { name: 'Search results' }).locator('option')).toHaveCount(collection.length + 1);
+  });
+}
+
+test('references retain the video, testimonial, publications, and all 38 sources', async ({ page }) => {
+  await page.route('https://www.youtube-nocookie.com/embed/**', route => route.fulfill({ contentType: 'text/html', body: '<html><body>Player</body></html>' }));
+  await page.goto('references.html');
+  await page.getByRole('button', { name: 'Play the Geography Gameshow introduction' }).click();
+  await expect(page.locator('.featured-player iframe')).toHaveCount(1);
+  await section(page, 'School story');
+  expect(await readAll(page)).toContain('dynamic and fascinating');
+  await section(page, 'Featured in');
+  const press = await readAll(page);
+  for (const name of ['The Provincetown Independent', 'The Nome Nugget', 'Overdrive']) expect(press).toContain(name);
+  await section(page, 'Directory');
+  const picker = page.getByRole('combobox', { name: 'Choose a reference', exact: true });
+  await expect(picker.locator('option')).toHaveCount(38);
+  const names = await picker.locator('option').allTextContents();
+  expect(new Set(names).size).toBe(38);
+  await page.setViewportSize({ width: 320, height: 568 });
+  for (let i = 0; i < names.length; i++) {
+    await picker.selectOption(String(i));
+    await expect(page.locator('.reference-card h2')).toHaveText(names[i]);
+    await fits(page);
+  }
+  await page.getByRole('searchbox').fill('Provincetown');
+  await page.getByRole('button', { name: 'Read coverage', exact: true }).click();
+  const text = await readAll(page);
+  expect(text).toContain('Drawing Is Like Breathing');
+  expect(text).toContain('A Life That’s Everywhere');
+  expect(text).toContain('Publication titles and credits identify the sources.');
+  await page.getByRole('button', { name: 'Back to references' }).click();
+  await page.getByRole('searchbox').fill('nothing matches this');
+  await expect(page.getByRole('heading', { name: 'No references found.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Show all references' }).click();
+  await expect(picker.locator('option')).toHaveCount(38);
+});
+
+test('inquiry validates each step, retains entries, and paginates long text safely', async ({ page }) => {
+  test.setTimeout(90000);
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('booking.html?program=art');
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.locator('.step-label')).toContainText('Step 1');
+  await page.getByLabel('School name', { exact: true }).fill('東京国際学校 & Arts');
+  await page.getByLabel('Administrator or teacher name').fill('Yuki & Sam');
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByLabel('Email address').fill('school@example.jp');
+  await page.getByLabel('Phone number').fill('+81 (0)3 1234-5678');
+  await fits(page);
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await page.getByLabel('School address').fill('東京都新宿区 1-2-3\nTokyo 160-0022');
+  await page.getByLabel('Country or territory').fill('日本 / Japan');
+  await fits(page);
+  await page.getByRole('button', { name: 'Continue' }).click();
+  await expect(page.getByLabel('Program of interest')).toHaveValue('Art — concept inquiry');
+  await expect(page.locator('option')).not.toContainText(['Anatomy']);
+  const note = '<script>alert(1)</script> ' + 'X'.repeat(700);
+  await page.getByLabel('Additional details').fill(note);
+  const sent = [];
+  page.on('request', r => { if (r.method() !== 'GET') sent.push(r.url()); });
+  await page.getByRole('button', { name: 'Review inquiry' }).click();
+  const review = await readAll(page);
+  for (const value of ['東京国際学校 & Arts', 'Yuki & Sam', '+81 (0)3 1234-5678', '東京都新宿区', '日本 / Japan', note]) expect(review).toContain(value);
+  expect(sent).toEqual([]);
+  await expect(page.locator('.draft-preview script')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Edit inquiry' }).click();
+  await expect(page.getByLabel('School name', { exact: true })).toHaveValue('東京国際学校 & Arts');
+  await expect(page.locator('.draft-preview')).toHaveCount(0);
+});
+
+for (const [topic, answers] of [['Geography', [1, 0, 2]], ['Art', [1, 0, 2]]]) {
+  test(`${topic}: challenge completes, scores, and resets without scrolling`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.goto('challenge.html');
+    await page.getByRole('group', { name: 'Challenge subject' }).getByRole('button', { name: topic, exact: true }).click();
+    for (let i = 0; i < 3; i++) {
+      await fits(page);
+      await page.locator('.quiz-answers button').nth(answers[i]).click();
+      await expect(page.locator('.quiz-feedback')).toContainText('You’ve got it!');
+      await fits(page);
+      await page.getByRole('button', { name: i === 2 ? 'See my result' : 'Next question' }).click();
+    }
+    await expect(page.locator('.quiz-result')).toContainText('3 out of 3');
+    await fits(page);
+    await page.getByRole('button', { name: 'Play again' }).click();
+    await expect(page.locator('.quiz-progress')).toHaveText('Question 1 / 3');
+  });
+}
+
+test('mobile navigation and motion controls remain usable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('index.html');
+  await page.getByRole('button', { name: 'Menu +' }).click();
+  await page.locator('#main-nav').getByRole('link', { name: 'References', exact: true }).click();
+  await expect(page.locator('#main-nav')).toBeHidden();
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.getByRole('button', { name: 'Pause animations' }).click();
+  await expect(page.locator('.ocean-texture')).toHaveCSS('animation-play-state', 'paused');
+  await page.goto('index.html');
+  await expect(page.locator('.coastal-pan')).toHaveCSS('animation-play-state', 'paused');
+  await page.getByRole('button', { name: 'Resume animations' }).click();
+  await expect(page.locator('.coastal-pan')).toHaveCSS('animation-play-state', 'running');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(page.locator('.coastal-pan')).toHaveCSS('animation-name', 'none');
+});
+
+test('Programs dropdown links to Geography and Art on desktop and mobile', async ({ page }) => {
+  await page.goto('index.html');
+  const programs = page.locator('.program-menu');
+  await programs.locator('summary').focus();
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/programs.html$/);
+  await expect(programs.getByRole('link', { name: 'Geography', exact: true })).toBeVisible();
+  await expect(programs.getByRole('link', { name: 'Art', exact: true })).toBeVisible();
+  await programs.getByRole('link', { name: 'Geography', exact: true }).click();
+  await expect(page.locator('main h1')).toHaveText('Geography');
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.getByRole('button', { name: 'Menu +' }).click();
+  await programs.locator('summary').click();
+  await programs.getByRole('link', { name: 'Art', exact: true }).click();
+  await expect(page.locator('main h1')).toHaveText('Art');
+  await expect(page.locator('.site-copyright')).toBeInViewport();
+  const copyright = await page.locator('.site-copyright').boundingBox();
+  expect(copyright.x).toBe(16);
+  await fits(page);
 });

@@ -1,0 +1,11 @@
+Mode: Built-in image_gen tool
+Output: public/programs/geography-sketchbook.webp
+Original drawing remains available in the Geography Artwork tab.
+
+Use case: compositing / style-transfer.
+Asset type: wide 16:9 Geography program illustration for an existing website, companion to its Art program illustration.
+Input image 1: style and composition reference, the cinematic artist sketchbook with sculptural blue paint ribbons.
+Input image 2: primary artwork to preserve, Neal Nichols Jr.'s actual hand-drawn world map.
+Create a premium cinematic Geography companion image. Replace the coastal sketch in the first reference with the complete hand-drawn world map from the second reference, presented prominently on a large, slightly tilted landscape sheet in an open sketchbook. The map should dominate the image, with its recognizable continent outlines, colored annotations, and handwritten marks faithfully retained; do not redraw it as a generic atlas, realistic globe, or invented educational map. Keep the whole map legible and unobstructed, at only a gentle perspective angle.
+Match the reference's deep midnight navy studio background, dramatic warm upper-left light, dimensional paper and leather, a floating sharpened drawing pencil, and flowing glossy cobalt blue and small gold ribbons curving behind and around the outside edges. The accessories should frame the drawing without covering the continents. Elegant, crisp material detail, polished 3D cinematic realism. Wide balanced composition filling a 16:9 image.
+No UI, no buttons, no decorative picture frame, no additional headlines, no watermark, no globe. Only retain existing text within the actual map.

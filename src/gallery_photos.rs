@@ -283,25 +283,6 @@ const GEOGRAPHY: &[Photo] = &[
     },
 ];
 
-const ANATOMY: &[Photo] = &[
-    Photo {
-        file: "digestive-system",
-        title: "Inside the digestive system",
-        caption: "An example of Neal’s illustrated approach to exploring the human body.",
-        alt: "Colorful, labeled drawing of the human digestive system",
-        width: 601,
-        height: 772,
-    },
-    Photo {
-        file: "the-eye",
-        title: "The eye, illustrated",
-        caption: "A colorful study of the eye and its connection to the brain.",
-        alt: "Hand-drawn cross-section of the eye with anatomical labels and a small brain diagram",
-        width: 1290,
-        height: 1127,
-    },
-];
-
 const ART: &[Photo] = &[
     Photo {
         file: "artist-in-studio",

@@ -12,15 +12,15 @@ pub struct Program {
     pub features: [(&'static str, &'static str); 3],
 }
 
-pub const PROGRAMS: [Program; 3] = [
+pub const PROGRAMS: [Program; 2] = [
     Program {
         slug: "geography",
         name: "Geography",
         label: "THE ORIGINAL LIVE EXPERIENCE",
         headline: "A world unfolds. Right before your eyes.",
         description: "Neal draws maps entirely from memory, weaving geography, history, and listening skills into a show that invites students to join in.",
-        image: "public/programs/geography-3d-1000.webp",
-        image_alt: "Cinematic globe with cobalt oceans, earthy continents, and illuminated orbital rings",
+        image: "public/programs/geography-sketchbook.webp",
+        image_alt: "Cinematic sketchbook illustration inspired by Neal’s world map, with a pencil and blue-and-gold ribbons",
         features: [
             (
                 "A map for every age",
@@ -33,29 +33,6 @@ pub const PROGRAMS: [Program; 3] = [
             (
                 "Connected to your classroom",
                 "Discuss your grade level, current lessons, and preferred region with Neal to find the right program.",
-            ),
-        ],
-    },
-    Program {
-        slug: "anatomy",
-        name: "Anatomy",
-        label: "NEW PROGRAM / IN DEVELOPMENT",
-        headline: "A whole world of wonder. Inside you.",
-        description: "A proposed live-drawing journey through the human body: how bones support us, muscles move us, and organs work together. Neal is developing the topics, age ranges, and format for this new show.",
-        image: "public/programs/anatomy-3d-1000.webp",
-        image_alt: "Sculptural anatomy illustration with a translucent torso, ribs, lungs, and heart",
-        features: [
-            (
-                "Bones & movement",
-                "Explore a proposed introduction to the skeleton, joints, and muscles through clear, memorable drawings.",
-            ),
-            (
-                "Organs & connections",
-                "Discover how the heart, lungs, and other parts of the body fit together. Final lesson topics are still being developed.",
-            ),
-            (
-                "A new show taking shape",
-                "Share your students’ ages and what they are learning. Neal can discuss the developing concept and future possibilities.",
             ),
         ],
     },
@@ -86,13 +63,20 @@ pub const PROGRAMS: [Program; 3] = [
 
 #[component]
 pub fn Programs() -> impl IntoView {
+    let panels = PROGRAMS
+        .into_iter()
+        .enumerate()
+        .map(|(index, p)| {
+            (
+                p.name,
+                view! {<DiscoveryCard index=index program=p/>}.into_any(),
+            )
+        })
+        .collect();
     view! {
-        <section class="programs-page wrap page-section" aria-labelledby="programs-title">
-            <div class="section-heading"><div><p class="eyebrow">"CHOOSE YOUR ADVENTURE"</p><h1 id="programs-title">"Three worlds."<br/>"One curious mind."</h1></div><p>"Explore the original Geography Gameshow and the new Anatomy and Art concepts. Each has its own story to discover."</p></div>
-            <div class="show-cards">
-                {PROGRAMS.into_iter().enumerate().map(|(index, p)| view! { <DiscoveryCard index=index program=p/> }).collect_view()}
-            </div>
-            <div class="page-signpost"><span>"Planning a school visit?"</span><a class="text-link" href="planning.html">"Find the practical details"<span>"↗"</span></a></div>
+        <section class="screen-page wrap"><h1>"Programs"</h1>
+            <crate::screen::Deck panels=panels/>
+            <div class="screen-links"><a href="planning.html">"Plan a school visit"</a></div>
         </section>
     }
 }
@@ -100,37 +84,13 @@ pub fn Programs() -> impl IntoView {
 #[component]
 fn DiscoveryCard(index: usize, program: Program) -> impl IntoView {
     let p = program;
-    let card = NodeRef::<leptos::html::A>::new();
-    let tilt = RwSignal::new((0.0_f64, 0.0_f64));
     view! {
-        <a node_ref=card class=format!("show-card discovery-card {}-card", p.slug) href=format!("{}.html", p.slug)
-            style=move || { let (x, y) = tilt.get(); format!("--rx:{:.3}deg;--ry:{:.3}deg;--mx:{:.2}%;--my:{:.2}%;--px:{:.2}px;--py:{:.2}px", -y*4.0, x*5.0, 50.0+x*40.0, 50.0+y*40.0, x*7.0, y*5.0) }
-            on:pointermove=move |event| {
-                if event.pointer_type() == "mouse" && let Some(element) = card.get() {
-                    let bounds = element.get_bounding_client_rect();
-                    if bounds.width() > 0.0 && bounds.height() > 0.0 {
-                        tilt.set((((event.client_x() as f64 - bounds.left()) / bounds.width() * 2.0 - 1.0).clamp(-1.0, 1.0), ((event.client_y() as f64 - bounds.top()) / bounds.height() * 2.0 - 1.0).clamp(-1.0, 1.0)));
-                    }
-                }
-            }
-            on:pointerleave=move |_| tilt.set((0.0, 0.0)) on:blur=move |_| tilt.set((0.0, 0.0))>
-            <div class="discovery-scene" aria-hidden="true">
-                <div class="discovery-artwork"><img class="discovery-illustration"
-                    src=format!("public/programs/{}-3d-1000.webp", p.slug)
-                    srcset=format!("public/programs/{0}-3d-640.webp 640w, public/programs/{0}-3d-1000.webp 1000w, public/programs/{0}-3d-1672.webp 1672w", p.slug)
-                    sizes="(max-width: 680px) 135vw, (max-width: 1000px) 65vw, 620px"
-                    alt="" width="1672" height="941" decoding="async"/></div>
-                <div class="discovery-sheen"></div>
-                <div class="discovery-scene-top"><span class="discovery-number">{format!("0{}", index + 1)}</span><span class="discovery-edition">{if index == 0 { "THE ORIGINAL LIVE SHOW" } else { "A NEW WORLD IN THE MAKING" }}</span></div>
-                <span class="discovery-note">{match index { 0 => "A world drawn from memory", 1 => "Discover the world within", _ => "See it. Imagine it. Create it." }}</span>
+        <a class=format!("program-choice {}-card",p.slug) href=format!("{}.html",p.slug)>
+            <div class="program-card-visual"><img src=p.image alt=p.image_alt width="1672" height="941"/></div>
+            <div class="program-choice-copy"><p class="program-choice-label">{if index==0{"DRAWN FROM MEMORY"}else{"IN DEVELOPMENT"}}</p><h2>{p.name}</h2>
+                <p>{if index==0{"Live illustration. Real geography. A show for every age."}else{"Drawing, perspective, and the confidence to create."}}</p>
+                <span class="program-choice-action">{format!("Explore {}",p.name)}</span>
             </div>
-            <div class="discovery-copy">
-                <div class="discovery-heading"><h2>{p.name}</h2><span class="discovery-arrow" aria-hidden="true">"↗"</span></div>
-                <p>{match index { 0 => "One blank page. The whole world. Watch a map come to life, entirely from memory.", 1 => "An extraordinary journey through bones, muscles, and the amazing world inside us.", _ => "A fresh way to look at the everyday. Follow a line and see where it takes you." }}</p>
-                <div class="discovery-topics" aria-hidden="true">{match index { 0 => "MAPS · HISTORY · DISCOVERY", 1 => "BODY · MOVEMENT · CONNECTION", _ => "LINE · PERSPECTIVE · POSSIBILITY" }}</div>
-                <div class="discovery-bottom"><span>{format!("Explore {}", p.name)}</span><span class="discovery-status">{if index == 0 { "LIVE EXPERIENCE" } else { "IN DEVELOPMENT" }}</span></div>
-            </div>
-            <span class="discovery-glare" aria-hidden="true"></span>
         </a>
     }
 }
@@ -138,23 +98,41 @@ fn DiscoveryCard(index: usize, program: Program) -> impl IntoView {
 #[component]
 pub fn ProgramPage(index: usize) -> impl IntoView {
     let p = PROGRAMS[index];
-    view! {
-        <article class=format!("program-page program-{} wrap page-section", p.slug)>
-            <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="programs.html">"Programs"</a><span aria-hidden="true">"/"</span><span aria-current="page">{p.name}</span></nav>
-            <ProgramSubnav index=index active="overview"/>
-            <div class="program-intro"><div><p class="eyebrow">{p.label}</p><h1>{p.name}</h1><h2>{p.headline}</h2><p class="program-description">{p.description}</p><div class="program-actions"><a class="button" href=format!("booking.html?program={}", p.slug)>{if index == 0 { "Ask about a show" } else { "Ask about the concept" }}<span>"↗"</span></a><a class="text-link" href="challenge.html">"Try a challenge"<span>"→"</span></a></div></div>
-                <figure class="program-visual program-visual-cinematic">
-                    <img src=p.image
-                        srcset=format!("public/programs/{0}-3d-640.webp 640w, public/programs/{0}-3d-1000.webp 1000w, public/programs/{0}-3d-1672.webp 1672w", p.slug)
-                        sizes="(max-width: 680px) 95vw, (max-width: 1100px) 55vw, 760px"
-                        alt=p.image_alt width="1672" height="941" decoding="async"/>
-                    <figcaption><span>{format!("0{} / {}", index + 1, p.name)}</span><span>{match index { 0 => "Our planet", 1 => "The world within", _ => "Your imagination" }}</span></figcaption>
-                </figure>
-            </div>
-            <div class="program-features">{p.features.into_iter().enumerate().map(|(i,(heading,text))| view! {<section><span class="feature-number">{format!("0{}",i+1)}</span><h3>{heading}</h3><p>{text}</p></section>}).collect_view()}</div>
-            <div class="page-signpost"><a class="text-link" href="programs.html"><span>"←"</span>"All programs"</a><a class="text-link" href=if index == 0 { "in-action.html" } else { "meet-neal.html" }>{if index == 0 { "See the original show in action" } else { "Meet the artist behind the show" }}<span>"↗"</span></a></div>
-        </article>
+    let (artwork_image, artwork_alt) = if index == 0 {
+        (
+            "public/photos/complete-world-map.webp",
+            "Neal Nichols Jr.’s original completed hand-drawn world map",
+        )
+    } else {
+        (p.image, p.image_alt)
+    };
+    let details = p
+        .features
+        .iter()
+        .map(|(heading, text)| format!("{heading}\n\n{text}"))
+        .collect::<Vec<_>>()
+        .join("\n\n");
+    let mut panels=vec![
+        ("Overview",view!{
+            <div class="program-overview"><div><h2>{p.headline}</h2>
+                <crate::screen::Reader text=format!("{}\n\n{}",p.label,p.description)/>
+                <div class="screen-links"><a href="challenge.html">"Try a challenge"</a><a href="programs.html">"All programs"</a></div>
+            </div><div class="overview-art"><img src=p.image alt=p.image_alt width="1672" height="941"/></div></div>
+        }.into_any()),
+        ("Details",view!{<crate::screen::Reader text=details/>}.into_any()),
+        ("Artwork",view!{<figure class="screen-media"><div class="art-display" class:original-drawing=index==0><img src=artwork_image alt=artwork_alt width="1171" height="708"/></div><figcaption>{if index==0{"A world drawn from memory · Neal Nichols Jr."}else{"Your imagination"}}</figcaption></figure>}.into_any()),
+    ];
+    if index == 0 {
+        panels.insert(1, ("Curriculum", view! {<Curriculum/>}.into_any()));
+        panels.insert(
+            2,
+            (
+                "Program outline",
+                view! {<crate::screen::Reader text=PROGRAM_OUTLINE.to_string()/>}.into_any(),
+            ),
+        );
     }
+    view! {<article class="screen-page wrap"><h1>{p.name}</h1><ProgramSubnav index=index active="overview"/><crate::screen::Deck panels=panels/></article>}
 }
 
 #[component]
@@ -177,22 +155,62 @@ pub fn PhotoPage(index: usize) -> impl IntoView {
             "Geography in pictures.",
             "From the first outline to a world full of stories. Take a closer look at Neal’s live drawings.",
         ),
-        1 => (
-            "Anatomy, illustrated.",
-            "A look at Neal’s drawing work as a new program about the human body takes shape.",
-        ),
         _ => (
             "Art, up close.",
             "Artwork, drawing demonstrations, and a look inside Neal’s studio. Explore the details that make us look again.",
         ),
     };
+    let panels = vec![
+        (
+            "Photos",
+            view! {<crate::gallery::ProgramGallery index=index/>}.into_any(),
+        ),
+        (
+            "About",
+            view! {<crate::screen::Reader text=format!("{title}\n\n{description}")/>}.into_any(),
+        ),
+    ];
     view! {
-        <article class="photos-page wrap page-section">
-            <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="programs.html">"Programs"</a><span aria-hidden="true">"/"</span><a href=format!("{}.html", p.slug)>{p.name}</a><span aria-hidden="true">"/"</span><span aria-current="page">"Photos"</span></nav>
+        <article class="screen-page wrap"><h1>{format!("{} photos",p.name)}</h1>
             <ProgramSubnav index=index active="photos"/>
-            <div class="photos-heading"><h1>{title}</h1><p>{description}</p></div>
-            <crate::gallery::ProgramGallery index=index/>
-            <div class="page-signpost"><a class="text-link" href=format!("{}.html", p.slug)><span>"←"</span>{format!("Back to {}", p.name)}</a><a class="text-link" href=format!("booking.html?program={}", p.slug)>"Start a conversation"<span>"↗"</span></a></div>
+            <crate::screen::Deck panels=panels/>
         </article>
     }
+}
+
+pub const PROGRAM_OUTLINE: &str = "All programs feature Neal’s illustration and content from memory, and are educational for a variety of audiences. Additional venues include family fun night fundraising shows, libraries, camps, aftercare groups, tourist centers, home school assemblies, and Montessori schools.\n\nThe Geography Gameshow is a practical lesson plan in a game show format. Some students win prizes from various places around the world.\n\nThe curriculum is suggested: shows are interchangeable across grade levels and suitable for multi-age audiences. Schools can host events annually without repeat performances as students progress through the years.\n\nOther titles include Alaska History, Texas History, 31 States of Mexico, Latin America, Europe Shows, Britain 1066, World Tectonic Plates and Disaster, and more.";
+
+const CURRICULUM: [(&str, &str, &str); 8] = [
+    (
+        "K",
+        "Drawing and Art\nLocal Regional Show\nCape Cod Introduction",
+        "45–60 minutes",
+    ),
+    (
+        "1",
+        "New England and the Pilgrims\nUSA Map Introduction",
+        "60 minutes",
+    ),
+    ("2", "World Map Introduction", "75 minutes"),
+    (
+        "3",
+        "Massachusetts History\nUSA Capitols / National Parks",
+        "75 minutes",
+    ),
+    ("4", "USA History", "90 minutes"),
+    ("5", "The Original Colonies", "90 minutes"),
+    ("6", "Ancient / Middle East", "90 minutes"),
+    ("7", "World Map Challenge", "90 minutes"),
+];
+
+#[component]
+fn Curriculum() -> impl IntoView {
+    let grade = RwSignal::new(0usize);
+    view! {<div class="curriculum">
+        <label class="curriculum-select"><span class="sr-only">"Choose a grade"</span><select prop:value=move ||grade.get().to_string() on:change=move |e|grade.set(event_target_value(&e).parse().unwrap_or(0))>
+            {CURRICULUM.iter().enumerate().map(|(i,(g,_,_))|view!{<option value=i.to_string()>{format!("Grade {g}")}</option>}).collect_view()}
+        </select></label>
+        <article class="curriculum-card"><p>"SUGGESTED CURRICULUM"</p><h2>{move ||format!("Grade {}",CURRICULUM[grade.get()].0)}</h2><p class="curriculum-titles">{move ||CURRICULUM[grade.get()].1}</p><strong>{move ||CURRICULUM[grade.get()].2}</strong></article>
+        <nav class="reader-pagination" aria-label="Curriculum grades"><button type="button" disabled=move ||grade.get()==0 on:click=move |_|grade.update(|i|*i=i.saturating_sub(1))>"Previous"</button><span>{move ||format!("{} / 8",grade.get()+1)}</span><button type="button" disabled=move ||grade.get()==7 on:click=move |_|grade.update(|i|*i+=1)>"Next"</button></nav>
+    </div>}
 }

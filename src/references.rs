@@ -29,22 +29,6 @@ fn article_matches(name: &str, query: &str) -> bool {
         })
 }
 
-#[component]
-fn ArticleReadings(name: &'static str) -> impl IntoView {
-    view! {
-        <div class="coverage-text article-readings">
-            {ARTICLES.iter().filter(|article| article.publisher == name).map(|article| view! {
-                <article class="article-reading">
-                    <p class="article-credit">{article.credit}</p>
-                    <h4>{article.title}</h4>
-                    {article.paragraphs.iter().map(|paragraph| view! { <p class="article-paragraph">{*paragraph}</p> }).collect_view()}
-                </article>
-            }).collect_view()}
-            <p class="article-attribution">"Original summaries of the reporting, presented here for easy reading. Publication titles and credits identify the sources."</p>
-        </div>
-    }
-}
-
 // Names and review excerpts are transcribed from the supplied reference collection.
 // See docs/REFERENCES.md for evidence, deduplication, and unresolved identities.
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -442,8 +426,6 @@ const REFERENCES: [Reference; 38] = [
     },
 ];
 
-const PAGE_SIZE: usize = 6;
-
 const GROUPS: [(&str, &str, &str); 4] = [
     (
         "All references",
@@ -471,91 +453,84 @@ fn in_group(reference: &Reference, group: usize) -> bool {
     group == 0 || reference.category + 1 == group
 }
 
-fn turn_page(page: RwSignal<usize>, next: usize) {
-    page.set(next);
-    if let Some(results) = web_sys::window()
-        .and_then(|window| window.document())
-        .and_then(|document| document.get_element_by_id("reference-results"))
-    {
-        results.scroll_into_view();
+fn reading_text(r: Reference) -> String {
+    if has_articles(r.name) {
+        let mut text = ARTICLES
+            .iter()
+            .filter(|a| a.publisher == r.name)
+            .map(|a| format!("{}\n{}\n\n{}", a.title, a.credit, a.paragraphs.join("\n\n")))
+            .collect::<Vec<_>>()
+            .join("\n\n");
+        text.push_str("\n\nOriginal summaries of the reporting, presented here for easy reading. Publication titles and credits identify the sources.");
+        text
+    } else {
+        format!("{}\n\n{}", r.text.label(), r.text.body())
     }
 }
 
 #[component]
 pub fn References() -> impl IntoView {
-    let category = RwSignal::new(0_usize);
+    let active = RwSignal::new(0usize);
+    let panels=vec![
+        ("Watch",view!{<crate::videos::FeaturedVideo/>}.into_any()),
+        ("School story",view!{
+            <h2>"Westbrook Hay Prep School"</h2>
+            <crate::screen::Reader text="“It was a dynamic and fascinating way to learn more about the geography of the world.”\n\nSchool visit report · April 2022".to_string()/>
+            <button type="button" on:click=move |_|active.set(3)>"Read the school stories"</button>
+        }.into_any()),
+        ("Featured in",view!{
+            <crate::screen::Reader text="The Provincetown Independent\n\nThe Nome Nugget\n\nOverdrive".to_string()/>
+            <button type="button" on:click=move |_|active.set(3)>"Explore the coverage"</button>
+        }.into_any()),
+        ("Directory",view!{<ReferenceDirectory/>}.into_any())
+    ];
+    view! {<section class="screen-page wrap"><h1>"References & press."</h1><crate::screen::Deck panels=panels selected=active/></section>}
+}
+
+#[component]
+fn ReferenceDirectory() -> impl IntoView {
+    let category = RwSignal::new(0usize);
     let query = RwSignal::new(String::new());
-    let page = RwSignal::new(0_usize);
+    let current = RwSignal::new(0usize);
+    let reading = RwSignal::new(false);
     let filtered = Memo::new(move |_| {
-        let query = query.get().trim().to_lowercase();
+        let q = query.get().trim().to_lowercase();
         REFERENCES
             .into_iter()
             .filter(|r| {
                 in_group(r, category.get())
-                    && (query.is_empty()
-                        || article_matches(r.name, &query)
+                    && (q.is_empty()
+                        || article_matches(r.name, &q)
                         || format!("{} {} {} {}", r.name, r.context, r.detail, r.text.body())
                             .to_lowercase()
-                            .contains(&query))
+                            .contains(&q))
             })
             .collect::<Vec<_>>()
     });
-    let page_count = move || filtered.with(|items| items.len().div_ceil(PAGE_SIZE).max(1));
-    view! {
-        <section class="references-page wrap page-section" aria-labelledby="references-title">
-            <div class="references-heading"><div><p class="eyebrow">"CLASSROOMS. COMMUNITIES. CONNECTIONS."</p><h1 id="references-title">"References "<span class="serif-line">"& press."</span></h1></div><p>"In their own words. Read reviews from schools and communities, and explore stories about Neal’s work around the world."</p></div>
-            <div class="reference-search">
-                <label for="reference-search">"Find a reference"</label>
-                <div><input id="reference-search" type="search" placeholder="School, publication, or place…" prop:value=move || query.get() on:input=move |ev| { query.set(event_target_value(&ev)); page.set(0); }/><button type="button" disabled=move || query.get().is_empty() on:click=move |_| { query.set(String::new()); page.set(0); }>"Clear"</button></div>
+    let selected = move || filtered.with(|r| r.get(current.get()).copied());
+    view! {<div class="contained-directory">
+        <Show when=move ||reading.get() fallback=move ||view!{
+            <div class="directory-tools">
+                <label><span class="sr-only">"Find a reference"</span><input id="reference-search" type="search" placeholder="School, publication, or place" prop:value=move ||query.get() on:input=move |e|{query.set(event_target_value(&e));current.set(0);}/></label>
+                <label><span class="sr-only">"Reference category"</span><select prop:value=move ||category.get().to_string() on:change=move |e|{category.set(event_target_value(&e).parse().unwrap_or(0));current.set(0);}>
+                    {GROUPS.into_iter().enumerate().map(|(i,(label,_,_))|view!{<option value=i.to_string()>{label}</option>}).collect_view()}
+                </select></label>
             </div>
-            <div class="reference-filters" role="group" aria-label="Browse references">
-                {GROUPS.into_iter().enumerate().map(|(i, (label, _, _))| view! {
-                    <button type="button" aria-controls="reference-results" aria-pressed=move || (category.get() == i).to_string() class:active=move || category.get() == i on:click=move |_| { category.set(i); page.set(0); }>{label}<span class="reference-count">{REFERENCES.iter().filter(|r| in_group(r, i)).count()}</span></button>
-                }).collect_view()}
-            </div>
-            <div class="reference-directory" id="reference-results">
-                <div class="reference-section-heading"><div><h2>{move || GROUPS[category.get()].1}</h2><p>{move || GROUPS[category.get()].2}</p></div><span class="directory-caption" role="status">{move || {
-                    let count = filtered.with(Vec::len);
-                    if count == 0 { "No matching references".to_string() } else {
-                        format!("Showing {}–{} of {}", page.get() * PAGE_SIZE + 1, ((page.get() + 1) * PAGE_SIZE).min(count), count)
-                    }
-                }}</span></div>
-                <ul class="reference-list" aria-label=move || GROUPS[category.get()].0>
-                    <For
-                        each={move || filtered.get().into_iter().skip(page.get() * PAGE_SIZE).take(PAGE_SIZE).collect::<Vec<_>>()}
-                        key={|r| r.name}
-                        children={|r| view! {
-                        <li class="reference-entry">
-                            <p class="reference-context">{r.context}</p><h3>{r.name}</h3><p class="reference-detail">{r.detail}</p>
-                            <details class="reference-review" name="reference-review">
-                                <summary>{r.text.action()}<span class="sr-only">{format!(" from {}", r.name)}</span><span class="review-toggle" aria-hidden="true">"+"</span></summary>
-                                <div class="reference-review-body">
-                                    <p class="review-label">{r.text.label()}</p>
-                                    {if matches!(r.text, ReferenceText::Review(_)) {
-                                        view! { <blockquote>{r.text.body()}</blockquote> }.into_any()
-                                    } else if has_articles(r.name) {
-                                        view! { <ArticleReadings name=r.name/> }.into_any()
-                                    } else {
-                                        view! { <p class="coverage-text">{r.text.body()}</p> }.into_any()
-                                    }}
-                                </div>
-                            </details>
-                        </li>
-                        }}
-                    />
-                </ul>
-                <Show when=move || filtered.with(Vec::is_empty)>
-                    <div class="reference-empty"><h3>"No references found."</h3><p>"Try another name or place, or browse the full collection."</p><button type="button" on:click=move |_| { query.set(String::new()); category.set(0); page.set(0); }>"Show all references"</button></div>
-                </Show>
-                <Show when={move || page_count() > 1}>
-                    <nav class="reference-pagination" aria-label="Reference pages">
-                        <button type="button" disabled=move || page.get() == 0 on:click=move |_| turn_page(page, page.get().saturating_sub(1))><span aria-hidden="true">"←"</span>"Previous"</button>
-                        <span>{move || format!("Page {} of {}", page.get() + 1, page_count())}</span>
-                        <button type="button" disabled={move || page.get() + 1 >= page_count()} on:click=move |_| turn_page(page, (page.get() + 1).min(page_count() - 1))>"Next"<span aria-hidden="true">"→"</span></button>
-                    </nav>
-                </Show>
-            </div>
-            <div class="references-invitation"><div><p class="eyebrow">"YOUR SCHOOL COULD BE NEXT"</p><h2>"Let’s bring the world to you."</h2></div><a class="button" href="booking.html">"Inquire about a visit"<span>"↗"</span></a></div>
-        </section>
-    }
+            <label><span class="sr-only">"Choose a reference"</span><select prop:value=move ||current.get().to_string() on:change=move |e|current.set(event_target_value(&e).parse().unwrap_or(0))>
+                {move ||filtered.get().into_iter().enumerate().map(|(i,r)|view!{<option value=i.to_string()>{r.name}</option>}).collect_view()}
+            </select></label>
+            {move ||selected().map(|r|view!{
+                <article class="reference-card"><p>{r.context}</p><h2>{r.name}</h2><p>{r.detail}</p><button type="button" on:click=move |_|reading.set(true)>{r.text.action()}</button></article>
+            })}
+            <Show when=move ||filtered.with(Vec::is_empty)><div class="reference-empty"><h2>"No references found."</h2><button type="button" on:click=move |_|{query.set(String::new());category.set(0);current.set(0); }>"Show all references"</button></div></Show>
+            <nav class="reader-pagination" aria-label="Reference pages">
+                <button type="button" disabled=move ||current.get()==0 on:click=move |_|current.update(|i|*i=i.saturating_sub(1))>"Previous"</button>
+                <span role="status">{move ||format!("{} / {}",if filtered.with(Vec::is_empty){0}else{current.get()+1},filtered.with(Vec::len))}</span>
+                <button type="button" disabled={move ||current.get()+1>=filtered.with(Vec::len)} on:click=move |_|current.update(|i|*i+=1)>"Next"</button>
+            </nav>
+        }>
+            <button class="reader-back" type="button" on:click=move |_|reading.set(false)>"Back to references"</button>
+            {move ||selected().map(|r|view!{<h2>{r.name}</h2><crate::screen::Reader text=reading_text(r)/>})}
+        </Show>
+    </div>}
 }

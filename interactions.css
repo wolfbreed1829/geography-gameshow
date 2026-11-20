@@ -1,0 +1,207 @@
+/* Matte color washes sampled from the logo's ocean and gold lettering. */
+.site-shell {
+  --wash-fill: linear-gradient(118deg, #0060c8 0%, #0068c8 25%, #0070d0 50%, #0058c0 75%, #0048a8 100%);
+  --wash-ink: #f6efdf;
+  --wash-border: #1478ce;
+  --wash-current: #087cdb;
+  --wash-depth: #003780;
+}
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a) {
+  position: var(--control-position, relative);
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #0060c8;
+  background-image: var(--wash-fill);
+  background-size: 220% 180%;
+  background-position: 0% 50%;
+  color: var(--wash-ink);
+  border-color: var(--wash-border);
+  border-radius: 7px;
+  box-shadow: none;
+  text-shadow: none;
+  animation: color-cascade 3.4s ease-in-out infinite alternate;
+  transition: transform 180ms ease-out, box-shadow 180ms ease-out, border-color 180ms ease-out;
+}
+
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a)::before {
+  content: "";
+  position: absolute;
+  inset: -80% -60%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 28% 35%, var(--wash-current) 8%, transparent 57%), radial-gradient(ellipse at 74% 65%, var(--wash-depth) 12%, transparent 60%);
+  opacity: .95;
+  animation: wash-flow 2.8s ease-in-out infinite alternate;
+}
+
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a)::after {
+  z-index: var(--overlay-layer, -1);
+  background: var(--control-overlay, radial-gradient(ellipse at var(--pointer-x, 50%) var(--pointer-y, 50%), #0089da30 0%, #0054b52b 35%, transparent 75%));
+  opacity: var(--overlay-opacity, 0);
+  transition: opacity 160ms ease-out;
+}
+
+.site-shell a.button[href*="booking.html"] {
+  --wash-fill: linear-gradient(118deg, #f8b808 0%, #f8c010 25%, #f8b000 50%, #f8a800 75%, #f8b808 100%);
+  --wash-ink: #061b2d;
+  --wash-border: #f8b808;
+  --wash-current: #ffdc3c;
+  --wash-depth: #df8700;
+  --control-overlay: radial-gradient(ellipse at var(--pointer-x, 50%) var(--pointer-y, 50%), #da870030 0%, #ffc53c20 35%, transparent 75%);
+}
+.site-shell :is(.screen-tabs button[aria-pressed="true"], .quiz-topic button[aria-pressed="true"]) { --wash-border: #f8b808; }
+
+/* Content controls use distinct palettes while the main navigation stays ocean blue. */
+.interior-page .program-subnav a:nth-child(2) {
+  --wash-fill: linear-gradient(118deg, #09695f, #0c786d, #07564f, #0c786d);
+  --wash-border: #318d7f;
+  --wash-current: #0c786d;
+  --wash-depth: #043e39;
+}
+.interior-page :is(.program-subnav a:nth-child(3), .screen-tabs button:nth-child(4), .quiz-topic button:nth-child(2)) {
+  --wash-fill: linear-gradient(118deg, #603b97, #7950b8, #4d2b80, #6943a4);
+  --wash-border: #9674c2;
+  --wash-current: #7950b8;
+  --wash-depth: #38205e;
+}
+.interior-page :is(.screen-tabs button:nth-child(2), .screen-links a[href="challenge.html"]) {
+  --wash-fill: linear-gradient(118deg, #984a24, #ad5928, #803d25, #a65328);
+  --wash-border: #c48255;
+  --wash-current: #ad5928;
+  --wash-depth: #622b1c;
+}
+.interior-page .screen-tabs button:nth-child(3) {
+  --wash-fill: linear-gradient(118deg, #28663e, #34784a, #1c5336, #2d7044);
+  --wash-border: #61966f;
+  --wash-current: #34784a;
+  --wash-depth: #123c27;
+}
+.interior-page :is(.reader-pagination button, .screen-links a[href="programs.html"]) {
+  --wash-fill: linear-gradient(118deg, #354960, #4b627c, #2b3f57, #405871);
+  --wash-border: #72879b;
+  --wash-current: #4b627c;
+  --wash-depth: #1b2c40;
+}
+.interior-page :is(.program-subnav a, .screen-tabs button, .screen-links a, .reader-pagination button, .quiz-topic button) {
+  --control-overlay: radial-gradient(ellipse at var(--pointer-x, 50%) var(--pointer-y, 50%), var(--wash-current), transparent 70%);
+}
+.interior-page :is(.screen-tabs button[aria-pressed="true"], .quiz-topic button[aria-pressed="true"]) {
+  outline: 2px solid #f3cb76;
+  outline-offset: 2px;
+}
+.interior-page .program-subnav a[aria-current="page"] { --wash-border: #f3cb76; }
+
+/* Adjacent controls move through different parts of the color wash. */
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a):nth-child(2n) { animation-delay: -1.4s; }
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a):nth-child(3n) { animation-delay: -2.4s; }
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a):nth-child(2n)::before { animation-delay: -1.1s; }
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a):nth-child(3n)::before { animation-delay: -2.1s; }
+.site-header .button::before { animation-delay: -1.6s; }
+
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a):is(:hover, :focus-visible):not(:disabled) {
+  transform: perspective(700px) translateY(-2px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(1.025);
+  border-color: var(--wash-border);
+  box-shadow: 0 5px 14px #00121c26;
+  color: var(--wash-ink);
+  text-decoration: none;
+}
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a):is(:hover, :focus-visible):not(:disabled)::after { opacity: 1; }
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a):active:not(:disabled) {
+  transform: perspective(700px) translateY(1px) scale(.965);
+  box-shadow: none;
+}
+.site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a):focus-visible { outline: 3px solid #f5df9c; outline-offset: 4px; }
+.site-shell :is(button, #main-nav button):disabled { animation-play-state: paused; opacity: .4; }
+.site-shell :is(button, #main-nav button):disabled::before { animation-play-state: paused; }
+
+/* The secondary home action is a full, equally tactile control. */
+.landing-actions .text-link { min-height: 58px; padding: 15px 24px; border: 1px solid #77c7df9c; justify-content: center; }
+
+/* Navigation keeps its compact footprint and a clear current-page marker. */
+.site-shell #main-nav > a:not(.button),
+.site-shell .explore-menu summary {
+  box-shadow: none;
+  padding-inline: 10px;
+  margin-inline: -10px;
+}
+.site-shell #main-nav > a[aria-current="page"]:not(.button),
+.site-shell #main-nav > a.active:not(.button),
+.site-shell .explore-menu summary.active { --wash-ink: #ffe09a; border-bottom: 2px solid #e1b153; }
+.site-shell .program-subnav a[aria-current="page"] { --wash-ink: #ffe6aa; border-bottom-color: #c39842; }
+.site-shell .screen-links a { padding: 5px 12px; margin: -5px 0; }
+.site-shell .explore-links a { padding-inline: 12px; }
+
+/* Photographic play buttons retain their readable caption shading. */
+.site-shell .video-start { --control-position: absolute; }
+.site-shell .featured-play {
+  --wash-ink: #f5e8cc;
+  --overlay-layer: 0;
+  --overlay-opacity: 1;
+  --control-overlay: linear-gradient(0deg, #031323ed, #03132300 75%);
+}
+
+.landing-hero .reflective-copy {
+  background: linear-gradient(112deg, #fffaf0 0%, #ffffff 16%, #f2faff 27%, #ffffff 32%, #fff0c7 47%, #f5fcff 62%, #ffffff 74%, #edf7ff 86%, #fff5da 100%);
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 5px #00101bcc) drop-shadow(0 0 9px #fff7dc40);
+  text-shadow: none;
+  animation: lettering-reflection 6s ease-in-out infinite alternate;
+}
+.landing-hero > p.reflective-copy { animation-delay: -2s; max-width: none; }
+@keyframes lettering-reflection {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+.site-shell.motion-paused .reflective-copy { animation-play-state: paused; }
+
+@keyframes color-cascade {
+  0% { background-position: 0% 25%; }
+  50% { background-position: 65% 75%; }
+  100% { background-position: 100% 40%; }
+}
+@keyframes wash-flow {
+  0% { transform: translate(-22%, -12%) rotate(-8deg); }
+  50% { transform: translate(0%, 8%) rotate(0deg); }
+  100% { transform: translate(22%, -8%) rotate(8deg); }
+}
+
+/* Pause stops all decorative motion, while controls remain usable. */
+.site-shell.motion-paused :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a),
+.site-shell.motion-paused :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a)::before { animation-play-state: paused; }
+
+@media (max-width: 400px) {
+  .site-header .heritage-brand img { width: 48px; height: 40px; }
+  .site-header .mobile-book, .site-header .menu-toggle { font-size: .875rem; padding-inline: 10px; }
+}
+@media (max-height: 700px) {
+  .landing-actions .text-link { min-height: 48px; padding-block: 11px; }
+}
+@media (max-height: 500px) and (min-width: 541px) {
+  .landing-actions { gap: 10px; }
+  .landing-actions .button { min-width: 0; padding-inline: 14px; font-size: 1rem; }
+  .landing-actions .text-link { padding-inline: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-hero .reflective-copy { animation: none; }
+  .site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a),
+  .site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a)::before,
+  .site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a)::after {
+    animation: none;
+    transition: none;
+    transform: none !important;
+  }
+  .site-shell :is(button, .button, .text-link, .program-subnav a, .screen-links a, #main-nav > a, .explore-menu summary, .explore-links a)::before { opacity: 0; }
+}
