@@ -1,0 +1,134 @@
+/* Keep the section picker and site navigation in view while a teacher reads. */
+.scheduling-guide { --guide-pad: clamp(1rem, 3vw, 2.75rem); --guide-line: #355166; }
+.scheduling-guide .guide-pane {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #7996aa #0b2032;
+  min-height: 0;
+  border: 1px solid var(--guide-line);
+  border-radius: 12px;
+  background: #082034;
+}
+.guide-pane:focus-visible { outline: 3px solid #f5df9c; outline-offset: 2px; }
+.scheduling-guide .screen-tabs { flex-wrap: wrap; }
+.scheduling-guide .screen-tabs button,
+.program-menu a[href="programs-scheduling.html"] { --wash-ink: #fff; }
+.scheduling-guide .screen-tabs button:first-child,
+.program-menu a[href="programs-scheduling.html"] { --wash-current: #006bc3; }
+.scheduling-guide p { color: #d1dfe6; font-size: 1rem; line-height: 1.65; }
+.scheduling-guide .guide-section, .guide-intro, .guide-invitation { padding: var(--guide-pad); }
+.scheduling-guide .guide-section h2 { font-size: clamp(1.65rem, 2.6vw, 2.5rem); text-wrap: balance; }
+.guide-section-heading { max-width: 80ch; }
+.guide-section-heading p, .guide-intro-copy p { margin-top: 1rem; }
+
+.guide-intro, .guide-additional { display: grid; grid-template-columns: 1fr 1fr; gap: var(--guide-pad); align-items: center; }
+.guide-intro-copy { max-width: 62ch; }
+.guide-intro .guide-intro-copy h2 {
+  font-size: clamp(2.1rem, 3.65vw, 3.65rem);
+  line-height: 1.06;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+.guide-intro-copy h2 em { display: block; color: #f0ce87; font-family: Georgia, serif; font-weight: 400; }
+.guide-intro img, .guide-additional img { display: block; width: 100%; height: auto; border-radius: 7px; }
+.guide-intro img { border: 1px solid #a2b5b866; }
+.guide-invitation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  background: #123149;
+  border-top: 1px solid var(--guide-line);
+  padding-block: clamp(1.3rem, 2.5vw, 2.25rem);
+}
+.guide-invitation > div:first-child { flex: 1 1 32rem; }
+.guide-invitation h2 { font-size: clamp(1.45rem, 2.3vw, 2.1rem); }
+.guide-invitation p { max-width: 68ch; margin-top: .6rem; }
+.guide-contact { display: grid; justify-items: center; gap: .4rem; }
+.guide-contact .button { min-height: 48px; padding-inline: 1.75rem; font-size: 1rem; }
+.guide-contact > span, .guide-additional figcaption { color: #c1d2dc; font-size: .875rem; overflow-wrap: anywhere; }
+.guide-additional { grid-template-columns: 1.1fr 1fr; }
+.guide-additional figure { margin: 0; }
+.guide-additional figcaption { margin-top: .55rem; }
+.additional-titles { margin: 1.25rem 0; padding-inline-start: 1.25rem; }
+.additional-titles li { padding: .32rem .25rem; }
+.additional-titles li::marker, .program-choices li::marker { color: #edc779; }
+
+.grade-table { width: 100%; border-collapse: collapse; font-size: 1rem; text-align: left; }
+.grade-table caption { color: #efd39a; text-align: left; padding: 1.35rem 0 .8rem; }
+.grade-table thead { background: #15384b; }
+.grade-table thead th { font-size: .925rem; color: #eaf1ed; }
+.grade-table th, .grade-table td { padding: .7rem 1rem; vertical-align: top; border-bottom: 1px solid var(--guide-line); }
+.grade-table th[scope="row"] { width: 25%; }
+.grade-table .grade-time { width: 21%; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.program-choices { margin: 0; padding-inline-start: 1.1rem; }
+.program-choices:has(> li:only-child) { list-style: none; padding: 0; }
+.grade-guidance { margin-top: 1.1rem; max-width: 70ch; }
+@media (min-width: 1020px) {
+  #programs-by-grade {
+    display: grid;
+    grid-template-columns: minmax(14rem, .8fr) minmax(0, 2fr);
+    grid-template-rows: auto 1fr;
+    column-gap: var(--guide-pad);
+  }
+  .grade-table-wrap { grid-column: 2; grid-row: 1 / 3; }
+  .grade-table caption { padding-top: 0; }
+  .grade-guidance { grid-column: 1; }
+}
+
+.schedule-rules {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1rem 2rem;
+  margin: 1.3rem 0 .9rem;
+  list-style: none;
+  padding: 1rem 1.25rem;
+  border-inline-start: 3px solid #e5bd68;
+  background: #123149;
+}
+.schedule-rules strong { color: #f2d594; }
+.scheduling-guide .schedule-note { max-width: 88ch; }
+.visit-example { margin-top: 1.8rem; }
+.visit-example h3 { font-size: clamp(1.35rem, 2vw, 1.75rem); letter-spacing: -.025em; margin-bottom: .8rem; }
+.visit-days { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.visit-day h4 { padding: .6rem 1rem; color: #efcf8a; background: #17384b; font-size: 1rem; letter-spacing: .02em; }
+.itinerary { margin: 0; padding: 0; list-style: none; border: 1px solid var(--guide-line); }
+.itinerary li {
+  display: grid;
+  grid-template-columns: minmax(7rem, 20%) 1fr auto;
+  align-items: baseline;
+  gap: .2rem 1rem;
+  padding: .65rem 1rem;
+}
+.itinerary li + li { border-top: 1px solid var(--guide-line); }
+.itinerary-time { text-align: right; font-variant-numeric: tabular-nums; }
+.itinerary-grade, .itinerary-time { color: #cedee7; }
+.itinerary .itinerary-break { display: flex; align-items: baseline; flex-wrap: wrap; justify-content: space-between; background: #122b3a; }
+.itinerary-break .itinerary-title { font-weight: 500; font-style: italic; }
+.visit-day .itinerary-show { grid-template-columns: 1fr auto; }
+.visit-day .itinerary-grade { grid-column: 1; font-size: .9rem; }
+.visit-day .itinerary-title { grid-column: 1 / -1; grid-row: 2; }
+.visit-day .itinerary-time { grid-column: 2; grid-row: 1; font-size: .9rem; }
+
+@media (max-width: 780px) {
+  .guide-intro, .guide-additional { grid-template-columns: 1fr; }
+  .guide-intro img, .guide-additional figure { max-width: 33rem; }
+  .guide-intro-copy { max-width: none; }
+  .visit-days, .schedule-rules { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .guide-contact { justify-items: start; }
+  .grade-table, .grade-table caption, .grade-table tbody { display: block; }
+  /* Keep column headings available to assistive technology in the card layout. */
+  .grade-table thead { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); overflow: hidden; white-space: nowrap; }
+  .grade-table tr { display: grid; grid-template-columns: 1fr auto; gap: .55rem; padding: .85rem 0; border-top: 1px solid var(--guide-line); }
+  .grade-table th, .grade-table td { padding: 0; border: 0; }
+  .grade-table th[scope="row"], .grade-table .grade-time { width: auto; }
+  .grade-table td:not(.grade-time) { grid-column: 1 / -1; grid-row: 2; }
+  .grade-table .grade-time { grid-column: 2; grid-row: 1; color: #eed090; font-size: .9rem; }
+  .itinerary .itinerary-show { grid-template-columns: 1fr auto; }
+  .itinerary-grade, .itinerary-time { font-size: .9rem; }
+  .itinerary-show .itinerary-title { grid-column: 1 / -1; grid-row: 2; }
+  .itinerary-show .itinerary-time { grid-column: 2; grid-row: 1; }
+}

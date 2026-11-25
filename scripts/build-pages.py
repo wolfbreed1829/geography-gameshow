@@ -12,6 +12,7 @@ output = Path(os.environ["TRUNK_STAGING_DIR"])
 shell = (output / "index.html").read_text(encoding="utf-8")
 pages = {
     "programs": ("Programs", "Explore Geography and Art programs with Neal Nichols Jr."),
+    "programs-scheduling": ("Programs & Scheduling", "Compare Geography Gameshow programs by grade and running time, explore more titles, and plan a one- or two-day visit with Neal Nichols Jr."),
     "geography": ("Geography", "Maps drawn entirely from memory. Discover Neal Nichols Jr.'s original live Geography Gameshow."),
     "art": ("Art", "Discover Neal Nichols Jr.'s proposed art show, exploring drawing, perspective, texture, and creativity."),
     "geography-photos": ("Geography Photos", "Explore a selection of Neal Nichols Jr.'s live map drawings and geography demonstrations."),

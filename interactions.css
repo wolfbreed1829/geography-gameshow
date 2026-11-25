@@ -50,7 +50,8 @@
   transition: opacity 160ms ease-out;
 }
 
-.site-shell a.button[href*="booking.html"] {
+.site-shell a.button[href*="booking.html"],
+.site-shell .guide-contact .button {
   --wash-fill: linear-gradient(118deg, #f8b808 0%, #f8c010 25%, #f8b000 50%, #f8a800 75%, #f8b808 100%);
   --wash-ink: #061b2d;
   --wash-border: #f8b808;

@@ -9,6 +9,8 @@ mod planning;
 mod programs;
 mod quiz;
 mod references;
+mod schedule_content;
+mod scheduling;
 mod screen;
 mod videos;
 
@@ -16,6 +18,7 @@ mod videos;
 enum Page {
     Home,
     Programs,
+    Scheduling,
     Geography,
     Art,
     Photos(usize),
@@ -35,6 +38,7 @@ impl Page {
             .unwrap_or_default();
         match path.rsplit('/').next().unwrap_or_default() {
             "programs.html" => Self::Programs,
+            "programs-scheduling.html" => Self::Scheduling,
             "geography.html" => Self::Geography,
             "art.html" => Self::Art,
             "geography-photos.html" => Self::Photos(0),
@@ -53,7 +57,12 @@ impl Page {
     fn is_program(self) -> bool {
         matches!(
             self,
-            Self::Programs | Self::Geography | Self::Art | Self::Photos(_) | Self::Videos(_)
+            Self::Programs
+                | Self::Scheduling
+                | Self::Geography
+                | Self::Art
+                | Self::Photos(_)
+                | Self::Videos(_)
         )
     }
 }
@@ -89,6 +98,7 @@ fn App() -> impl IntoView {
                 <nav id="main-nav" class:open=move || menu_open.get() aria-label="Main navigation">
                     <a href="index.html" aria-current=(page == Page::Home).then_some("page")>"Home"</a>
                     <details class="explore-menu program-menu" name="site-navigation"><summary class:active=page.is_program()>"Programs"<span aria-hidden="true">"⌄"</span></summary><div class="explore-links">
+                        <a href="programs-scheduling.html" aria-current=(page == Page::Scheduling).then_some("page")>"Programs & Scheduling"</a>
                         <a href="geography.html" aria-current=(page == Page::Geography).then_some("page")>"Geography"</a>
                         <a href="art.html" aria-current=(page == Page::Art).then_some("page")>"Art"</a>
                     </div></details>
@@ -106,6 +116,7 @@ fn App() -> impl IntoView {
                 {match page {
                     Page::Home => view! { <pages::Home/> }.into_any(),
                     Page::Programs => view! { <programs::Programs/> }.into_any(),
+                    Page::Scheduling => view! { <scheduling::Scheduling/> }.into_any(),
                     Page::Geography => view! { <programs::ProgramPage index=0/> }.into_any(),
                     Page::Art => view! { <programs::ProgramPage index=1/> }.into_any(),
                     Page::Photos(index) => view! { <programs::PhotoPage index=index/> }.into_any(),

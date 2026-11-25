@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
-const routes = ['index', 'programs', 'geography', 'art', 'geography-photos', 'art-photos', 'geography-videos', 'art-videos', 'in-action', 'meet-neal', 'challenge', 'planning', 'references', 'booking'];
+const routes = ['index', 'programs', 'programs-scheduling', 'geography', 'art', 'geography-photos', 'art-photos', 'geography-videos', 'art-videos', 'in-action', 'meet-neal', 'challenge', 'planning', 'references', 'booking'];
 const sizes = [[1440, 1000], [1280, 800], [390, 844], [320, 568], [844, 390]];
 const photos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-PHOTOS.json', import.meta.url), 'utf8'));
 const videos = JSON.parse(readFileSync(new URL('../docs/PROGRAM-VIDEOS.json', import.meta.url), 'utf8'));
@@ -124,20 +124,108 @@ test('color washes react to the pointer, press, pause, and reduced motion', asyn
   await expect(request).toBeFocused();
 });
 
+const guidePage = 'programs-scheduling.html';
+const guideName = 'Programs & Scheduling';
+const programsByGrade = [
+  ['Kindergarten', ['Drawing and Art', 'Local Regional Show', 'Cape Cod Introduction'], '45–60 minutes'],
+  ['Grade 1', ['New England and the Pilgrims', 'USA Map Introduction'], '60 minutes'],
+  ['Grade 2', ['World Map Introduction'], '75 minutes'],
+  ['Grade 3', ['Massachusetts History', 'USA Capitals / National Parks'], '75 minutes'],
+  ['Grade 4', ['USA History'], '90 minutes'],
+  ['Grade 5', ['The Original Colonies'], '90 minutes'],
+  ['Grade 6', ['Ancient / Middle East'], '90 minutes'],
+  ['Grade 7', ['World Map Challenge'], '90 minutes'],
+];
+
+test('the main navigation opens the scheduling guide and exposes the published booking email', async ({ page, baseURL }) => {
+  await page.goto('./');
+  const navigation = page.getByRole('navigation', { name: 'Main navigation' });
+  const programs = navigation.locator('.program-menu summary');
+  await programs.focus();
+  await page.keyboard.press('Enter');
+  const guideLink = navigation.getByRole('link', { name: guideName, exact: true });
+  await guideLink.focus();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(new URL(guidePage, baseURL).href);
+  await expect(page).toHaveTitle('Programs & Scheduling | The Geography Gameshow');
+  await expect(navigation.locator('.program-menu a[aria-current="page"]')).toHaveAttribute('href', guidePage);
+  await expect(page.getByRole('heading', { level: 1, name: guideName })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'A World of Learning, Drawn from Memory' })).toBeVisible();
+  await page.locator('main img:visible').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+  await expect(page.getByRole('link', { name: 'Ask About a Visit', exact: true }))
+    .toHaveAttribute('href', 'mailto:geographygameshow@yahoo.com');
+});
+
+test('each grade has its specified program choices and running time', async ({ page }) => {
+  await page.goto(guidePage);
+  await section(page, 'Programs by Grade');
+  const table = page.getByRole('table');
+  await expect(table.getByRole('columnheader')).toHaveText(['Suggested Grade', 'Available Programs', 'Running Time']);
+  await expect(table.getByRole('rowheader')).toHaveText(programsByGrade.map(([grade]) => grade));
+  for (const [grade, choices, duration] of programsByGrade) {
+    const row = table.getByRole('row').filter({ has: page.getByRole('rowheader', { name: grade, exact: true }) });
+    const cells = row.getByRole('cell');
+    await expect(cells.nth(0).getByRole('listitem')).toHaveText(choices);
+    await expect(cells.nth(1)).toHaveText(duration);
+  }
+  await page.setViewportSize({ width: 320, height: 568 });
+  const finalChoice = table.getByText('World Map Challenge', { exact: true });
+  await finalChoice.scrollIntoViewIfNeeded();
+  await expect(finalChoice).toBeInViewport();
+  await section(page, 'Additional Programs');
+  const additional = page.getByRole('region', { name: 'More Places. More Stories. More Ways to Learn.' });
+  await expect(additional.getByRole('listitem')).toHaveText([
+    'Alaska History', 'Texas History', '31 States of Mexico', 'Latin America', 'Europe Shows', 'Britain 1066', 'World Tectonic Plates and Disaster',
+  ]);
+  await additional.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+});
+
+test('sample visits preserve the order, breaks and durations, with responsive day columns', async ({ page }) => {
+  await page.goto(guidePage);
+  await section(page, 'Visit Schedules');
+  const planning = page.getByRole('region', { name: 'Plan a Visit Around Your School Day' });
+  await expect(planning).toContainText('Allow at least 15 minutes between shows');
+  await expect(planning).toContainText('Neal arrives 45–60 minutes before the first show.');
+  await expect(planning).toContainText('Final arrangements are coordinated for each visit.');
+  const oneDay = page.getByRole('region', { name: 'Example One-Day Visit', exact: true });
+  const twoDay = page.getByRole('region', { name: 'Example Two-Day Visit', exact: true });
+  const day1 = twoDay.getByRole('region', { name: 'Day 1', exact: true });
+  const day2 = twoDay.getByRole('region', { name: 'Day 2', exact: true });
+  const changeover = ['Changeover', 'at least 15 minutes'];
+  const lunch = ['Lunch'];
+  const worldMap = ['Grade 2', 'World Map Introduction', '75 minutes'];
+  const massachusetts = ['Grade 3', 'Massachusetts History', '75 minutes'];
+  const usaHistory = ['Grade 4', 'USA History', '90 minutes'];
+  const schedules = [
+    [oneDay, [worldMap, changeover, massachusetts, lunch, usaHistory]],
+    [day1, [['Kindergarten', 'Drawing and Art', '45–60 minutes'], changeover, worldMap, lunch, usaHistory]],
+    [day2, [['Grade 1', 'New England and the Pilgrims', '60 minutes'], changeover, massachusetts, lunch, ['Grade 5', 'The Original Colonies', '90 minutes']]],
+  ];
+  for (const [day, entries] of schedules) {
+    const rows = day.locator('ol > li');
+    const expected = entries.map(parts => parts.join(' '));
+    await expect(rows).toHaveText(expected);
+  }
+  const firstColumn = await day1.boundingBox();
+  const secondColumn = await day2.boundingBox();
+  expect(secondColumn.x).toBeGreaterThanOrEqual(firstColumn.x + firstColumn.width - 1);
+  await page.setViewportSize({ width: 390, height: 844 });
+  const firstCard = await day1.boundingBox();
+  const secondCard = await day2.boundingBox();
+  expect(secondCard.y).toBeGreaterThanOrEqual(firstCard.y + firstCard.height - 1);
+  const lastShow = day2.getByText('The Original Colonies', { exact: true });
+  await lastShow.scrollIntoViewIfNeeded();
+  await expect(lastShow).toBeInViewport();
+});
+
 test('supplied curriculum retains all eight grades, titles, and running times', async ({ page }) => {
   await page.goto('geography.html');
   await section(page, 'Curriculum');
-  const expected = [
-    ['K', 'Drawing and Art', '45–60 minutes'], ['1', 'New England and the Pilgrims', '60 minutes'],
-    ['2', 'World Map Introduction', '75 minutes'], ['3', 'Massachusetts History', '75 minutes'],
-    ['4', 'USA History', '90 minutes'], ['5', 'The Original Colonies', '90 minutes'],
-    ['6', 'Ancient / Middle East', '90 minutes'], ['7', 'World Map Challenge', '90 minutes'],
-  ];
   await page.setViewportSize({ width: 320, height: 568 });
-  for (const [i, [grade, title, time]] of expected.entries()) {
+  for (const [i, [grade, titles, time]] of programsByGrade.entries()) {
     await page.getByRole('combobox', { name: 'Choose a grade' }).selectOption(String(i));
-    await expect(page.locator('.curriculum-card')).toContainText(`Grade ${grade}`);
-    await expect(page.locator('.curriculum-card')).toContainText(title);
+    await expect(page.locator('.curriculum-card')).toContainText(i === 0 ? 'Grade K' : grade);
+    for (const title of titles) await expect(page.locator('.curriculum-card')).toContainText(title);
     await expect(page.locator('.curriculum-card')).toContainText(time);
     await fits(page);
   }

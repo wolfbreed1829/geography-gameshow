@@ -8,17 +8,17 @@
 
 ## What is here
 
-- Fourteen standalone pages in Rust/Leptos. Every page fits the viewport, with sections, selectors, or pagination for additional content.
+- Fifteen standalone pages in Rust/Leptos. Every page fits the viewport, with sections, selectors, or pagination for additional content.
 - The approved large-logo homepage over the water and beach, plus Request a Show in desktop and mobile navigation.
 - Geography and Art programs with matching cinematic illustrations. Geography’s card uses a sketchbook composition inspired by Neal’s map; its Artwork tab preserves the original completed drawing in a gold frame.
-- The supplied K–7 curriculum, show titles, running times, additional venues, and other geography topics. Planning includes the supplied arrival time, changeover interval, and suggested one- and two-day schedules.
+- The Programs & Scheduling guide compares K–7 program choices and running times, lists additional titles, and shows one- and two-day visits with arrival and changeover guidance. “Ask About a Visit” opens an email to Neal’s published contact address.
 - All original Geography and Art photos and verified videos remain available through selectors and gallery controls. Videos load only after play is selected.
 - References includes the show introduction, Westbrook Hay Prep School excerpt, publication names, and all 38 named sources. Search and category filtering remain available. Long readings paginate to the actual available space without dropping text.
 - Two three-question challenges, with scores, explanations, and replay.
 - A four-step international inquiry form. Native validation applies to each step and values remain when going back. The review is paginated, including long entries. It **does not send, save, or submit inquiries**.
 - Buttons use cascading color washes and pointer-reactive highlights. All decorative motion can be paused and respects reduced-motion preferences.
 
-This is the GitHub Pages review site. The new Art show remains marked as in development. No prices, invented testimonials, availability, or endorsements have been added. Inquiries are still preview-only until delivery to Neal is connected.
+This is the GitHub Pages review site. The new Art show remains marked as in development. No prices, invented testimonials, availability, or endorsements have been added. The separate inquiry form still provides a local preview only.
 
 ## Run locally
 
@@ -38,7 +38,7 @@ cargo check --locked --target wasm32-unknown-unknown
 trunk build --release --locked --public-url ./
 ```
 
-The output is `dist/`. A Trunk post-build hook emits fourteen HTML entry files with page-specific metadata, sharing the same hashed Rust/WASM and stylesheets. Native `.html` navigation supports direct links, refresh, and browser history on GitHub Pages without rewrite rules. Relative asset URLs support both a project path and a root-domain deployment. Fonts and visual assets are hosted locally. No analytics service is configured. YouTube embeds connect to YouTube only after the visitor starts a video.
+The output is `dist/`. A Trunk post-build hook emits fifteen HTML entry files with page-specific metadata, sharing the same hashed Rust/WASM and stylesheets. Native `.html` navigation supports direct links, refresh, and browser history on GitHub Pages without rewrite rules. Relative asset URLs support both a project path and a root-domain deployment. Fonts and visual assets are hosted locally. No analytics service is configured. YouTube embeds connect to YouTube only after the visitor starts a video.
 
 ## Structure
 

@@ -76,7 +76,7 @@ pub fn Programs() -> impl IntoView {
     view! {
         <section class="screen-page wrap"><h1>"Programs"</h1>
             <crate::screen::Deck panels=panels/>
-            <div class="screen-links"><a href="planning.html">"Plan a school visit"</a></div>
+            <div class="screen-links"><a href="programs-scheduling.html">"Programs & Scheduling"</a><a href="planning.html">"Plan a school visit"</a></div>
         </section>
     }
 }
@@ -128,7 +128,7 @@ pub fn ProgramPage(index: usize) -> impl IntoView {
             2,
             (
                 "Program outline",
-                view! {<crate::screen::Reader text=PROGRAM_OUTLINE.to_string()/>}.into_any(),
+                view! {<crate::screen::Reader text=format!("{PROGRAM_OUTLINE}\n\nOther titles include {}, and more.", ADDITIONAL_TITLES.join(", "))/>}.into_any(),
             ),
         );
     }
@@ -178,9 +178,19 @@ pub fn PhotoPage(index: usize) -> impl IntoView {
     }
 }
 
-pub const PROGRAM_OUTLINE: &str = "All programs feature Neal’s illustration and content from memory, and are educational for a variety of audiences. Additional venues include family fun night fundraising shows, libraries, camps, aftercare groups, tourist centers, home school assemblies, and Montessori schools.\n\nThe Geography Gameshow is a practical lesson plan in a game show format. Some students win prizes from various places around the world.\n\nThe curriculum is suggested: shows are interchangeable across grade levels and suitable for multi-age audiences. Schools can host events annually without repeat performances as students progress through the years.\n\nOther titles include Alaska History, Texas History, 31 States of Mexico, Latin America, Europe Shows, Britain 1066, World Tectonic Plates and Disaster, and more.";
+const PROGRAM_OUTLINE: &str = "All programs feature Neal’s illustration and content from memory, and are educational for a variety of audiences. Additional venues include family fun night fundraising shows, libraries, camps, aftercare groups, tourist centers, home school assemblies, and Montessori schools.\n\nThe Geography Gameshow is a practical lesson plan in a game show format. Some students win prizes from various places around the world.\n\nThe curriculum is suggested: shows are interchangeable across grade levels and suitable for multi-age audiences. Schools can host events annually without repeat performances as students progress through the years.";
 
-const CURRICULUM: [(&str, &str, &str); 8] = [
+pub(crate) const ADDITIONAL_TITLES: [&str; 7] = [
+    "Alaska History",
+    "Texas History",
+    "31 States of Mexico",
+    "Latin America",
+    "Europe Shows",
+    "Britain 1066",
+    "World Tectonic Plates and Disaster",
+];
+
+pub(crate) const CURRICULUM: [(&str, &str, &str); 8] = [
     (
         "K",
         "Drawing and Art\nLocal Regional Show\nCape Cod Introduction",
@@ -194,7 +204,7 @@ const CURRICULUM: [(&str, &str, &str); 8] = [
     ("2", "World Map Introduction", "75 minutes"),
     (
         "3",
-        "Massachusetts History\nUSA Capitols / National Parks",
+        "Massachusetts History\nUSA Capitals / National Parks",
         "75 minutes",
     ),
     ("4", "USA History", "90 minutes"),
