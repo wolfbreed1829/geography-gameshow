@@ -150,7 +150,7 @@ test('the main navigation opens the scheduling guide and exposes the published b
   await expect(page).toHaveTitle('Programs & Scheduling | The Geography Gameshow');
   await expect(navigation.locator('.program-menu a[aria-current="page"]')).toHaveAttribute('href', guidePage);
   await expect(page.getByRole('heading', { level: 1, name: guideName })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'A World of Learning, Drawn from Memory' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'A World of Learning, Illustrated from Memory' })).toBeVisible();
   await page.locator('main img:visible').evaluateAll(images => Promise.all(images.map(image => image.decode())));
   await expect(page.getByRole('link', { name: 'Ask About a Visit', exact: true }))
     .toHaveAttribute('href', 'mailto:geographygameshow@yahoo.com');

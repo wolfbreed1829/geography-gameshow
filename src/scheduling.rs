@@ -38,7 +38,7 @@ fn Overview() -> impl IntoView {
     view! {
         <section class="guide-intro" aria-labelledby="intro-heading">
             <div class="guide-intro-copy">
-                <h2 id="intro-heading">"A World of Learning, "<em>"Drawn from Memory"</em></h2>
+                <h2 id="intro-heading">"A World of Learning, "<em>"Illustrated from Memory"</em></h2>
                 <p>"Neal combines illustrations drawn from memory with educational storytelling and audience participation to bring geography, history, and art to life. The Geography Gameshow turns a practical lesson into an interactive game show, with opportunities for students to win prizes from places around the world."</p>
                 <p>"Programs are available for schools, libraries, camps, aftercare groups, tourist centers, homeschool assemblies, Montessori schools, and family fun night fundraisers."</p>
             </div>
